@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/LDPC/.vs/LDPC/v15
+/LDPC/Debug
+/LDPC/LDPC.vcxproj.user
+/LDPC/LDPC.vcxproj.filters
+/LDPC/LDPC.vcxproj
+/LDPC/LDPC.sln
