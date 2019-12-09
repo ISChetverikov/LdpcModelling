@@ -7,6 +7,7 @@ class Decoder {
 
 private:
 	// each check contain a vector of indices of value bits, which connected to the check
+	vector<vector<int>> _H;
 	vector<vector<int>> _checks;
 	vector<vector<int>> _bits;
 	

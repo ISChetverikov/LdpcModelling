@@ -141,8 +141,8 @@ void simulate(int M, std::string ldpc_filename, int decoder, int iter, std::vect
 }
 
 
-int main() {
-	std::vector<double> snr_array(1, 1.5);
-	simulate(2, "ll", 1, 1, std::vector<int>(3, 0), snr_array, 10, 10, 10, 10);
-	return 0;
-}
+//int main() {
+//	std::vector<double> snr_array(1, 1.5);
+//	simulate(2, "ll", 1, 1, std::vector<int>(3, 0), snr_array, 10, 10, 10, 10);
+//	return 0;
+//}

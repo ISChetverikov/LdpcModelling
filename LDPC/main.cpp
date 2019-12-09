@@ -1,6 +1,10 @@
 #include <iostream>
+#include <vector>
 #include "Decoder.h"
+#include "MathOperations.h"
 
+
+using namespace std;
 std::vector<std::vector<int>> get_matrix() {
 	
 	int K = 12, M = 6;
@@ -19,8 +23,13 @@ int main() {
 	auto H = get_matrix();
 	auto decoder = Decoder(H, 20);
 
-	auto codeword_llr = vector<double>({ -200.0, 50, -150, -160, -190, -160, -200.0, -198, -150, -160, -190, -160 });
-	decoder.Decode(codeword_llr);
-	std::cout << "Hello, LDPC!" << std::endl;
+	auto codeword_llr = vector<double>({ -200.0, 200, -150, -160, -190, -160, -200.0, -198, -150, -160, -190, -160 });
+	auto decoded = decoder.Decode(codeword_llr);
+
+	for (size_t i = 0; i < decoded.size(); i++)
+	{
+		cout << decoded[i] << " ";
+	}
+
 	return 0;
 }

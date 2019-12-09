@@ -1,5 +1,6 @@
 #include "Decoder.h"
 #include "Exceptions.h"
+#include "MathOperations.h"
 
 #include <vector>
 #include <map>
@@ -12,7 +13,7 @@ using namespace std;
 // Constructor
 Decoder::Decoder(vector<vector<int>> H, int iterationsCount) {
 	
-	if ((_iterationsCount = iterationsCount) < 0)
+	if ((_iterationsCount = iterationsCount) <= 0)
 		throw invalid_argument("Number of iterations is incorrect: " + to_string(_iterationsCount));
 
 	size_t m = H.size();
@@ -28,7 +29,8 @@ Decoder::Decoder(vector<vector<int>> H, int iterationsCount) {
 		if (n != H[0].size())
 			throw IncorrectMatrixDimensionsException("Check matrix has different column size in 0 and " + to_string(i) + " row");
 	}
-	
+
+	_H = H;
 	_checks.resize(m, vector<int>());
 	_bits.resize(n, vector<int>());
 	for (size_t i = 0; i < m; i++)
@@ -142,6 +144,14 @@ vector<int> Decoder::Decode(vector<double> llr) {
 			beta0[i] = abs(bits_values[i]);
 		}
 		
+		for (size_t i = 0; i < n; i++)
+		{
+			result[i] = (alpha0[i] == -1) ? 1 : 0;
+		}
+
+		if (_H * result == vector<int>(_m, 0))
+			break;
+
 		if (iteration >= _iterationsCount)
 			break;
 
@@ -157,11 +167,6 @@ vector<int> Decoder::Decode(vector<double> llr) {
 				beta[j][i] = abs(new_value);
 			}
 		}
-	}
-
-	for (size_t i = 0; i < n; i++)
-	{
-		result[i] = (alpha0[i] == -1) ? 1 : 0;
 	}
 
 	return result;
