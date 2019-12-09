@@ -53,17 +53,11 @@ int sign(double x) {
 	return (x < 0) ? -1 : 1;
 }
 
-double min(vector<double> vector) {
-	return 0.72 * *min_element(vector.begin(), vector.end());
+double Decoder::MinSumFucntion(vector<double> vector) {
+	double value = MinSumNorm * *min_element(vector.begin(), vector.end()) - MinSumOffset;
+	return  value > 0 ? value : 0;
 }
 
-double phi(double x) {
-	return log(tanh(x / 2));
-}
-
-double phi_inverse(double x) {
-	return 2 * atanh(exp(x));
-}
 void Decoder::HorizontalStep(vector<map<int, int>> alpha, vector<map<int, double>> beta, vector<map<int, double>> &gamma) {
 	for (size_t j = 0; j < _m; j++)
 	{
@@ -82,7 +76,7 @@ void Decoder::HorizontalStep(vector<map<int, int>> alpha, vector<map<int, double
 				values.push_back(beta[j][k]);
 			}
 
-			gamma[j][i] = sign * min(values);
+			gamma[j][i] = sign * MinSumFucntion(values);
 		}
 	}
 }

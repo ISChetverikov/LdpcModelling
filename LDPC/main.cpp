@@ -17,7 +17,7 @@ std::vector<std::vector<int>> get_matrix() {
 int main() {
 
 	auto H = get_matrix();
-	auto decoder = Decoder(H, 3);
+	auto decoder = Decoder(H, 20);
 
 	auto codeword_llr = vector<double>({ -200.0, 50, -150, -160, -190, -160, -200.0, -198, -150, -160, -190, -160 });
 	decoder.Decode(codeword_llr);
