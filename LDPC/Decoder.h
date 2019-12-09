@@ -1,14 +1,22 @@
 #include <vector>
+#include <map>
 
 using namespace std;
 
 class Decoder {
 
 private:
-	vector<vector<int>> Check;
-	vector<vector<int>> Values;
+	// each check contain a vector of indices of value bits, which connected to the check
+	vector<vector<int>> _checks;
+	vector<vector<int>> _bits;
 
+	size_t _m = 0;
+	size_t _n = 0;
+
+	size_t _iterationsCount = 0;
+
+	void HorizontalStep(vector<map<int, int>> alpha, vector<map<int, double>> beta, vector<map<int, double>> &gamma);
 public:
-	Decoder(vector<vector<int>> H);
+	Decoder(vector<vector<int>> H, int iterationsCount);
 	vector<int> Decode(vector<double> llr);
 };
