@@ -134,6 +134,7 @@ vector<int> Decoder::Decode(vector<double> llr) {
 		iteration++;
 		HorizontalStep(alpha, beta, gamma);
 
+		// Result of iteration
 		for (size_t i = 0; i < n; i++)
 		{
 			bits_values[i] = alpha0[i] * beta0[i];
@@ -149,6 +150,19 @@ vector<int> Decoder::Decode(vector<double> llr) {
 		
 		if (iteration >= _iterationsCount)
 			break;
+
+		// Vertical Step
+		for (size_t i = 0; i < n; i++)
+		{
+			double value = bits_values[i];
+
+			for (auto &j : _bits[i])
+			{
+				double new_value = value - gamma[j][i];
+				alpha[j][i] = sign(new_value);
+				beta[j][i] = abs(new_value);
+			}
+		}
 	}
 
 	for (size_t i = 0; i < n; i++)
