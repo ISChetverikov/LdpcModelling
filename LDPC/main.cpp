@@ -18,7 +18,7 @@ std::vector<std::vector<int>> get_matrix() {
 	return H;
 }
 
-int main() {
+int main1() {
 
 	auto H = get_matrix();
 	auto decoder = Decoder(H, 20);
