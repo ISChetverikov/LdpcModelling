@@ -146,17 +146,15 @@ void simulate(int maxIterationsCount, std::vector<double> snr_array, double fe, 
             
 			if (fer[ii] < min_fer)
 				break;
-
-			printf("");
         }
-        
+		printf("fer: %f, tests numbers: %d", fer[ii], tests);
         //save(sprintf('BF_result_M=%d_ldpc=%s_dectype=%d_scale=%f_iter=%d.mat', M, ldpc_filename, decoder, 0.75, iter)); 
     }
 }
 
 
 int main() {
-	std::vector<double> snr_array(1, 1.5);
-	simulate(10, snr_array, 30, 1, 100);
+	std::vector<double> snr_array(1, -1.8127);
+	simulate(10, snr_array, 30, 1, 1000);
 	return 0;
 }
