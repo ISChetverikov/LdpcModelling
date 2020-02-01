@@ -11,3 +11,6 @@
 /LDPC/LDPC.sln
 /LDPC/SimulateMatlab/simulate (2).m
 /LDPC/SimulateMatlab/simulate.m
+/LDPC_python/__pycache__
+/LDPC_python/.idea
+/LDPC_python/.ipynb_checkpoints
