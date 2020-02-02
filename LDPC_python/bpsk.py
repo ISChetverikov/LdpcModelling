@@ -4,5 +4,6 @@ import numpy as np
 class Bpsk:
     def modulate(self, codeword):
 
-        result = codeword[codeword == 0] = -2
+        result = np.array(codeword)
+        result[result == 0] = -1
         return result
