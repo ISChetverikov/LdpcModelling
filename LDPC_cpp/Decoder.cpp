@@ -83,7 +83,7 @@ void Decoder::HorizontalStep(vector<map<int, int>> alpha, vector<map<int, double
 	}
 }
 
-vector<int> Decoder::Decode(vector<double> llr) {
+vector<int> Decoder::Decode(vector<double> llr, bool * isFailed) {
 	
 	size_t n = llr.size();
 	if (n != _n)
@@ -115,15 +115,6 @@ vector<int> Decoder::Decode(vector<double> llr) {
 		}	
 	}
 
-	/*for (size_t i = 0; i < m; i++)
-	{
-		for (size_t j = 0; j < _values[i].size(); j++)
-		{
-			cout << _values[i][j] << " ";
-		}
-		cout << endl;
-	}*/
-
 	size_t iteration = 0;
 	while (true)
 	{
@@ -149,11 +140,15 @@ vector<int> Decoder::Decode(vector<double> llr) {
 			result[i] = (alpha0[i] == -1) ? 1 : 0;
 		}
 
-		if (_H * result == vector<int>(_m, 0))
+		if (_H * result == vector<int>(_m, 0)) {
+			*isFailed = false;
 			break;
+		}
 
-		if (iteration >= _iterationsCount)
+		if (iteration >= _iterationsCount) {
+			*isFailed = true;
 			break;
+		}	
 
 		// Vertical Step
 		for (size_t i = 0; i < n; i++)

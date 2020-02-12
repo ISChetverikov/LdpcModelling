@@ -23,5 +23,5 @@ private:
 	void HorizontalStep(vector<map<int, int>> alpha, vector<map<int, double>> beta, vector<map<int, double>> &gamma);
 public:
 	Decoder(vector<vector<int>> H, int iterationsCount);
-	vector<int> Decode(vector<double> llr);
+	vector<int> Decode(vector<double> llr, bool * isSuccess);
 };

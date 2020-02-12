@@ -19,12 +19,12 @@ std::vector<std::vector<int>> get_matrix() {
 }
 
 int main1() {
-
+	bool result;
 	auto H = get_matrix();
 	auto decoder = Decoder(H, 20);
 
-	auto codeword_llr = vector<double>({ -200.0, 200, -150, -160, -190, -160, -200.0, -198, -150, -160, -190, -160 });
-	auto decoded = decoder.Decode(codeword_llr);
+	auto codeword_llr = vector<double>({ 200.0, 200, 150, 160, -190, 160, 200.0, 198, 150, 160, 190, 160 });
+	auto decoded = decoder.Decode(codeword_llr, &result);
 
 	for (size_t i = 0; i < decoded.size(); i++)
 	{
