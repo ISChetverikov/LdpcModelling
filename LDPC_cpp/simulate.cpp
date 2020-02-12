@@ -3,8 +3,18 @@
 #include <random>
 #include <stdio.h>
 #include <math.h>
-
+#include <chrono>
+#include <iostream>
+#include <algorithm>
+#include <execution>
 #include "Decoder.h"
+
+using nano_s = std::chrono::nanoseconds;
+using micro_s = std::chrono::microseconds;
+using milli_s = std::chrono::milliseconds;
+using seconds = std::chrono::seconds;
+using minutes = std::chrono::minutes;
+using hours = std::chrono::hours;
 
 std::vector<std::vector<int>> read_ldpc_mat() {
 	//TODO: read H from ldpc_filename
@@ -19,7 +29,12 @@ std::vector<std::vector<int>> read_ldpc_mat() {
     return H;
 }
 
-void simulate(int maxTests, std::vector<double> snr_array, double rejection_count) {
+void simulate(int maxTests,
+	std::vector<double> snr_array,
+	double rejection_count,
+	std::vector<double>& fer_array,
+	std::vector<double>& sigma_array,
+	std::vector<int>& tests_count_array) {
 	
     std::vector<std::vector<int>> H = read_ldpc_mat();
 	Decoder decoder = Decoder(H, 20);
@@ -28,7 +43,6 @@ void simulate(int maxTests, std::vector<double> snr_array, double rejection_coun
 
 	std::random_device randomDevice;
 
-    std::vector<double> fer(snr_array.size(), 0);
 	std::vector<int> codeword(n, 0);
 	std::vector<double> llrs(n, 0);
 
@@ -53,14 +67,28 @@ void simulate(int maxTests, std::vector<double> snr_array, double rejection_coun
             wrong_dec += isFailed;
         }
 
-		fer[ii] = (double)wrong_dec / tests;
-		printf("sigma:%f,\tfer: %f,\ttests numbers: %d\n", sigma, fer[ii], tests);
+		sigma_array[ii] = sigma;
+		fer_array[ii] = (double)wrong_dec / tests;
+		tests_count_array[ii] = tests;	
     }
 }
 
 
 int main() {
-	std::vector<double> snr_array{ 1 };
-	simulate(1000, snr_array, 30);
+	std::vector<double> snr_array{ 3 };
+	std::vector<double> fer_array(snr_array.size(), 0);
+	std::vector<double> sigma_array(snr_array.size(), 0);
+	std::vector<int> tests_count_array(snr_array.size(), 0);
+
+	auto t1 = std::chrono::steady_clock::now();
+	simulate(10000, snr_array, 30, fer_array, sigma_array, tests_count_array);
+	auto t2 = std::chrono::steady_clock::now();
+
+	auto d_s = std::chrono::duration_cast<seconds>(t2 - t1).count();
+	for (size_t i = 0; i < snr_array.size(); i++) {
+		printf("sigma:%f,\tfer: %f,\ttests numbers: %d\n", sigma_array[i], fer_array[i], tests_count_array[i]);
+	}
+	
+	std::cout << d_s << std::endl;
 	return 0;
 }
