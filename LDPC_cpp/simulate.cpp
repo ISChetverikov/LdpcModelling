@@ -7,6 +7,8 @@
 #include <iostream>
 #include <algorithm>
 #include <execution>
+#include <fstream>
+#include <sstream>
 #include "Decoder.h"
 
 using nano_s = std::chrono::nanoseconds;
@@ -17,7 +19,6 @@ using minutes = std::chrono::minutes;
 using hours = std::chrono::hours;
 
 std::vector<std::vector<int>> read_ldpc_mat() {
-	//TODO: read H from ldpc_filename
     int K = 12, M = 6;
     std::vector<std::vector<int>> H(M, std::vector<int>(K, 0));
     H[0][0] = H[0][1] = H[0][2] = H[0][5] = H[0][6] = H[0][10] = 1;
@@ -29,6 +30,34 @@ std::vector<std::vector<int>> read_ldpc_mat() {
     return H;
 }
 
+std::vector<std::vector<int>> readSparseMatrix(std::string filename) {
+	vector<vector<int>> matrix;
+	std::string line;
+	std::ifstream myFile(filename);
+	int val;
+
+	while (std::getline(myFile, line))
+	{
+		std::stringstream ss(line);
+
+		vector<int> temp;
+		int columnIndex = 0;
+		while (ss >> val) {
+			columnIndex++;
+			if (val)
+				temp.push_back(columnIndex);
+
+			if (ss.peek() == ',')
+				ss.ignore();
+		}
+
+		matrix.push_back(temp);
+	}
+
+	std::cout << matrix.size() << std::endl;
+	return matrix;
+}
+
 void simulate(int maxTests,
 	std::vector<double> snr_array,
 	double rejection_count,
@@ -36,7 +65,16 @@ void simulate(int maxTests,
 	std::vector<double>& sigma_array,
 	std::vector<int>& tests_count_array) {
 	
-    std::vector<std::vector<int>> H = read_ldpc_mat();
+    std::vector<std::vector<int>> H = readSparseMatrix("H2.csv");
+	for (size_t i = 0; i < H.size(); i++)
+	{
+		for (size_t j = 0; j < H[0].size(); j++)
+		{
+			std::cout << H[i][j] << ",";
+		}
+		std::cout << std::endl;
+	}
+
 	Decoder decoder = Decoder(H, 20);
 	int m = H.size(), n = H[0].size();
 	int k = n - m;

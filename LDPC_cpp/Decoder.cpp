@@ -30,7 +30,6 @@ Decoder::Decoder(vector<vector<int>> H, int iterationsCount) {
 			throw IncorrectMatrixDimensionsException("Check matrix has different column size in 0 and " + to_string(i) + " row");
 	}
 
-	_H = H;
 	_checks.resize(m, vector<int>());
 	_bits.resize(n, vector<int>());
 	for (size_t i = 0; i < m; i++)
