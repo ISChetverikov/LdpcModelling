@@ -6,7 +6,6 @@ class OnmsDecoder:
         self.c = multiplier
         self.a = offset
 
-        self.matrix = matrix
         m = matrix.shape[0]
         n = matrix.shape[1]
 
@@ -24,8 +23,8 @@ class OnmsDecoder:
         self.m = m
         self.n = n
 
-        self.checks = checks
-        self.bits = bits
+        self.checks = np.array(checks)
+        self.bits = np.array(bits)
 
         self.max_iteration = max_iteration
 
@@ -35,7 +34,7 @@ class OnmsDecoder:
         value = self.c * min(values) - self.a
         return value if value > 0 else -value
 
-    def __horizontal_step(self, alpha, beta, gamma):
+    def horizontal_step(self, alpha, beta, gamma):
         for j in range(self.m):
 
             for i in self.checks[j]:
@@ -80,10 +79,7 @@ class OnmsDecoder:
         while True:
             iterations += 1
 
-            self.__horizontal_step(alpha, beta, gamma)
-
-            result = np.zeros(n)
-            result[alpha0 == -1.0] = 1
+            self.horizontal_step(alpha, beta, gamma)
 
             bits_values = alpha0 * beta0
             for i in range(n):
@@ -96,7 +92,10 @@ class OnmsDecoder:
             result = np.zeros(n)
             result[alpha0 == -1.0] = 1
 
-            if not (self.matrix.dot(result) % 2).any():
+            for check in self.checks:
+                if result[check].sum() % 2 == 0:
+                    continue
+                    
                 is_success = True
                 break
 

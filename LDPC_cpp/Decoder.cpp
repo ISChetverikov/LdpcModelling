@@ -11,39 +11,35 @@
 
 using namespace std;
 // Constructor
-Decoder::Decoder(vector<vector<int>> H, int iterationsCount) {
+Decoder::Decoder(vector<vector<int>> H_row_sparse, int iterationsCount) {
 	
 	if ((_iterationsCount = iterationsCount) <= 0)
 		throw invalid_argument("Number of iterations is incorrect: " + to_string(_iterationsCount));
 
-	size_t m = H.size();
+	size_t m = H_row_sparse.size();
 	if (m <= 0)
 		throw IncorrectMatrixDimensionsException("Check matrix has incorrect row size");
-	size_t n = H[0].size();
+	
 
-	if (n <= 0)
-		throw IncorrectMatrixDimensionsException("Check matrix has incorrect column size");
+	_checks = H_row_sparse;
 
+	int n = 0;
 	for (size_t i = 0; i < m; i++)
 	{
-		if (n != H[0].size())
-			throw IncorrectMatrixDimensionsException("Check matrix has different column size in 0 and " + to_string(i) + " row");
+		int max = *max_element(H_row_sparse[i].begin(), H_row_sparse[i].end());
+		if (max > n)
+			n = max;
 	}
 
-	_checks.resize(m, vector<int>());
 	_bits.resize(n, vector<int>());
-	for (size_t i = 0; i < m; i++)
+	for (size_t j = 0; j < m; j++)
 	{
-		for (size_t j = 0; j < n; j++)
+		for (size_t i = 0; i < H_row_sparse[j].size(); i++)
 		{
-			if (H[i][j] == 0)
-				continue;
-
-			_checks[i].push_back(j);
-			_bits[j].push_back(i);
+			_bits[i].push_back(j);
 		}
 	}
-	
+		
 	_m = _checks.size();
 	_n = _bits.size();
 
