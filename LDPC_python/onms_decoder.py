@@ -34,7 +34,7 @@ class OnmsDecoder:
         value = self.c * min(values) - self.a
         return value if value > 0 else -value
 
-    def horizontal_step(self, alpha, beta, gamma):
+    def __horizontal_step(self, alpha, beta, gamma):
         for j in range(self.m):
 
             for i in self.checks[j]:
@@ -79,7 +79,7 @@ class OnmsDecoder:
         while True:
             iterations += 1
 
-            self.horizontal_step(alpha, beta, gamma)
+            self.__horizontal_step(alpha, beta, gamma)
 
             bits_values = alpha0 * beta0
             for i in range(n):
@@ -92,11 +92,13 @@ class OnmsDecoder:
             result = np.zeros(n)
             result[alpha0 == -1.0] = 1
 
+            is_success = True
             for check in self.checks:
-                if result[check].sum() % 2 == 0:
-                    continue
-                    
-                is_success = True
+                if result[check].sum() % 2 != 0:
+                    is_success = False
+                    break
+            
+            if is_success:
                 break
 
             if iterations >= self.max_iteration:
