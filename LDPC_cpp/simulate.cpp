@@ -61,7 +61,7 @@ std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename) {
 
 void simulate(int maxTests,
 	std::vector<double> snr_array,
-	double rejection_count,
+	int rejection_count,
 	std::vector<double>& fer_array,
 	std::vector<double>& sigma_array,
 	std::vector<int>& tests_count_array) {
@@ -76,7 +76,7 @@ void simulate(int maxTests,
 		std::cout << std::endl;
 	}*/
 
-	Decoder decoder = Decoder(H, 20);
+	Decoder * decoder = new Decoder(H, 20);
 	// size of sparse Matrix
 	int n = 0;
 	for (size_t i = 0; i < H.size(); i++)
@@ -108,7 +108,7 @@ void simulate(int maxTests,
 				llrs[i] = -2 * (2 * codeword[i] - 1 + distribution(randomDevice)) / (sigma * sigma);
             }
 			            
-			decoder.Decode(llrs, &isFailed);
+			decoder->Decode(llrs, &isFailed);
 			
             wrong_dec += isFailed;
         }
@@ -121,13 +121,13 @@ void simulate(int maxTests,
 
 
 int main() {
-	std::vector<double> snr_array{ 3 };
+	std::vector<double> snr_array{ 8 };
 	std::vector<double> fer_array(snr_array.size(), 0);
 	std::vector<double> sigma_array(snr_array.size(), 0);
 	std::vector<int> tests_count_array(snr_array.size(), 0);
 
 	auto t1 = std::chrono::steady_clock::now();
-	simulate(10000, snr_array, 30, fer_array, sigma_array, tests_count_array);
+	simulate(10, snr_array, 10, fer_array, sigma_array, tests_count_array);
 	auto t2 = std::chrono::steady_clock::now();
 
 	auto d_s = std::chrono::duration_cast<seconds>(t2 - t1).count();
@@ -135,6 +135,6 @@ int main() {
 		printf("sigma:%f,\tfer: %f,\ttests numbers: %d\n", sigma_array[i], fer_array[i], tests_count_array[i]);
 	}
 	
-	std::cout << d_s << std::endl;
+	std::cout << "Seconds: " << d_s << std::endl;
 	return 0;
 }
