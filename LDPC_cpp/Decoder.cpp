@@ -30,18 +30,29 @@ Decoder::Decoder(vector<vector<int>> H_row_sparse, int iterationsCount) {
 		if (max > n)
 			n = max;
 	}
+	n++;
 
 	_bits.resize(n, vector<int>());
 	for (size_t j = 0; j < m; j++)
 	{
-		for (size_t i = 0; i < H_row_sparse[j].size(); i++)
+		for (size_t i = 0; i < _checks[j].size(); i++)
 		{
-			_bits[i].push_back(j);
+			_bits[_checks[j][i]].push_back(j);
 		}
 	}
 		
 	_m = _checks.size();
 	_n = _bits.size();
+
+	/*for (size_t i = 0; i < n; i++)
+	{
+		cout << "-----------" << endl;
+		for (size_t j = 0; j < _bits[i].size(); j++)
+		{
+			cout << _bits[i][j] << " ";
+		}
+		cout << endl;
+	}*/
 
 	return;
 }
@@ -134,11 +145,28 @@ vector<int> Decoder::Decode(vector<double> llr, bool * isFailed) {
 		{
 			result[i] = (alpha0[i] == -1) ? 1 : 0;
 		}
-
-		if (_H * result == vector<int>(_m, 0)) {
+/*
+		if (H * result == vector<int>(_m, 0)) {
 			*isFailed = false;
 			break;
+		}*/
+
+		*isFailed = false;
+		for (size_t j = 0; j < _m; j++)
+		{
+			int sum = 0;
+			for (auto &i : _checks[j])
+			{
+				sum ^= result[i];
+			}
+			if ((bool)sum) {
+				*isFailed = true;
+				break;
+			}
 		}
+
+		if (!*isFailed)
+			break;
 
 		if (iteration >= _iterationsCount) {
 			*isFailed = true;

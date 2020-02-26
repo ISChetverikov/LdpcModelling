@@ -9,6 +9,7 @@
 #include <execution>
 #include <fstream>
 #include <sstream>
+
 #include "Decoder.h"
 
 using nano_s = std::chrono::nanoseconds;
@@ -30,7 +31,7 @@ std::vector<std::vector<int>> read_ldpc_mat() {
     return H;
 }
 
-std::vector<std::vector<int>> readSparseMatrix(std::string filename) {
+std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename) {
 	vector<vector<int>> matrix;
 	std::string line;
 	std::ifstream myFile(filename);
@@ -43,18 +44,18 @@ std::vector<std::vector<int>> readSparseMatrix(std::string filename) {
 		vector<int> temp;
 		int columnIndex = 0;
 		while (ss >> val) {
-			columnIndex++;
 			if (val)
 				temp.push_back(columnIndex);
 
 			if (ss.peek() == ',')
 				ss.ignore();
+
+			columnIndex++;
 		}
 
 		matrix.push_back(temp);
 	}
 
-	std::cout << matrix.size() << std::endl;
 	return matrix;
 }
 
@@ -65,19 +66,26 @@ void simulate(int maxTests,
 	std::vector<double>& sigma_array,
 	std::vector<int>& tests_count_array) {
 	
-    std::vector<std::vector<int>> H = readSparseMatrix("H2.csv");
-	for (size_t i = 0; i < H.size(); i++)
+    std::vector<std::vector<int>> H = readAsRowSparseMatrix("H_389.csv");
+	/*for (size_t i = 0; i < H.size(); i++)
 	{
-		for (size_t j = 0; j < H[0].size(); j++)
+		for (size_t j = 0; j < H[i].size(); j++)
 		{
 			std::cout << H[i][j] << ",";
 		}
 		std::cout << std::endl;
-	}
+	}*/
 
 	Decoder decoder = Decoder(H, 20);
-	int m = H.size(), n = H[0].size();
-	int k = n - m;
+	// size of sparse Matrix
+	int n = 0;
+	for (size_t i = 0; i < H.size(); i++)
+	{
+		int max = *max_element(H[i].begin(), H[i].end());
+		if (max > n)
+			n = max;
+	}
+	n++;
 
 	std::random_device randomDevice;
 

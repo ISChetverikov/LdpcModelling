@@ -7,12 +7,11 @@ class Decoder {
 
 private:
 	// each check contain a vector of indices of value bits, which connected to the check
-	vector<vector<int>> _H;
 	vector<vector<int>> _checks;
 	vector<vector<int>> _bits;
 	
 	const double MinSumNorm = 0.72;
-	const double MinSumOffset = 0.5;
+	const double MinSumOffset = 0.0;
 
 	size_t _m = 0;
 	size_t _n = 0;
