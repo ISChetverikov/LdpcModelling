@@ -106,6 +106,7 @@ void simulate(int maxTests,
             
             for (int i = 0; i < n; i++) {
 				llrs[i] = -2 * (2 * codeword[i] - 1 + distribution(randomDevice)) / (sigma * sigma);
+				cout << llrs[i] << "|";
             }
 			            
 			decoder->Decode(llrs, &isFailed);
@@ -121,7 +122,7 @@ void simulate(int maxTests,
 
 
 int main() {
-	std::vector<double> snr_array{ 8 };
+	std::vector<double> snr_array{ -4 };
 	std::vector<double> fer_array(snr_array.size(), 0);
 	std::vector<double> sigma_array(snr_array.size(), 0);
 	std::vector<int> tests_count_array(snr_array.size(), 0);
@@ -132,7 +133,7 @@ int main() {
 
 	auto d_s = std::chrono::duration_cast<seconds>(t2 - t1).count();
 	for (size_t i = 0; i < snr_array.size(); i++) {
-		printf("sigma:%f,\tfer: %f,\ttests numbers: %d\n", sigma_array[i], fer_array[i], tests_count_array[i]);
+		printf("\nsigma:%f,\tfer: %f,\ttests numbers: %d\n", sigma_array[i], fer_array[i], tests_count_array[i]);
 	}
 	
 	std::cout << "Seconds: " << d_s << std::endl;
