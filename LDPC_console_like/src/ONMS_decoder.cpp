@@ -5,10 +5,10 @@
 #include <iostream>
 #include <algorithm>
 
-#include "../include/Decoder.h"
+#include "../include/ONMS_decoder.h"
 
 // Constructor
-Decoder::Decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount) {
+ONMS_decoder::ONMS_decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount) {
 	
 	if ((_iterationsCount = iterationsCount) <= 0)
 		throw std::invalid_argument("Number of iterations is incorrect: " + std::to_string(_iterationsCount));
@@ -54,16 +54,12 @@ Decoder::Decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount
 	return;
 }
 
-int sign(double x) {
-	return (x < 0) ? -1 : 1;
-}
-
-double Decoder::MinSumFunction(std::vector<double> values) {
+double ONMS_decoder::MinSumFunction(std::vector<double> values) {
 	double value = MinSumNorm * *min_element(values.begin(), values.end()) - MinSumOffset;
 	return  value > 0 ? value : 0;
 }
 
-void Decoder::HorizontalStep(std::vector<std::map<int, int>> alpha,
+void ONMS_decoder::HorizontalStep(std::vector<std::map<int, int>> alpha,
                              std::vector<std::map<int, double>> beta,
 							 std::vector<std::map<int, double>> &gamma) {
 	for (size_t j = 0; j < _m; j++)
@@ -88,7 +84,7 @@ void Decoder::HorizontalStep(std::vector<std::map<int, int>> alpha,
 	}
 }
 
-std::vector<int> Decoder::Decode(std::vector<double> llr, bool * isFailed) {
+std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) {
 	
 	size_t n = llr.size();
 	if (n != _n)

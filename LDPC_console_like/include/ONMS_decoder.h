@@ -6,7 +6,7 @@
 #include "../include/Exceptions.h"
 #include "../include/MathOperations.h"
 
-class Decoder {
+class ONMS_decoder {
 
 private:
 	// each check contain a vector of indices of value bits, which connected to the check
@@ -26,6 +26,6 @@ private:
 	                    std::vector<std::map<int, double>> beta,
 						std::vector<std::map<int, double>> &gamma);
 public:
-	Decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount);
+	ONMS_decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount);
 	std::vector<int> Decode(std::vector<double> llr, bool * isFailed);
 };

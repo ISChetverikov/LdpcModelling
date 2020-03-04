@@ -10,7 +10,9 @@
 #include <fstream>
 #include <sstream>
 
-#include "../include/Decoder.h"
+#include "../include/ONMS_decoder.h"
+#include "../include/BF_decoder.h"
+#include "../include/SP_decoder.h"
 
 using nano_s = std::chrono::nanoseconds;
 using micro_s = std::chrono::microseconds;
@@ -19,17 +21,6 @@ using seconds = std::chrono::seconds;
 using minutes = std::chrono::minutes;
 using hours = std::chrono::hours;
 
-std::vector<std::vector<int>> read_ldpc_mat() {
-    int K = 12, M = 6;
-    std::vector<std::vector<int>> H(M, std::vector<int>(K, 0));
-    H[0][0] = H[0][1] = H[0][2] = H[0][5] = H[0][6] = H[0][10] = 1;
-    H[1][0] = H[1][1] = H[1][2] = H[1][3] = H[1][4] = H[1][11] = 1;
-    H[2][5] = H[2][6] = H[2][7] = H[2][9] = H[2][10] = H[2][11] = 1;
-    H[3][0] = H[3][3] = H[3][7] = H[3][8] = H[3][9] = H[3][11] = 1;
-    H[4][1] = H[4][3] = H[4][4] = H[4][6] = H[4][7] = H[4][8] = 1;
-    H[5][2] = H[5][4] = H[5][5] = H[5][8] = H[5][9] = H[5][10] = 1;
-    return H;
-}
 
 std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename) {
 	std::vector<std::vector<int>> matrix;
@@ -60,6 +51,7 @@ std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename) {
 	return matrix;
 }
 
+
 void simulate(int maxTests,
 	std::vector<double> snr_array,
 	int rejection_count,
@@ -77,7 +69,7 @@ void simulate(int maxTests,
 		std::cout << std::endl;
 	}*/
 
-	Decoder * decoder = new Decoder(H, 20);
+	ONMS_decoder * decoder = new ONMS_decoder(H, 20);
 	// size of sparse Matrix
 	int n = 0;
 	for (size_t i = 0; i < H.size(); i++)
