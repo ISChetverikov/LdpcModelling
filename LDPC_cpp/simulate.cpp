@@ -106,7 +106,7 @@ void simulate(int maxTests,
             
             for (int i = 0; i < n; i++) {
 				llrs[i] = -2 * (2 * codeword[i] - 1 + distribution(randomDevice)) / (sigma * sigma);
-				cout << llrs[i] << "|";
+				// cout << llrs[i] << "|";
             }
 			            
 			decoder->Decode(llrs, &isFailed);
