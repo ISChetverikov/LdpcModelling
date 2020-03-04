@@ -35,3 +35,7 @@ std::vector<int> operator * (const std::vector<std::vector<int>> &A, const std::
 
 	return result;
 }
+
+int sign(double x) {
+	return (x < 0) ? -1 : 1;
+}
