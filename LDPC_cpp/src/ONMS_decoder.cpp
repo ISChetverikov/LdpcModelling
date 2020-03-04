@@ -1,7 +1,3 @@
-#include "Decoder.h"
-#include "Exceptions.h"
-#include "MathOperations.h"
-
 #include <vector>
 #include <map>
 #include <cmath>
@@ -9,12 +5,14 @@
 #include <iostream>
 #include <algorithm>
 
-using namespace std;
+#include "../include/ONMS_decoder.h"
+#include "../include/Exceptions.h"
+
 // Constructor
-Decoder::Decoder(vector<vector<int>> H_row_sparse, int iterationsCount) {
+ONMS_decoder::ONMS_decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount) {
 	
 	if ((_iterationsCount = iterationsCount) <= 0)
-		throw invalid_argument("Number of iterations is incorrect: " + to_string(_iterationsCount));
+		throw std::invalid_argument("Number of iterations is incorrect: " + std::to_string(_iterationsCount));
 
 	size_t m = H_row_sparse.size();
 	if (m <= 0)
@@ -32,7 +30,7 @@ Decoder::Decoder(vector<vector<int>> H_row_sparse, int iterationsCount) {
 	}
 	n++;
 
-	_bits.resize(n, vector<int>());
+	_bits.resize(n, std::vector<int>());
 	for (size_t j = 0; j < m; j++)
 	{
 		for (size_t i = 0; i < _checks[j].size(); i++)
@@ -57,22 +55,20 @@ Decoder::Decoder(vector<vector<int>> H_row_sparse, int iterationsCount) {
 	return;
 }
 
-int sign(double x) {
-	return (x < 0) ? -1 : 1;
-}
-
-double Decoder::MinSumFucntion(vector<double> vector) {
-	double value = MinSumNorm * *min_element(vector.begin(), vector.end()) - MinSumOffset;
+double ONMS_decoder::MinSumFunction(std::vector<double> values) {
+	double value = MinSumNorm * *min_element(values.begin(), values.end()) - MinSumOffset;
 	return  value > 0 ? value : 0;
 }
 
-void Decoder::HorizontalStep(vector<map<int, int>> alpha, vector<map<int, double>> beta, vector<map<int, double>> &gamma) {
+void ONMS_decoder::HorizontalStep(std::vector<std::map<int, int>> alpha,
+                             std::vector<std::map<int, double>> beta,
+							 std::vector<std::map<int, double>> &gamma) {
 	for (size_t j = 0; j < _m; j++)
 	{
 		for (auto &i : _checks[j])
 		{
 			int sign = 1; // May be with count of sign it will be faster?
-			vector<double> values;
+			std::vector<double> values;
 
 			// TODO: Here we can get rid of redundant cycle ?
 			for (auto &k : _checks[j])
@@ -84,22 +80,22 @@ void Decoder::HorizontalStep(vector<map<int, int>> alpha, vector<map<int, double
 				values.push_back(beta[j][k]);
 			}
 
-			gamma[j][i] = sign * MinSumFucntion(values);
+			gamma[j][i] = sign * MinSumFunction(values);
 		}
 	}
 }
 
-vector<int> Decoder::Decode(vector<double> llr, bool * isFailed) {
+std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) {
 	
 	size_t n = llr.size();
 	if (n != _n)
 		throw IncorrectCodewordException("The codeword is not from a code with given check matrix");
 
-	vector<int> result(n);
+	std::vector<int> result(n);
 
-	vector<int> alpha0(n);
-	vector<double> beta0(n);
-	vector<double> bits_values(n);
+	std::vector<int> alpha0(n);
+	std::vector<double> beta0(n);
+	std::vector<double> bits_values(n);
 
 	for (size_t i = 0; i < n; i++)
 	{
@@ -107,9 +103,9 @@ vector<int> Decoder::Decode(vector<double> llr, bool * isFailed) {
 		beta0[i] = abs(llr[i]);
 	}
 
-	vector<map<int, int>> alpha(_m, map<int, int>());
-	vector<map<int, double>> beta(_m, map<int, double>());
-	vector<map<int, double>> gamma(_m, map<int, double>());
+	std::vector<std::map<int, int>> alpha(_m, std::map<int, int>());
+	std::vector<std::map<int, double>> beta(_m, std::map<int, double>());
+	std::vector<std::map<int, double>> gamma(_m, std::map<int, double>());
 
 	// Init
 	for (size_t j = 0; j < _m; j++)
