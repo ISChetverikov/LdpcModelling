@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LDPC", "LDPC.vcxproj", "{C0D3982C-4E1F-4E1E-A7B9-0E954AD557D8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Decoders_tests", "..\LDPC_tests\Decoders_tests\Decoders_tests.vcxproj", "{C4C8F7CA-21FB-4608-8C9F-525FEE34D32A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{C0D3982C-4E1F-4E1E-A7B9-0E954AD557D8}.Release|x64.Build.0 = Release|x64
 		{C0D3982C-4E1F-4E1E-A7B9-0E954AD557D8}.Release|x86.ActiveCfg = Release|Win32
 		{C0D3982C-4E1F-4E1E-A7B9-0E954AD557D8}.Release|x86.Build.0 = Release|Win32
+		{C4C8F7CA-21FB-4608-8C9F-525FEE34D32A}.Debug|x64.ActiveCfg = Debug|x64
+		{C4C8F7CA-21FB-4608-8C9F-525FEE34D32A}.Debug|x64.Build.0 = Debug|x64
+		{C4C8F7CA-21FB-4608-8C9F-525FEE34D32A}.Debug|x86.ActiveCfg = Debug|Win32
+		{C4C8F7CA-21FB-4608-8C9F-525FEE34D32A}.Debug|x86.Build.0 = Debug|Win32
+		{C4C8F7CA-21FB-4608-8C9F-525FEE34D32A}.Release|x64.ActiveCfg = Release|x64
+		{C4C8F7CA-21FB-4608-8C9F-525FEE34D32A}.Release|x64.Build.0 = Release|x64
+		{C4C8F7CA-21FB-4608-8C9F-525FEE34D32A}.Release|x86.ActiveCfg = Release|Win32
+		{C4C8F7CA-21FB-4608-8C9F-525FEE34D32A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

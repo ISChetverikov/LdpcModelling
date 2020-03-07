@@ -5,6 +5,7 @@
 #include <iostream>
 #include <algorithm>
 
+#include "../include/Exceptions.h"
 #include "../include/BF_decoder.h"
 
 
@@ -53,9 +54,9 @@ std::vector<int> BF_decoder::Decode(std::vector<int> llr, int max_iter){
 
     std::vector<int> result(n);
     result = llr;
-    for(int i=0; i<n; i++){
+    for(size_t i=0; i < n; i++){
         if(llr[i] == 0) continue;
-        for(int j=0; j<_bits[i].size(); j++){
+        for(size_t j=0; j<_bits[i].size(); j++){
             _checks[_bits[i][j]] = (_checks[_bits[i][j]] + 1) % 2;
         }
     }
@@ -65,14 +66,14 @@ std::vector<int> BF_decoder::Decode(std::vector<int> llr, int max_iter){
     int full_cycle_flg = 1;
     while(iter_num<max_iter and full_cycle_flg==1){
         full_cycle_flg=0;
-        for(int i=0; i<n; i++){
+        for(size_t i=0; i<n; i++){
             iter_num++;
             sum_incorect = 0;
-            for(int j=0; j<_bits[i].size(); j++)
+            for(size_t j=0; j<_bits[i].size(); j++)
                 sum_incorect+= _checks[_bits[i][j]];
                 if (sum_incorect > int(_bits[i].size()/2)){
                     result[i] = (result[i] + 1) % 2;
-                 for(int k=0; k<_bits[i].size(); k++)
+                 for(size_t k=0; k<_bits[i].size(); k++)
                      _checks[_bits[i][k]] = (_checks[_bits[i][k]] + 1) % 2;
                     full_cycle_flg = 1;
                 }

@@ -7,10 +7,10 @@
 
 #include "../include/SP_decoder.h"
 
-static float phi(float x)
+static double phi(double x)
 {
-	static const float lim = 31.;
-	static const float inv_lim = 
+	static const double lim = 31.;
+	static const double inv_lim = 
 		log( (exp((double)lim) + 1)/(exp((double)lim) - 1) );
 	
 	if (x > lim)
@@ -37,7 +37,7 @@ SP_decoder::SP_decoder(std::vector<std::vector<int>> H, int iterationsCount) {
 	//	throw IncorrectMatrixDimensionsException("Check matrix has incorrect row size");
 	//size_t n = H[0].size();
 	_checks = H;
-	size_t n = 0;
+	int n = 0;
 	for (size_t i = 0; i < m; i++)
 	{
 		int max = *max_element(H[i].begin(), H[i].end());

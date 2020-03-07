@@ -3,29 +3,21 @@
 #include <vector>
 #include <map>
 
-#include "../include/Exceptions.h"
+#include "Base_decoder.h"
 #include "../include/MathOperations.h"
 
-class ONMS_decoder {
+class ONMS_decoder : Base_decoder {
 
 private:
-	// each check contain a vector of indices of value bits, which connected to the check
-	std::vector<std::vector<int>> _checks;
-	std::vector<std::vector<int>> _bits;
-	
 	const double MinSumNorm = 1;// 0.72;
 	const double MinSumOffset = 0.0;
-
-	size_t _m = 0;
-	size_t _n = 0;
-
-	size_t _iterationsCount = 0;
 
 	double MinSumFunction(std::vector<double> values);
 	void HorizontalStep(std::vector<std::map<int, int>> alpha,
 	                    std::vector<std::map<int, double>> beta,
 						std::vector<std::map<int, double>> &gamma);
 public:
-	ONMS_decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount);
-	std::vector<int> Decode(std::vector<double> llr, bool * isFailed);
+	ONMS_decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount) 
+		: Base_decoder(H_row_sparse, iterationsCount) {};
+	std::vector<int> Decode(std::vector<double> llr, bool * isFailed) override;
 };

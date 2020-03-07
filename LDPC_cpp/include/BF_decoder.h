@@ -2,8 +2,6 @@
 
 #include <vector>
 
-#include "../include/Exceptions.h"
-
 class BF_decoder {
 
 private:
