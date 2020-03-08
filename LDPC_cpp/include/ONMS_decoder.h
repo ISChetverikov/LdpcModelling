@@ -9,7 +9,7 @@
 class ONMS_decoder : Base_decoder {
 
 private:
-	const double MinSumNorm = 1;// 0.72;
+	const double MinSumNorm = 0.72;
 	const double MinSumOffset = 0.0;
 
 	double MinSumFunction(std::vector<double> values);
