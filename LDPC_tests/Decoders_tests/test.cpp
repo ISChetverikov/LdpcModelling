@@ -10,14 +10,16 @@ class OnmsDecoder_SmallMatrix : public ::testing::Test
 protected:
 	void SetUp()
 	{
-		M = 6, N = 12;
+		/*M = 6, N = 12;
 		std::vector<std::vector<int>> H(M);
 		H[0] = { 0,1,2,5,6,10 };
 		H[1] = { 0,1,2,3,4,11 };
 		H[2] = { 5,6,7,9,10,11 };
 		H[3] = { 0,3,7,8,9,11 };
 		H[4] = { 1,3,4,6,7,8 };
-		H[5] = { 2,4,5,8,9,10 };
+		H[5] = { 2,4,5,8,9,10 };*/
+
+		std::vector<std::vector<int>> H = readAsRowSparseMatrix("../../Matrices/FromMatlabScript/h4.csv", &M, &N);
 
 		ones_vector = std::vector<int>(N, 1);
 		zeros_vector = std::vector<int>(N, 0);
@@ -42,6 +44,7 @@ protected:
 	
 	size_t N = 0;
 	size_t M = 0;
+	size_t K = 0;
 	SP_decoder* decoder;
 	std::vector<int> ones_vector;
 	std::vector<int> zeros_vector;
@@ -69,13 +72,13 @@ TEST_F(OnmsDecoder_SmallMatrix, ZerosVectorWithOneError) {
 
 	bool isFailed = false;
 
-	/*for (size_t i = 0; i < N; i++)
-	{*/
+	for (size_t i = 0; i < N; i++)
+	{
 		auto codeword_llr = std::vector<double>(N, 20);
-		codeword_llr[10] = -10;
+		codeword_llr[10] = -20;
 		auto result = decoder->Decode(codeword_llr, &isFailed);
 
 		ASSERT_EQ(result, zeros_vector);
-	//}
+	}
 	
 }
