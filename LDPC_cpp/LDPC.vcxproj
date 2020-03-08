@@ -23,10 +23,14 @@
     <ClInclude Include="include\BF_decoder.h" />
     <ClInclude Include="include\Exceptions.h" />
     <ClInclude Include="include\MathOperations.h" />
+    <ClInclude Include="include\MatrixReading.h" />
+    <ClInclude Include="include\ONMS2_decoder.h" />
     <ClInclude Include="include\ONMS_decoder.h" />
     <ClInclude Include="include\SP_decoder.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ONMS2_decoder.cpp" />
+    <ClCompile Include="src\MatrixReading.cpp" />
     <ClCompile Include="src\Base_decoder.cpp" />
     <ClCompile Include="src\BF_decoder.cpp" />
     <ClCompile Include="src\MathOperations.cpp" />

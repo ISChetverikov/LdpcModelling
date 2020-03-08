@@ -91,7 +91,7 @@ void SP_decoder::HorizontalStep(std::vector<std::map<int, int>> alpha,
 				values += phi(beta[j][k]);
 			}
 
-			gamma[j][i] =sign * phi(values);
+			gamma[j][i] = sign * phi(values);
 		}
 	}
 }

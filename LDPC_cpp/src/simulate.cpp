@@ -6,13 +6,11 @@
 #include <chrono>
 #include <iostream>
 #include <algorithm>
-#include <execution>
-#include <fstream>
-#include <sstream>
 
 #include "../include/ONMS_decoder.h"
 #include "../include/BF_decoder.h"
 #include "../include/SP_decoder.h"
+#include "../include/MatrixReading.h"
 
 using nano_s = std::chrono::nanoseconds;
 using micro_s = std::chrono::microseconds;
@@ -21,37 +19,6 @@ using seconds = std::chrono::seconds;
 using minutes = std::chrono::minutes;
 using hours = std::chrono::hours;
 
-
-std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename) {
-	std::vector<std::vector<int>> matrix;
-	std::string line;
-	std::ifstream myFile(filename);
-	
-	int val;
-
-	while (std::getline(myFile, line))
-	{
-		std::stringstream ss(line);
-
-		std::vector<int> temp;
-		int columnIndex = 0;
-		while (ss >> val) {
-			if (val)
-				temp.push_back(columnIndex);
-
-			if (ss.peek() == ',')
-				ss.ignore();
-
-			columnIndex++;
-		}
-
-		matrix.push_back(temp);
-	}
-
-	return matrix;
-}
-
-
 void simulate(int maxTests,
 	std::vector<double> snr_array,
 	int rejection_count,
@@ -59,26 +26,12 @@ void simulate(int maxTests,
 	std::vector<double>& sigma_array,
 	std::vector<int>& tests_count_array) {
 	
-    std::vector<std::vector<int>> H = readAsRowSparseMatrix("./data/H_389.csv");
-	/*for (size_t i = 0; i < H.size(); i++)
-	{
-		for (size_t j = 0; j < H[i].size(); j++)
-		{
-			std::cout << H[i][j] << ",";
-		}
-		std::cout << std::endl;
-	}*/
-
+	size_t n = 0;
+	size_t m = 0;
+    std::vector<std::vector<int>> H = readAsRowSparseMatrix("./data/H_389.csv", &m, &n);
+	
 	ONMS_decoder * decoder = new ONMS_decoder(H, 20);
-	// size of sparse Matrix
-	int n = 0;
-	for (size_t i = 0; i < H.size(); i++)
-	{
-		int max = *max_element(H[i].begin(), H[i].end());
-		if (max > n)
-			n = max;
-	}
-	n++;
+	
 
 	std::random_device randomDevice;
 
@@ -97,7 +50,7 @@ void simulate(int maxTests,
         while ((tests < maxTests) && (wrong_dec < rejection_count)) {
             tests = ++tests;
             
-            for (int i = 0; i < n; i++) {
+            for (size_t i = 0; i < n; i++) {
 				llrs[i] = -2 * (2 * codeword[i] - 1 + distribution(randomDevice)) / (sigma * sigma);
 				//std::cout << llrs[i] << "|";
             }

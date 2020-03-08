@@ -5,18 +5,18 @@
 #include <iostream>
 #include <algorithm>
 
-#include "../include/ONMS_decoder.h"
+#include "../include/ONMS2_decoder.h"
 #include "../include/MathOperations.h"
 #include "../include/Exceptions.h"
 
-double ONMS_decoder::MinSumFunction(std::vector<double> values) {
+double ONMS2_decoder::MinSumFunction(std::vector<double> values) {
 	double value = MinSumNorm * *min_element(values.begin(), values.end()) - MinSumOffset;
 	return  value > 0 ? value : 0;
 }
 
-void ONMS_decoder::HorizontalStep(std::vector<std::map<int, int>> alpha,
-                             std::vector<std::map<int, double>> beta,
-							 std::vector<std::map<int, double>> &gamma) {
+void ONMS2_decoder::HorizontalStep(std::vector<std::map<int, int>> alpha,
+	std::vector<std::map<int, double>> beta,
+	std::vector<std::map<int, double>> &gamma) {
 	for (size_t j = 0; j < _m; j++)
 	{
 		for (auto &i : _checks[j])
@@ -39,8 +39,8 @@ void ONMS_decoder::HorizontalStep(std::vector<std::map<int, int>> alpha,
 	}
 }
 
-std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) {
-	
+std::vector<int> ONMS2_decoder::Decode(std::vector<double> llr, bool * isFailed) {
+
 	size_t n = llr.size();
 	if (n != _n)
 		throw IncorrectCodewordException("The codeword is not from a code with given check matrix");
@@ -68,7 +68,7 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 		{
 			alpha[j][i] = sign(llr[i]);
 			beta[j][i] = abs(llr[i]);
-		}	
+		}
 	}
 
 	size_t iteration = 0;
@@ -90,16 +90,16 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 			alpha0[i] = sign(bits_values[i]);
 			beta0[i] = abs(bits_values[i]);
 		}
-		
+
 		for (size_t i = 0; i < n; i++)
 		{
 			result[i] = (alpha0[i] == -1) ? 1 : 0;
 		}
-/*
-		if (H * result == vector<int>(_m, 0)) {
-			*isFailed = false;
-			break;
-		}*/
+		/*
+				if (H * result == vector<int>(_m, 0)) {
+					*isFailed = false;
+					break;
+				}*/
 
 		*isFailed = false;
 		for (size_t j = 0; j < _m; j++)
@@ -121,7 +121,7 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 		if (iteration >= _iterationsCount) {
 			*isFailed = true;
 			break;
-		}	
+		}
 
 		// Vertical Step
 		for (size_t i = 0; i < n; i++)
