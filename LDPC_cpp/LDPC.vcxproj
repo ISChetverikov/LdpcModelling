@@ -18,6 +18,26 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Base_decoder.h" />
+    <ClInclude Include="include\BF_decoder.h" />
+    <ClInclude Include="include\Exceptions.h" />
+    <ClInclude Include="include\MathOperations.h" />
+    <ClInclude Include="include\MatrixReading.h" />
+    <ClInclude Include="include\ONMS2_decoder.h" />
+    <ClInclude Include="include\ONMS_decoder.h" />
+    <ClInclude Include="include\SP_decoder.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\ONMS2_decoder.cpp" />
+    <ClCompile Include="src\MatrixReading.cpp" />
+    <ClCompile Include="src\Base_decoder.cpp" />
+    <ClCompile Include="src\BF_decoder.cpp" />
+    <ClCompile Include="src\MathOperations.cpp" />
+    <ClCompile Include="src\ONMS_decoder.cpp" />
+    <ClCompile Include="src\simulate.cpp" />
+    <ClCompile Include="src\SP_decoder.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{C0D3982C-4E1F-4E1E-A7B9-0E954AD557D8}</ProjectGuid>
@@ -26,7 +46,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -69,7 +89,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -81,6 +103,9 @@
     <Link>
       <SubSystem>Console</SubSystem>
     </Link>
+    <PostBuildEvent>
+      <Command>lib /NOLOGO /OUT:"$(TargetPath).lib" "$(ProjectDir)\$(Configuration)\*.obj</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -118,21 +143,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Decoder.cpp" />
-    <ClCompile Include="Decoder.h" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="MathOperations.cpp" />
-    <ClCompile Include="simulate.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Exceptions.h" />
-    <ClInclude Include="MathOperations.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="SimulateMatlab\simulate (2).m" />
-    <None Include="SimulateMatlab\simulate.m" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
