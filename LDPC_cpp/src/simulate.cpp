@@ -6,6 +6,7 @@
 #include <chrono>
 #include <iostream>
 #include <algorithm>
+#include <fstream>
 
 #include "../include/ONMS_decoder.h"
 #include "../include/BF_decoder.h"
@@ -77,8 +78,11 @@ int main() {
 	auto t2 = std::chrono::steady_clock::now();
 
 	auto d_s = std::chrono::duration_cast<seconds>(t2 - t1).count();
+	std::ofstream output_file;
+	output_file.open("sim_res.txt", std::fstream::out);
 	for (size_t i = 0; i < snr_array.size(); i++) {
 		printf("\nsigma:%f,\tfer: %f,\ttests numbers: %d\n", sigma_array[i], fer_array[i], tests_count_array[i]);
+		output_file << snr_array[i] << ' ' << fer_array[i] << '\n';
 	}
 	
 	std::cout << "Seconds: " << d_s << std::endl;
