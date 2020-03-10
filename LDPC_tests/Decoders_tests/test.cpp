@@ -82,3 +82,18 @@ TEST_F(OnmsDecoder_SmallMatrix, ZerosVectorWithOneError) {
 	}
 	
 }
+
+TEST_F(OnmsDecoder_SmallMatrix, OnesVectorWithOneError) {
+
+	bool isFailed = false;
+
+	for (size_t i = 0; i < N; i++)
+	{
+		auto codeword_llr = std::vector<double>(N, -20);
+		codeword_llr[10] = 20;
+		auto result = decoder->Decode(codeword_llr, &isFailed);
+
+		ASSERT_EQ(result, ones_vector);
+	}
+
+}
