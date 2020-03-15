@@ -29,10 +29,8 @@ void simulate(int maxTests,
 	
 	size_t n = 0;
 	size_t m = 0;
-    std::vector<std::vector<int>> H = readAsRowSparseMatrix("./data/H_389.csv", &m, &n);
-	
+    std::vector<std::vector<int>> H = readAsRowSparseMatrix("../Matrices/H_389_485.csv", &m, &n);
 	ONMS_decoder * decoder = new ONMS_decoder(H, 20);
-	
 
 	std::random_device randomDevice;
 
