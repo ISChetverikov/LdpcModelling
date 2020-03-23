@@ -1,5 +1,6 @@
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <cmath>
 #include <string>
 #include <iostream>
@@ -9,35 +10,7 @@
 #include "../include/MathOperations.h"
 #include "../include/Exceptions.h"
 
-double ONMS_decoder::MinSumFunction(std::vector<double> values) {
-	double value = MinSumNorm * *min_element(values.begin(), values.end()) - MinSumOffset;
-	return  value > 0 ? value : 0;
-}
-
-void ONMS_decoder::HorizontalStep(std::vector<std::map<int, int>> alpha,
-                             std::vector<std::map<int, double>> beta,
-							 std::vector<std::map<int, double>> &gamma) {
-	for (size_t j = 0; j < _m; j++)
-	{
-		for (auto &i : _checks[j])
-		{
-			int sign = 1; // May be with count of sign it will be faster?
-			std::vector<double> values;
-
-			// TODO: Here we can get rid of redundant cycle ?
-			for (auto &k : _checks[j])
-			{
-				if (k == i)
-					continue;
-
-				sign *= alpha[j][k];
-				values.push_back(beta[j][k]);
-			}
-
-			gamma[j][i] = sign * MinSumFunction(values);
-		}
-	}
-}
+#define DBL_MAX 1.7976931348623158e+308 
 
 std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) {
 	
@@ -46,19 +19,9 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 		throw IncorrectCodewordException("The codeword is not from a code with given check matrix");
 
 	std::vector<int> result(n);
-
-	std::vector<int> alpha0(n);
-	std::vector<double> beta0(n);
 	std::vector<double> bits_values(n);
-
-	for (size_t i = 0; i < n; i++)
-	{
-		alpha0[i] = sign(llr[i]);
-		beta0[i] = abs(llr[i]);
-	}
-
-	std::vector<std::map<int, int>> alpha(_m, std::map<int, int>());
-	std::vector<std::map<int, double>> beta(_m, std::map<int, double>());
+	
+	std::vector<std::map<int, double>> alpha_beta(_m, std::map<int, double>());
 	std::vector<std::map<int, double>> gamma(_m, std::map<int, double>());
 
 	// Init
@@ -66,8 +29,7 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 	{
 		for (auto &i : _checks[j])
 		{
-			alpha[j][i] = sign(llr[i]);
-			beta[j][i] = abs(llr[i]);
+			alpha_beta[j][i] = llr[i];
 		}	
 	}
 
@@ -75,7 +37,58 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 	while (true)
 	{
 		iteration++;
-		HorizontalStep(alpha, beta, gamma);
+
+		// Horizontal step
+		for (size_t j = 0; j < _m; j++)
+		{
+			double first_min = DBL_MAX;
+			double second_min = DBL_MAX;
+			int min_index = 0;
+			int sum_sign = 0;
+
+			for (auto &i : _checks[j])
+			{
+				double abs_value = abs(alpha_beta[j][i]);
+				if (abs_value < first_min)
+				{
+					second_min = first_min;
+					first_min = abs_value;
+					min_index = i;
+				}
+				else if (abs_value < second_min)
+				{
+					second_min = abs_value;
+				}
+
+				if (alpha_beta[j][i] < 0)
+				{
+					sum_sign ^= 1;
+				}
+			}
+
+			for (auto &i : _checks[j])
+			{
+				int sign = sum_sign;
+				double abs_values = 0;
+
+				if (alpha_beta[j][i] < 0)
+				{
+					sign ^= 1;
+				}
+				if (i == min_index)
+				{
+					abs_values = second_min;
+				}
+				else
+				{
+					abs_values = first_min;
+				}
+
+				double offseted_value = abs_values - MinSumOffset;
+				offseted_value = offseted_value > 0 ? offseted_value : 0;
+				gamma[j][i] = (1 - 2 * sign) * MinSumNorm * offseted_value;
+			}
+		}
 
 		// Result of iteration
 		for (size_t i = 0; i < n; i++)
@@ -86,20 +99,12 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 			{
 				bits_values[i] += gamma[j][i];
 			}
-
-			alpha0[i] = sign(bits_values[i]);
-			beta0[i] = abs(bits_values[i]);
 		}
 		
 		for (size_t i = 0; i < n; i++)
 		{
-			result[i] = (alpha0[i] == -1) ? 1 : 0;
+			result[i] = (bits_values[i] <= 0) ? 1 : 0;
 		}
-/*
-		if (H * result == vector<int>(_m, 0)) {
-			*isFailed = false;
-			break;
-		}*/
 
 		*isFailed = false;
 		for (size_t j = 0; j < _m; j++)
@@ -130,9 +135,7 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 
 			for (auto &j : _bits[i])
 			{
-				double new_value = value - gamma[j][i];
-				alpha[j][i] = sign(new_value);
-				beta[j][i] = abs(new_value);
+				alpha_beta[j][i] = value - gamma[j][i];
 			}
 		}
 	}
