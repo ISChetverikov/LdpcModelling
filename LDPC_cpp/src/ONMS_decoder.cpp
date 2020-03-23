@@ -80,7 +80,7 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 		// Result of iteration
 		for (size_t i = 0; i < n; i++)
 		{
-			bits_values[i] = alpha0[i] * beta0[i];
+			bits_values[i] = llr[i];
 
 			for (auto &j : _bits[i])
 			{
