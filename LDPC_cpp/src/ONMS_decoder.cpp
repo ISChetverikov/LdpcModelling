@@ -12,24 +12,34 @@
 
 #define DBL_MAX 1.7976931348623158e+308 
 
+ONMS_decoder::ONMS_decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount) : Base_decoder(H_row_sparse, iterationsCount) 
+{
+	_alpha_beta.resize(_m);
+	_gamma.resize(_m);
+	_result.resize(_n);
+	_bits_values.resize(_n);
+
+	for (size_t j = 0; j < _m; j++)
+	{
+		_alpha_beta[j].resize(_checks[j].size());
+		_gamma[j].resize(_checks[j].size());
+	}
+}
+
 std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) {
 	
 	size_t n = llr.size();
 	if (n != _n)
 		throw IncorrectCodewordException("The codeword is not from a code with given check matrix");
 
-	std::vector<int> result(n);
-	std::vector<double> bits_values(n);
-	
-	std::vector<std::map<int, double>> alpha_beta(_m, std::map<int, double>());
-	std::vector<std::map<int, double>> gamma(_m, std::map<int, double>());
-
+	auto counter = 0;
 	// Init
 	for (size_t j = 0; j < _m; j++)
 	{
+		counter = 0;
 		for (auto &i : _checks[j])
 		{
-			alpha_beta[j][i] = llr[i];
+			_alpha_beta[j][counter++] = llr[i];
 		}	
 	}
 
@@ -46,9 +56,10 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 			int min_index = 0;
 			int sum_sign = 0;
 
+			counter = 0;
 			for (auto &i : _checks[j])
 			{
-				double abs_value = abs(alpha_beta[j][i]);
+				double abs_value = abs(_alpha_beta[j][counter]);
 				if (abs_value < first_min)
 				{
 					second_min = first_min;
@@ -60,18 +71,20 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 					second_min = abs_value;
 				}
 
-				if (alpha_beta[j][i] < 0)
+				if (_alpha_beta[j][counter] < 0)
 				{
 					sum_sign ^= 1;
 				}
+				counter++;
 			}
 
+			counter = 0;
 			for (auto &i : _checks[j])
 			{
 				int sign = sum_sign;
 				double abs_values = 0;
 
-				if (alpha_beta[j][i] < 0)
+				if (_alpha_beta[j][counter] < 0)
 				{
 					sign ^= 1;
 				}
@@ -86,24 +99,26 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 
 				double offseted_value = abs_values - MinSumOffset;
 				offseted_value = offseted_value > 0 ? offseted_value : 0;
-				gamma[j][i] = (1 - 2 * sign) * MinSumNorm * offseted_value;
+				_gamma[j][counter] = (1 - 2 * sign) * MinSumNorm * offseted_value;
+				counter++;
 			}
 		}
 
 		// Result of iteration
+		std::vector<size_t> counters_arr1(_m);
 		for (size_t i = 0; i < n; i++)
 		{
-			bits_values[i] = llr[i];
+			_bits_values[i] = llr[i];
 
 			for (auto &j : _bits[i])
 			{
-				bits_values[i] += gamma[j][i];
+				_bits_values[i] += _gamma[j][counters_arr1[j]++];
 			}
 		}
 		
 		for (size_t i = 0; i < n; i++)
 		{
-			result[i] = (bits_values[i] <= 0) ? 1 : 0;
+			_result[i] = (_bits_values[i] <= 0) ? 1 : 0;
 		}
 
 		*isFailed = false;
@@ -112,7 +127,7 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 			int sum = 0;
 			for (auto &i : _checks[j])
 			{
-				sum ^= result[i];
+				sum ^= _result[i];
 			}
 			if ((bool)sum) {
 				*isFailed = true;
@@ -129,16 +144,18 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 		}	
 
 		// Vertical Step
+		std::vector<size_t> counters_arr2(_m);
 		for (size_t i = 0; i < n; i++)
 		{
-			double value = bits_values[i];
+			double value = _bits_values[i];
 
 			for (auto &j : _bits[i])
 			{
-				alpha_beta[j][i] = value - gamma[j][i];
+				_alpha_beta[j][counters_arr2[j]] = value - _gamma[j][counters_arr2[j]];
+				counters_arr2[j]++;
 			}
 		}
 	}
 
-	return result;
+	return _result;
 }
