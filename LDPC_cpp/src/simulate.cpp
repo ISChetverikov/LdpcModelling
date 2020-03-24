@@ -12,6 +12,7 @@
 #include "../include/BF_decoder.h"
 #include "../include/SP_decoder.h"
 #include "../include/MatrixReading.h"
+#include "../include/FFH_simulate.h"
 
 using nano_s = std::chrono::nanoseconds;
 using micro_s = std::chrono::microseconds;
@@ -72,20 +73,37 @@ void simulate(int maxTests,
 int main() {
 	std::vector<double> snr_array{ -4};
 	std::vector<double> fer_array(snr_array.size(), 0);
+	std::vector<double> ffh_fer_array(snr_array.size(), 0);
 	std::vector<double> fer_array2(snr_array.size(), 0);
 	std::vector<double> sigma_array(snr_array.size(), 0);
 	std::vector<int> tests_count_array(snr_array.size(), 0);
 
 	auto t1 = std::chrono::steady_clock::now();
-	simulate(10000, snr_array, 200, fer_array, fer_array2, sigma_array, tests_count_array);
+	simulate(100000, snr_array, 1000, fer_array, fer_array2, sigma_array, tests_count_array);
 	auto t2 = std::chrono::steady_clock::now();
 
 	auto d_s = std::chrono::duration_cast<seconds>(t2 - t1).count();
 	std::ofstream output_file;
 	output_file.open("sim_res.txt", std::fstream::out);
 	for (size_t i = 0; i < snr_array.size(); i++) {
-		printf("\nsigma:%f,\tfer: %f,\tfer2: %f,\ttests numbers: %d\n", sigma_array[i], fer_array[i], fer_array2[i], tests_count_array[i]);
+		printf("\nsigma:%f,\tfer: %f,\ttests numbers: %d\n", sigma_array[i], fer_array[i], tests_count_array[i]);
 		output_file << snr_array[i] << ' ' << fer_array[i] << '\n';
+	}
+
+    std::cout << "Seconds: " << d_s << std::endl;
+
+	t1 = std::chrono::steady_clock::now();
+	FFH_simulate ffh = FFH_simulate("../Matrices/H_R1f6K76.csv", "ONMS", 6, 1000, snr_array, ffh_fer_array);
+	ffh.simulate();
+	ffh_fer_array = ffh.get_fer();
+	t2 = std::chrono::steady_clock::now();
+
+	d_s = std::chrono::duration_cast<seconds>(t2 - t1).count();
+	std::ofstream output_file2;
+	output_file2.open("sim_res.txt", std::fstream::out);
+	for (size_t i = 0; i < snr_array.size(); i++) {
+		printf("\nsigma:%f,\tfer: %f\n", sigma_array[i], ffh_fer_array[i]);
+		output_file2 << snr_array[i] << ' ' << fer_array[i] << '\n';
 	}
 	
 	std::cout << "Seconds: " << d_s << std::endl;
