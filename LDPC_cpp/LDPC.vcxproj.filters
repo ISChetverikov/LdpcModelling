@@ -8,7 +8,8 @@
     <ClInclude Include="include\SP_decoder.h" />
     <ClInclude Include="include\Base_decoder.h" />
     <ClInclude Include="include\MatrixReading.h" />
-    <ClInclude Include="include\ONMS2_decoder.h" />
+    <ClInclude Include="include\FFH_simulate.h" />
+    <ClInclude Include="include\base_simulate.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BF_decoder.cpp" />
@@ -18,6 +19,7 @@
     <ClCompile Include="src\SP_decoder.cpp" />
     <ClCompile Include="src\Base_decoder.cpp" />
     <ClCompile Include="src\MatrixReading.cpp" />
-    <ClCompile Include="src\ONMS2_decoder.cpp" />
+    <ClCompile Include="src\FFH_simulate.cpp" />
+    <ClCompile Include="src\base_simulate.cpp" />
   </ItemGroup>
 </Project>

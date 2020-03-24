@@ -6,7 +6,6 @@ class Base_decoder {
 
 protected:
 	// each check contain a vector of indices of value bits, which connected to the check
-	std::vector<std::vector<int>> _H;
 	std::vector<std::vector<int>> _checks;
 	std::vector<std::vector<int>> _bits;
 

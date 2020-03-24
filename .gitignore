@@ -23,3 +23,6 @@
 /LDPC_cpp/H.csv
 /LDPC_python/lprof0
 /LDPC_tests/Decoders_tests/Debug/
+/LDPC_cpp/x64
+/LDPC_cpp/EtalonDecoder
+/LDPC_cpp/sim_res.txt

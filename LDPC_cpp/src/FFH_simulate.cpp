@@ -1,4 +1,4 @@
-#include "../include/FFH_simulate.h"
+ #include "../include/FFH_simulate.h"
 
 
 double FFH_simulate::normal_pdf(double x, double m, double s) {
