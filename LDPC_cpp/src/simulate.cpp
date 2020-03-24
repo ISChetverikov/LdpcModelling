@@ -24,7 +24,6 @@ void simulate(int maxTests,
 	std::vector<double> snr_array,
 	int rejection_count,
 	std::vector<double>& fer_array,
-	std::vector<double>& fer_array2,
 	std::vector<double>& sigma_array,
 	std::vector<int>& tests_count_array) {
 	
@@ -43,13 +42,11 @@ void simulate(int maxTests,
     	double snr = snr_array[ii];
     	double sigma = sqrt(pow(10, -snr / 10) / 2); 
     	int tests = 0;
-        int my_wrong_dec = 0;
-		int fedor_wrong_dec = 0;
-        int errors = 0;
+        int wrong_dec = 0;
 		bool isFailed = false;
 		std::normal_distribution<double> distribution(0, sigma);
 
-        while ((tests < maxTests) && (my_wrong_dec < rejection_count)) {
+        while ((tests < maxTests) && (wrong_dec < rejection_count)) {
             tests = ++tests;
             
             for (size_t i = 0; i < n; i++) {
@@ -58,12 +55,11 @@ void simulate(int maxTests,
 			   
 			decoded = decoder->Decode(llrs, &isFailed);
 			if (decoded != codeword)
-				my_wrong_dec += 1;
+				wrong_dec += 1;
         }
 
 		sigma_array[ii] = sigma;
-		fer_array[ii] = (double)my_wrong_dec / tests;
-		fer_array2[ii] = (double)fedor_wrong_dec / tests; //
+		fer_array[ii] = (double)wrong_dec / tests;
 		tests_count_array[ii] = tests;	
     }
 }
@@ -72,19 +68,18 @@ void simulate(int maxTests,
 int main() {
 	std::vector<double> snr_array{ -4};
 	std::vector<double> fer_array(snr_array.size(), 0);
-	std::vector<double> fer_array2(snr_array.size(), 0);
 	std::vector<double> sigma_array(snr_array.size(), 0);
 	std::vector<int> tests_count_array(snr_array.size(), 0);
 
 	auto t1 = std::chrono::steady_clock::now();
-	simulate(10000, snr_array, 200, fer_array, fer_array2, sigma_array, tests_count_array);
+	simulate(10000, snr_array, 200, fer_array, sigma_array, tests_count_array);
 	auto t2 = std::chrono::steady_clock::now();
 
 	auto d_s = std::chrono::duration_cast<seconds>(t2 - t1).count();
 	std::ofstream output_file;
 	output_file.open("sim_res.txt", std::fstream::out);
 	for (size_t i = 0; i < snr_array.size(); i++) {
-		printf("\nsigma:%f,\tfer: %f,\tfer2: %f,\ttests numbers: %d\n", sigma_array[i], fer_array[i], fer_array2[i], tests_count_array[i]);
+		printf("\nsigma:%f,\tfer: %f,\ttests numbers: %d\n", sigma_array[i], fer_array[i], tests_count_array[i]);
 		output_file << snr_array[i] << ' ' << fer_array[i] << '\n';
 	}
 	
