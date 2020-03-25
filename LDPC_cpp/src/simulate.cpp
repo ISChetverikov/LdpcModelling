@@ -61,7 +61,7 @@ void simulate(int maxTests,
 			if (decoded != codeword)
 				my_wrong_dec += 1;
         }
-
+		std::cout << my_wrong_dec << "\n";
 		sigma_array[ii] = sigma;
 		fer_array[ii] = (double)my_wrong_dec / tests;
 		fer_array2[ii] = (double)fedor_wrong_dec / tests; //
@@ -71,7 +71,7 @@ void simulate(int maxTests,
 
 
 int main() {
-	std::vector<double> snr_array{ -4};
+	std::vector<double> snr_array{ -3};
 	std::vector<double> fer_array(snr_array.size(), 0);
 	std::vector<double> ffh_fer_array(snr_array.size(), 0);
 	std::vector<double> fer_array2(snr_array.size(), 0);
@@ -79,7 +79,7 @@ int main() {
 	std::vector<int> tests_count_array(snr_array.size(), 0);
 
 	auto t1 = std::chrono::steady_clock::now();
-	simulate(100000, snr_array, 1000, fer_array, fer_array2, sigma_array, tests_count_array);
+	simulate(10000000, snr_array, 100, fer_array, fer_array2, sigma_array, tests_count_array);
 	auto t2 = std::chrono::steady_clock::now();
 
 	auto d_s = std::chrono::duration_cast<seconds>(t2 - t1).count();
@@ -93,7 +93,7 @@ int main() {
     std::cout << "Seconds: " << d_s << std::endl;
 
 	t1 = std::chrono::steady_clock::now();
-	FFH_simulate ffh = FFH_simulate("../Matrices/H_R1f6K76.csv", "ONMS", 6, 1000, snr_array, ffh_fer_array);
+	FFH_simulate ffh = FFH_simulate("../Matrices/H_R1f6K76.csv", "ONMS", 6, 100, snr_array, ffh_fer_array);
 	ffh.simulate();
 	ffh_fer_array = ffh.get_fer();
 	t2 = std::chrono::steady_clock::now();

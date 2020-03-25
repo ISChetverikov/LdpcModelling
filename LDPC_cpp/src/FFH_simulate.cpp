@@ -7,7 +7,7 @@ std::vector<double> FFH_simulate::get_fer() {
 }
 
 double FFH_simulate::get_sigma(double snr) {
-    return sqrt(pow(10, (-snr / 10) / 2));
+    return sqrt(pow(10, (-snr / 10)) / 2);
 }
 
 
@@ -34,10 +34,6 @@ double FFH_simulate::loss_func(const std::vector<double>& z, const std::vector<i
 
 
 bool FFH_simulate::hist_is_flat(std::vector<std::vector<int>>& H, int iter) {
-    /*for (size_t i = 0; i < H.size(); i++) {
-        printf("%d ", H[i][iter]);
-    }
-    printf("\n");*/
     int sum = 0;
     for (size_t bin_num = 0; bin_num < H[iter].size(); ++bin_num) {
         sum += H[bin_num][iter];
@@ -62,8 +58,6 @@ std::pair<double, double> FFH_simulate::find_opt_V(int L, int snr, const std::ve
     std::uniform_real_distribution<double> un_distr(0.0, 1.0);
     int cur_bin = 0;
     std::vector<int> H(L, 0);
-    //printf("%d, %d, %d, %f\n", _n, _m, snr, log10(1 - (double) _n / _m));
-    //printf("%f\n", EbN0(snr, 1 - (double) _m / _n));
     for (size_t it = 0; it < EbN0(snr, 1 - (double) _m / _n) * L + _skip_iterations; ++it) {
         std::vector<double> new_z = z;
         for (size_t l = 0; l < _n; ++l) {
@@ -76,13 +70,11 @@ std::pair<double, double> FFH_simulate::find_opt_V(int L, int snr, const std::ve
                 new_z[l] = new_z_l_bit;
         }
         double new_loss = loss_func(new_z, codeword);
-        //printf("!%f\n", new_loss);
         int new_bin = (int) floor((new_loss - Vmin) / (Vmax - Vmin) * (L - 1));
         new_bin = std::min(new_bin, L - 1);
         new_bin = std::max(new_bin, 0);
 
         double prob_stat_acceptance = std::min(std::exp(prob[cur_bin]) / std::exp(prob[new_bin]), 1.0);
-        //print("prob"+str(np.exp(prob[cur_bin]) / np.exp(prob[new_bin])))
         if (un_distr(gen) <= prob_stat_acceptance) {
             z = new_z;
             cur_bin = new_bin;
@@ -115,23 +107,21 @@ void FFH_simulate::simulate() {
 
     for (size_t ii = 0; ii < _snr_array.size(); ii++) {
         double sigma = get_sigma(_snr_array[ii]);
-        //printf("%f\n", sigma);
+        std::cout << sigma << "\n";
+
         int iterations_count = 0;
         
         int L = (int) std::round(pow(10, 1 / sigma) * _n / 10);
-        //printf("%d\n", L);
         std::vector<std::vector<int>> H, G;
         for (size_t itn = 0; itn < L; itn++) {
             H.push_back(std::vector<int>(_num_iterations, 0));
             G.push_back(std::vector<int>(_num_iterations, 0));
         }
-        //double f = std::exp(1);
-        double f = 1.2;
+        double f = std::exp(1);
+        int check_const = 10 * L;
         
         std::pair<double, double> V = find_opt_V(L, _snr_array[ii], codeword, sigma, f);
         double Vmin = V.first, Vmax = V.second;
-        //printf("%f %f\n", Vmin, Vmax);
-        
         std::vector<double> prob(L, log(1.0 / L));
         std::vector<double> z(_n, 0);
         std::normal_distribution<double> norm_distr(0, sigma);
@@ -141,10 +131,6 @@ void FFH_simulate::simulate() {
         for (size_t it = 0; it < _num_iterations; ++it) {
             bool is_flat = false;
             while (!is_flat) {
-                /*for (size_t i = 0; i < z.size(); ++i) {
-                    printf("%f ", z[i]);
-                }
-                printf("\n");*/
                 std::vector<double> new_z = z;
                 for (size_t l = 0; l < _n; ++l) {
                     double dz = norm_distr(gen);
@@ -166,7 +152,6 @@ void FFH_simulate::simulate() {
                     cur_bin = new_bin;
                 }
                 prob[cur_bin] += log(f);
-
                 for (size_t i = 0; i < _n; i++) {
 				    llrs[i] = -2 * (2 * codeword[i] - 1 + z[i]) / (sigma * sigma);
                 }
@@ -174,7 +159,6 @@ void FFH_simulate::simulate() {
                 H[cur_bin][it] += 1;
                 //if (isFailed) {
                 if (decoded != codeword) {
-                    //printf("new error!\n");
                     G[cur_bin][it] += 1;
                     wrong_dec++;
                 }
@@ -183,10 +167,10 @@ void FFH_simulate::simulate() {
                     break;
                 }
                 iterations_count += 1;
-                int check_const = L;
                 if (iterations_count == check_const) {
-                    if (hist_is_flat(H, it))
+                    if (hist_is_flat(H, it)) {
                         is_flat = true;
+                    }
                     iterations_count = 0;
                 }
             }
@@ -227,6 +211,6 @@ FFH_simulate::FFH_simulate(std::string matrix_name,
     _rejections_num = rejections_num;
     _skip_iterations = 2000;
 
-    _eps = 4.0;
-    _perc = 0.03;
+    _eps = 4.45;
+    _perc = 0.07;
 }
