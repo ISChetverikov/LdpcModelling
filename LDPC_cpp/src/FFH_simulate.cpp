@@ -180,7 +180,7 @@ FFH_simulate::FFH_simulate(std::string matrix_name,
 	                       const std::vector<double>& snr_array) {
     
     _H = readAsRowSparseMatrix(matrix_name);
-    _decoder = new ONMS_decoder(_H, 20);
+    _decoder = new ONMS_decoder(_H, 20, 0.72, 0);
 
 	// size of sparse Matrix
 	_n = 0;

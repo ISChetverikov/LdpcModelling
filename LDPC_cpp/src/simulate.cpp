@@ -1,88 +1,96 @@
-#include <vector>
-#include <string>
-#include <random>
-#include <stdio.h>
-#include <math.h>
+#include <exception>
 #include <chrono>
-#include <iostream>
-#include <algorithm>
-#include <fstream>
 
+#include "../include/simulate.h"
+#include "../include/SimulationParameters.h"
+#include "../include/Base_decoder.h"
 #include "../include/ONMS_decoder.h"
-#include "../include/BF_decoder.h"
-#include "../include/SP_decoder.h"
 #include "../include/MatrixReading.h"
+#include "../include/MonteCarloSimulator.h"
 
-using nano_s = std::chrono::nanoseconds;
-using micro_s = std::chrono::microseconds;
-using milli_s = std::chrono::milliseconds;
-using seconds = std::chrono::seconds;
-using minutes = std::chrono::minutes;
-using hours = std::chrono::hours;
+Base_decoder * BuildDecoder(
+	decoderType decoderType,
+	std::unordered_map<std::string, std::string> decoderParams,
+	std::vector<std::vector<int>> H_matrix)
+{
+	Base_decoder * decoderPtr;
 
-void simulate(int maxTests,
-	std::vector<double> snr_array,
-	int rejection_count,
-	std::vector<double>& fer_array,
-	std::vector<double>& sigma_array,
-	std::vector<int>& tests_count_array) {
-	
-	size_t n = 0;
-	size_t m = 0;
-    std::vector<std::vector<int>> H = readAsRowSparseMatrix("../Matrices/H_R1f6K76.csv", &m, &n);
-	ONMS_decoder * decoder = new ONMS_decoder(H, 20);
+	switch (decoderType)
+	{
+	case decoderType::ONMS:
+	{
+		int interationsCount = std::stoi(decoderParams["iterationsCount"]);
+		double scale = std::stod(decoderParams["scale"]);
+		double offset = std::stod(decoderParams["offset"]);
 
-	std::random_device randomDevice;
+		decoderPtr = new ONMS_decoder(H_matrix, interationsCount, scale, offset);
 
-	std::vector<int> codeword(n, 0);
-	std::vector<double> llrs(n, 0);
-	std::vector<int> decoded(n, 0);
+	}
+	break;
+	case decoderType::MS: {
+		int interationsCount = std::stoi(decoderParams["iterationsCount"]);
 
-    for (size_t ii = 0; ii < snr_array.size(); ii++) {
-    	double snr = snr_array[ii];
-    	double sigma = sqrt(pow(10, -snr / 10) / 2); 
-    	int tests = 0;
-        int wrong_dec = 0;
-		bool isFailed = false;
-		std::normal_distribution<double> distribution(0, sigma);
+		decoderPtr = new ONMS_decoder(H_matrix, interationsCount, 1, 0);
+	}
+						  break;
+	default:
+		break;
+	}
 
-        while ((tests < maxTests) && (wrong_dec < rejection_count)) {
-            tests = ++tests;
-            
-            for (size_t i = 0; i < n; i++) {
-				llrs[i] = -2 * (2 * codeword[i] - 1 + distribution(randomDevice)) / (sigma * sigma);
-            }
-			   
-			decoded = decoder->Decode(llrs, &isFailed);
-			if (decoded != codeword)
-				wrong_dec += 1;
-        }
-
-		sigma_array[ii] = sigma;
-		fer_array[ii] = (double)wrong_dec / tests;
-		tests_count_array[ii] = tests;	
-    }
+	return decoderPtr;
 }
 
+MonteCarloSimulator * BuildSimulator(
+	simulationType simulationType,
+	std::unordered_map<std::string, std::string> simulationTypeParams,
+	Base_decoder * decoderPtr)
+{
+	MonteCarloSimulator * simulator;
 
-int main() {
-	std::vector<double> snr_array{ -4};
-	std::vector<double> fer_array(snr_array.size(), 0);
-	std::vector<double> sigma_array(snr_array.size(), 0);
-	std::vector<int> tests_count_array(snr_array.size(), 0);
+	switch (simulationType)
+	{
+	case simulationType::MC: {
+		int maxTestsCount = std::stoi(simulationTypeParams["maxTestsCount"]);
+		int maxRjectionsCount = std::stoi(simulationTypeParams["maxRjectionsCount"]);
 
-	auto t1 = std::chrono::steady_clock::now();
-	simulate(10000, snr_array, 200, fer_array, sigma_array, tests_count_array);
-	auto t2 = std::chrono::steady_clock::now();
-
-	auto d_s = std::chrono::duration_cast<seconds>(t2 - t1).count();
-	std::ofstream output_file;
-	output_file.open("sim_res.txt", std::fstream::out);
-	for (size_t i = 0; i < snr_array.size(); i++) {
-		printf("\nsigma:%f,\tfer: %f,\ttests numbers: %d\n", sigma_array[i], fer_array[i], tests_count_array[i]);
-		output_file << snr_array[i] << ' ' << fer_array[i] << '\n';
+		simulator = new MonteCarloSimulator(maxTestsCount, maxRjectionsCount, decoderPtr);
 	}
-	
-	std::cout << "Seconds: " << d_s << std::endl;
-	return 0;
+							 break;
+	default:
+		break;
+	}
+	return simulator;
+}
+
+SimulationResult simulate(SimulationParams simulationParams, CodeParams codeParams) {
+
+	SimulationResult results;
+	results.snrArray = simulationParams.snrArray;
+	Base_decoder * decoderPtr;
+	MonteCarloSimulator * simulatorPtr;
+
+	auto snrCount = results.snrArray.size();
+	results.ferArray = std::vector<double>(snrCount, 0);
+	results.sigmaArray = std::vector<double>(snrCount, 0);
+	results.testsCountArray = std::vector<int>(snrCount, 0);
+	results.elapsedTimeArray = std::vector<std::chrono::milliseconds>(snrCount);
+
+	try {
+		auto H_matrix = readAsRowSparseMatrix(codeParams.H_MatrixFilename);
+		decoderPtr = BuildDecoder(codeParams.decoderType, codeParams.decoderParams, H_matrix);
+		simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
+		simulatorPtr->Run(simulationParams.snrArray, results.ferArray, results.sigmaArray, results.testsCountArray, results.elapsedTimeArray);
+	}
+	catch (const std::exception& err) {
+		results.isError = true;
+		results.errorText = err.what();
+	}
+
+	if (decoderPtr)
+		delete decoderPtr;
+	if (simulatorPtr)
+		delete simulatorPtr;
+
+	return results;
+
 }

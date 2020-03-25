@@ -2,6 +2,9 @@
 #include "../include/Exceptions.h"
 #include "../include/Base_decoder.h"
 
+Base_decoder::Base_decoder() {
+}
+
 Base_decoder::Base_decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount) {
 
 	if ((_iterationsCount = iterationsCount) <= 0)
@@ -36,4 +39,8 @@ Base_decoder::Base_decoder(std::vector<std::vector<int>> H_row_sparse, int itera
 	_n = _bits.size();
 
 	return;
+}
+
+size_t Base_decoder::GetCodewordLegth() {
+	return _n;
 }

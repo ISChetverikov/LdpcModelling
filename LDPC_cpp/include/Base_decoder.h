@@ -11,11 +11,14 @@ protected:
 
 	size_t _m = 0;
 	size_t _n = 0;
-
 	size_t _iterationsCount = 0;
 
 public:
 	// Input number of ones' positions in each row
+	Base_decoder();
 	Base_decoder(std::vector<std::vector<int>> H, int iterationsCount);
+
+	size_t GetCodewordLegth();
+
 	virtual std::vector<int> Decode(std::vector<double> llr, bool * isFailed) = 0;
 };

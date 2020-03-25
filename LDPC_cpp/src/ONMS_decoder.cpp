@@ -12,8 +12,12 @@
 
 #define DBL_MAX 1.7976931348623158e+308 
 
-ONMS_decoder::ONMS_decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount) : Base_decoder(H_row_sparse, iterationsCount) 
+ONMS_decoder::ONMS_decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount, double scale, double offset) 
+	: Base_decoder(H_row_sparse, iterationsCount)
 {
+	_min_sum_scale = scale;
+	_min_sum_offset = offset;
+
 	_alpha_beta.resize(_m);
 	_gamma.resize(_m);
 	_result.resize(_n);
@@ -97,9 +101,9 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 					abs_values = first_min;
 				}
 
-				double offseted_value = abs_values - MinSumOffset;
+				double offseted_value = abs_values - _min_sum_offset;
 				offseted_value = offseted_value > 0 ? offseted_value : 0;
-				_gamma[j][counter] = (1 - 2 * sign) * MinSumNorm * offseted_value;
+				_gamma[j][counter] = (1 - 2 * sign) * _min_sum_scale * offseted_value;
 				counter++;
 			}
 		}

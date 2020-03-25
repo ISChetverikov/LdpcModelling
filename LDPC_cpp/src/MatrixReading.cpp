@@ -5,7 +5,7 @@
 
 #include "../include/MatrixReading.h"
 
-std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename, size_t * M, size_t * N) {
+std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename) {
 	std::vector<std::vector<int>> matrix;
 	std::string line;
 	std::ifstream myFile(filename);
@@ -41,7 +41,5 @@ std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename, size_t
 	}
 	N_temp++;
 	
-	*M = M_temp;
-	*N = N_temp;
 	return matrix;
 }
