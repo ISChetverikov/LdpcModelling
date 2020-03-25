@@ -43,3 +43,7 @@ Base_decoder::Base_decoder(std::vector<std::vector<int>> H_row_sparse, int itera
 size_t Base_decoder::GetCodewordLegth() {
 	return _n;
 }
+
+size_t Base_decoder::GetChecksSymbolsCount() {
+	return _m;
+}

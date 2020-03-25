@@ -107,7 +107,7 @@ void FFH_simulate::simulate() {
 
     for (size_t ii = 0; ii < _snr_array.size(); ii++) {
         double sigma = get_sigma(_snr_array[ii]);
-        std::cout << sigma << "\n";
+        //std::cout << sigma << "\n";
 
         int iterations_count = 0;
         

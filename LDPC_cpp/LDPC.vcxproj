@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BaseSimulator.h" />
     <ClInclude Include="include\Base_decoder.h" />
     <ClInclude Include="include\BF_decoder.h" />
     <ClInclude Include="include\SimulationParameters.h" />
@@ -41,6 +42,7 @@
     <ClCompile Include="src\MonteCarloSimulator.cpp" />
     <ClCompile Include="src\ONMS_decoder.cpp" />
     <ClCompile Include="src\simulate.cpp" />
+    <ClCompile Include="src\BaseSimulator.cpp" />
     <ClCompile Include="src\SP_decoder.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

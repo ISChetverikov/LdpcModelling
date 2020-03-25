@@ -3,18 +3,16 @@
 #include <string>
 #include <chrono>
 #include "Base_decoder.h"
+#include "BaseSimulator.h"
 
-class MonteCarloSimulator {
-private:
-	int _maxTestsCount = 10000;
-	int _maxRejectionsCount = 20;
-	Base_decoder * _decoderPtr;
-	size_t _n;
+class MonteCarloSimulator : public BaseSimulator {
+
 public:
 	MonteCarloSimulator(int maxTests, int rejectionsCount, Base_decoder * decoder);
 	void Run(std::vector<double> snrArray,
+		std::vector<double>& ebn0Array,
 		std::vector<double>& ferArray,
 		std::vector<double>& sigmaArray,
 		std::vector<int>& testsCountArray,
-		std::vector<std::chrono::milliseconds>& elapsedTimeArray);
+		std::vector<std::chrono::milliseconds>& elapsedTimeArray) override;
 };

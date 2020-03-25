@@ -24,6 +24,7 @@ struct SimulationParams {
 
 struct SimulationResult {
 	std::vector<double> snrArray;
+	std::vector<double> ebn0Array;
 	std::vector<double> ferArray;
 	std::vector<double> sigmaArray;
 	std::vector<int> testsCountArray;
@@ -42,10 +43,10 @@ struct SimulationResult {
 			return ss.str();
 		}
 
-		ss << "SNR, FER, sigma, testsCount, time(ms)" << std::endl;
+		ss << "SNR, EbN0, FER, sigma, testsCount, time(ms)" << std::endl;
 		for (size_t i = 0; i < snrArray.size(); i++)
 		{
-			ss << snrArray[i] << ", " << ferArray[i] << ", " << sigmaArray[i] 
+			ss << snrArray[i] << ", " << ebn0Array[i] << ", " << ferArray[i] << ", " << sigmaArray[i]
 				<< ", " << testsCountArray[i] << ", " << elapsedTimeArray[i].count() << std::endl;
 		}
 		return ss.str();

@@ -7,6 +7,8 @@
 #include "../include/ONMS_decoder.h"
 #include "../include/MatrixReading.h"
 #include "../include/MonteCarloSimulator.h"
+#include "../include/BaseSimulator.h"
+
 
 Base_decoder * BuildDecoder(
 	decoderType decoderType,
@@ -40,12 +42,12 @@ Base_decoder * BuildDecoder(
 	return decoderPtr;
 }
 
-MonteCarloSimulator * BuildSimulator(
+BaseSimulator * BuildSimulator(
 	simulationType simulationType,
 	std::unordered_map<std::string, std::string> simulationTypeParams,
 	Base_decoder * decoderPtr)
 {
-	MonteCarloSimulator * simulator;
+	BaseSimulator * simulator;
 
 	switch (simulationType)
 	{
@@ -64,12 +66,14 @@ MonteCarloSimulator * BuildSimulator(
 
 SimulationResult simulate(SimulationParams simulationParams, CodeParams codeParams) {
 
+	Base_decoder * decoderPtr = NULL;
+	BaseSimulator * simulatorPtr = NULL;
+	
 	SimulationResult results;
 	results.snrArray = simulationParams.snrArray;
-	Base_decoder * decoderPtr;
-	MonteCarloSimulator * simulatorPtr;
 
 	auto snrCount = results.snrArray.size();
+	results.ebn0Array = std::vector<double>(snrCount, 0);
 	results.ferArray = std::vector<double>(snrCount, 0);
 	results.sigmaArray = std::vector<double>(snrCount, 0);
 	results.testsCountArray = std::vector<int>(snrCount, 0);
@@ -79,17 +83,16 @@ SimulationResult simulate(SimulationParams simulationParams, CodeParams codePara
 		auto H_matrix = readAsRowSparseMatrix(codeParams.H_MatrixFilename);
 		decoderPtr = BuildDecoder(codeParams.decoderType, codeParams.decoderParams, H_matrix);
 		simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
-		simulatorPtr->Run(simulationParams.snrArray, results.ferArray, results.sigmaArray, results.testsCountArray, results.elapsedTimeArray);
+		simulatorPtr->Run(simulationParams.snrArray,
+			results.ebn0Array, results.ferArray, results.sigmaArray, results.testsCountArray, results.elapsedTimeArray);
 	}
 	catch (const std::exception& err) {
 		results.isError = true;
 		results.errorText = err.what();
 	}
 
-	if (decoderPtr)
-		delete decoderPtr;
-	if (simulatorPtr)
-		delete simulatorPtr;
+	delete decoderPtr;
+	delete simulatorPtr;
 
 	return results;
 

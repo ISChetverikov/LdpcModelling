@@ -21,6 +21,7 @@ public:
 	Base_decoder(std::vector<std::vector<int>> H, int iterationsCount);
 
 	size_t GetCodewordLegth();
+	size_t GetChecksSymbolsCount();
 
 	virtual std::vector<int> Decode(std::vector<double> llr, bool * isFailed) = 0;
 };
