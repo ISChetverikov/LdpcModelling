@@ -1,4 +1,3 @@
-#include <algorithm>
 #include "../include/Exceptions.h"
 #include "../include/Base_decoder.h"
 

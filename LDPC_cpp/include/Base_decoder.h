@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
+#include <stdexcept>
 
 class Base_decoder {
 
