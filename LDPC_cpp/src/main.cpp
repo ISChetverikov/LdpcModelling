@@ -41,7 +41,7 @@ int main() {
 	resultsFile.open(resultsFilename, std::fstream::out);
 	resultsFile << results.ToString();
 	resultsFile.close();
-*/
+	*/
 	// Не убрал FFH в Simulate пока
 	auto snr_array = simulationParams.snrArray;
 	auto ffh_fer_array = std::vector<double>{ 0, 0, 0, 0 };
