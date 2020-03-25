@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Base_decoder.h" />
-    <ClInclude Include="include\base_simulate.h" />
     <ClInclude Include="include\BF_decoder.h" />
     <ClInclude Include="include\SimulationParameters.h" />
     <ClInclude Include="include\Exceptions.h" />
@@ -33,7 +32,6 @@
     <ClInclude Include="include\SP_decoder.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\base_simulate.cpp" />
     <ClCompile Include="src\FFH_simulate.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MatrixReading.cpp" />
@@ -43,12 +41,6 @@
     <ClCompile Include="src\MonteCarloSimulator.cpp" />
     <ClCompile Include="src\ONMS_decoder.cpp" />
     <ClCompile Include="src\simulate.cpp" />
-    <ClCompile Include="src\simulate_old.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="src\SP_decoder.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

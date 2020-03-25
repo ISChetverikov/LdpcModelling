@@ -7,3 +7,4 @@
 
 // Read usual csv matrix from filename, size of matrix - out parameters MxN
 std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename);
+std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename, size_t * m, size_t * n);
