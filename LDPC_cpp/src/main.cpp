@@ -28,28 +28,28 @@ int main() {
 			{ "scale", "0.72" },
 			{ "offset", "0.0" }
 		});
-	codeParams.H_MatrixFilename = "../Matrices/FromMatlabScript/h_3_4_128.csv";
-	codeParams.G_MatrixFilename = "../Matrices/FromMatlabScript/g_3_4_128.csv";
+	codeParams.H_MatrixFilename = "../Matrices/FromMatlabScript/h_3_4_512.csv";
+	//codeParams.G_MatrixFilename = "../Matrices/FromMatlabScript/g_3_4_512.csv";
 
 	/*auto results = simulate(simulationParams, codeParams);
 
 	std::cout << "\nMC\n";
 	std::cout << results.ToString() << std::endl;
 
-	std::string resultsFilename = "../Results/FromMatlabScript/h_3_4_128.csv";
+	std::string resultsFilename = "../Results/FromMatlabScript/h_3_4_512.csv";
 	std::ofstream resultsFile;
 	resultsFile.open(resultsFilename, std::fstream::out);
 	resultsFile << results.ToString();
-	resultsFile.close();
-	*/
+	resultsFile.close();*/
+	
 	// Не убрал FFH в Simulate пока
 	auto snr_array = simulationParams.snrArray;
 	auto ffh_fer_array = std::vector<double>{ 0, 0, 0, 0 };
-	FFH_simulate ffh = FFH_simulate("../Matrices/FromMatlabScript/h_3_4_128.csv", "ONMS", 10, 20, snr_array, ffh_fer_array);
+	FFH_simulate ffh = FFH_simulate("../Matrices/FromMatlabScript/h_3_4_512.csv", "ONMS", 50, 20, snr_array, ffh_fer_array);
 	ffh.simulate();
 	ffh_fer_array = ffh.get_fer();
 
-	std::string resultsFilenameFFH = "../Results/FromMatlabScript/h_3_4_128_FFH.csv";
+	std::string resultsFilenameFFH = "../Results/FromMatlabScript/h_3_4_512_FFH.csv";
 	std::ofstream resultsFileFFH;
 	resultsFileFFH.open(resultsFilenameFFH, std::fstream::out);
 	std::cout << "FFH\n";
