@@ -16,6 +16,7 @@ protected:
 	double GetEbN0(double snr, size_t m, size_t n);
 public:
 	BaseSimulator(int maxTests, int rejectionsCount, Base_decoder * decoder);
+	virtual ~BaseSimulator() {};
 	virtual void Run(std::vector<double> snrArray,
 		std::vector<double>& ebn0Array,
 		std::vector<double>& ferArray,

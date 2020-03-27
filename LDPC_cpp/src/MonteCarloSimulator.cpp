@@ -31,7 +31,7 @@ void MonteCarloSimulator::Run(std::vector<double> snrArray,
 		std::normal_distribution<double> distribution(0, sigma);
 
 		while ((tests < _maxTestsCount) && (wrong_dec < _maxRejectionsCount)) {
-			tests = ++tests;
+			tests++;
 
 			for (size_t i = 0; i < _n; i++) {
 				llrs[i] = -2 * (2 * codeword[i] - 1 + distribution(randomDevice)) / (sigma * sigma);

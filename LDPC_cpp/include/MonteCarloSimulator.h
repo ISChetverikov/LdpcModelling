@@ -9,6 +9,7 @@ class MonteCarloSimulator : public BaseSimulator {
 
 public:
 	MonteCarloSimulator(int maxTests, int rejectionsCount, Base_decoder * decoder);
+	~MonteCarloSimulator() {};
 	void Run(std::vector<double> snrArray,
 		std::vector<double>& ebn0Array,
 		std::vector<double>& ferArray,
