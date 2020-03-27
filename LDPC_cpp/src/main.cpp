@@ -5,6 +5,7 @@
 #include "../include/simulate.h"
 #include "../include/SimulationParameters.h"
 #include "../include/FFH_simulate.h"
+#include "../include/MatrixReading.h"
 
 int main() {
 	SimulationParams simulationParams;
@@ -43,7 +44,7 @@ int main() {
 	resultsFile.close();*/
 	
 	// Не убрал FFH в Simulate пока
-	auto snr_array = simulationParams.snrArray;
+	/*auto snr_array = simulationParams.snrArray;
 	auto ffh_fer_array = std::vector<double>{ 0, 0, 0, 0 };
 	FFH_simulate ffh = FFH_simulate("../Matrices/FromMatlabScript/h_3_4_512.csv", "ONMS", 50, 20, snr_array, ffh_fer_array);
 	ffh.simulate();
@@ -59,7 +60,11 @@ int main() {
 		resultsFileFFH << snr_array[i] << ", " << ffh_fer_array[i] << std::endl;
 		std::cout << snr_array[i] << ", " << ffh_fer_array[i] << std::endl;
 	}
-	resultsFileFFH.close();
+	resultsFileFFH.close();*/
 	//--------------------------------------------
+
+	size_t m;
+	size_t n;
+	auto T = readSprsAsRowSparseMatrix("../Matrices/FromMatlabScript/h_3_4_512.sprs", &m, &n);
 
 }

@@ -80,7 +80,7 @@ SimulationResult simulate(SimulationParams simulationParams, CodeParams codePara
 	results.elapsedTimeArray = std::vector<std::chrono::milliseconds>(snrCount);
 
 	try {
-		auto H_matrix = readAsRowSparseMatrix(codeParams.H_MatrixFilename);
+		auto H_matrix = readCsvAsRowSparseMatrix(codeParams.H_MatrixFilename);
 		decoderPtr = BuildDecoder(codeParams.decoderType, codeParams.decoderParams, H_matrix);
 		simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
 		simulatorPtr->Run(simulationParams.snrArray,
