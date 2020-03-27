@@ -35,11 +35,11 @@ double FFH_simulate::loss_func(const std::vector<double>& z, const std::vector<i
 
 bool FFH_simulate::hist_is_flat(std::vector<std::vector<int>>& H, int iter) {
     int sum = 0;
-    for (size_t bin_num = 0; bin_num < H[iter].size(); ++bin_num) {
+    for (size_t bin_num = 0; bin_num < H.size(); ++bin_num) {
         sum += H[bin_num][iter];
     }
-    double floor_num = (double) sum / H[iter].size() * _perc;
-    for (size_t bin_num = 0; bin_num < H[iter].size(); ++bin_num) {
+    double floor_num = (double) sum / H.size() * _perc;
+    for (size_t bin_num = 0; bin_num < H.size(); ++bin_num) {
         if (H[bin_num][iter] < floor_num)
             return false;
     }
