@@ -1,6 +1,6 @@
 l=8;
 n0=16;
-m=2048;
+m=128;
 q = 2;
 
 isSparseH = true;
