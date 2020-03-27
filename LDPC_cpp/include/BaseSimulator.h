@@ -2,6 +2,7 @@
 
 #include <string>
 #include <chrono>
+#include <math.h>
 #include "Base_decoder.h"
 
 class BaseSimulator {

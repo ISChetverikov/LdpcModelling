@@ -74,7 +74,7 @@ int main() {
 	}
 	
 
-	// Не убрал FFH в Simulate пока
+	// пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ FFH пїЅ Simulate пїЅпїЅпїЅпїЅ
 	/*auto snr_array = simulationParams.snrArray;
 	auto ffh_fer_array = std::vector<double>{ 0, 0, 0, 0 };
 	FFH_simulate ffh = FFH_simulate("../Matrices/FromMatlabScript/h_3_4_512.csv", "ONMS", 50, 20, snr_array, ffh_fer_array);
