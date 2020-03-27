@@ -10,7 +10,7 @@ enum decoderType { ONMS, MS };
 enum simulationType { MC, FFH };
 
 struct CodeParams{
-	decoderType decoderType;
+	decoderType decoder;
 	std::unordered_map < std::string, std::string > decoderParams;
 	std::string H_MatrixFilename;
 	std::string G_MatrixFilename;

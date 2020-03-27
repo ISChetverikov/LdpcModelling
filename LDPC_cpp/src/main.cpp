@@ -22,7 +22,7 @@ int main() {
 	simulationParams.type = simulationType::MC;
 	simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
 		{
-			{ "maxTestsCount", "100000" },
+			{ "maxTestsCount", "100" },
 			{ "maxRjectionsCount", "20" }
 		});
 	simulationParams.snrArray = std::vector<double>();
@@ -36,21 +36,21 @@ int main() {
 	std::string resultsFolder = "../Results/FromMatlabScript/";
 
 	std::vector<std::string> filenameArr = {
-		"h_3_4_128.sprs",
-		"h_3_4_512.sprs",
+		"h_3_4_128.sprs"
+		/*"h_3_4_512.sprs",
 		"h_3_4_2048.sprs",
 		"h_3_6_128.sprs",
 		"h_3_6_512.sprs",
 		"h_3_6_2048.sprs",
 		"h_3_15_128.sprs",
 		"h_3_15_512.sprs",
-		"h_3_15_2048.sprs"
+		"h_3_15_2048.sprs"*/
 	};
 
 	for (auto& filename : filenameArr) {
 
 		CodeParams codeParams;
-		codeParams.decoderType = decoderType::ONMS;
+		codeParams.decoder = decoderType::ONMS;
 		codeParams.decoderParams = std::unordered_map<std::string, std::string>(
 			{
 				{ "iterationsCount", "20" },
@@ -66,7 +66,7 @@ int main() {
 		std::cout << results.ToString() << std::endl;
 		std::cout << "============================================================\n";
 
-		std::string resultsFilename = resultsFolder + filename;
+		std::string resultsFilename = resultsFolder + filename + ".temp";
 		std::ofstream resultsFile;
 		resultsFile.open(resultsFilename, std::fstream::out);
 		resultsFile << results.ToString();

@@ -81,7 +81,7 @@ SimulationResult simulate(SimulationParams simulationParams, CodeParams codePara
 
 	try {
 		auto H_matrix = readSprsAsRowSparseMatrix(codeParams.H_MatrixFilename);
-		decoderPtr = BuildDecoder(codeParams.decoderType, codeParams.decoderParams, H_matrix);
+		decoderPtr = BuildDecoder(codeParams.decoder, codeParams.decoderParams, H_matrix);
 		simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
 		simulatorPtr->Run(simulationParams.snrArray,
 			results.ebn0Array, results.ferArray, results.sigmaArray, results.testsCountArray, results.elapsedTimeArray);

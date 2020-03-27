@@ -24,4 +24,5 @@ public:
 	size_t GetChecksSymbolsCount();
 
 	virtual std::vector<int> Decode(std::vector<double> llr, bool * isFailed) = 0;
+	virtual ~Base_decoder() {};
 };

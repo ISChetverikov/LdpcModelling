@@ -30,7 +30,7 @@ Base_decoder::Base_decoder(std::vector<std::vector<int>> H_row_sparse, int itera
 	{
 		for (size_t i = 0; i < _checks[j].size(); i++)
 		{
-			_bits[_checks[j][i]].push_back(j);
+			_bits[_checks[j][i]].push_back((int)j);
 		}
 	}
 

@@ -13,5 +13,5 @@ double BaseSimulator::GetSigma(double snr) {
 }
 
 double BaseSimulator::GetEbN0(double snr, size_t m, size_t n) {
-	return snr - 10 * log10(1 - (double)_m / _n);
+	return snr - 10 * log10(1 - (double)m / n);
 }

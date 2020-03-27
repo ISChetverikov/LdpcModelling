@@ -21,4 +21,6 @@ public:
 	ONMS_decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount, double scale, double offset);
 
 	std::vector<int> Decode(std::vector<double> llr, bool * isFailed) override;
+
+	~ONMS_decoder() {};
 };
