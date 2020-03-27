@@ -7,7 +7,17 @@
 #include "../include/FFH_simulate.h"
 #include "../include/MatrixReading.h"
 
+std::vector<CodeParams> MakeCodeParamsArray() {
+	std::vector<CodeParams> codeParamsArray;
+
+	
+
+	return codeParamsArray;
+}
+
 int main() {
+
+	// Simulation Params
 	SimulationParams simulationParams;
 	simulationParams.type = simulationType::MC;
 	simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
@@ -16,33 +26,54 @@ int main() {
 			{ "maxRjectionsCount", "20" }
 		});
 	simulationParams.snrArray = std::vector<double>();
-	for (double i = -6; i <= -1; i+=0.2)
+	for (double i = -6; i <= 2; i += 0.2)
 	{
 		simulationParams.snrArray.push_back(i);
 	}
+
+	// Codes Params
+	std::string matricesFolder = "../Matrices/FromMatlabScript/";
+	std::string resultsFolder = "../Results/FromMatlabScript/";
+
+	std::vector<std::string> filenameArr = {
+		"h_3_4_128.sprs",
+		"h_3_4_512.sprs",
+		"h_3_4_2048.sprs",
+		"h_3_6_128.sprs",
+		"h_3_6_512.sprs",
+		"h_3_6_2048.sprs",
+		"h_3_15_128.sprs",
+		"h_3_15_512.sprs",
+		"h_3_15_2048.sprs"
+	};
+
+	for (auto& filename : filenameArr) {
+
+		CodeParams codeParams;
+		codeParams.decoderType = decoderType::ONMS;
+		codeParams.decoderParams = std::unordered_map<std::string, std::string>(
+			{
+				{ "iterationsCount", "20" },
+				{ "scale", "0.72" },
+				{ "offset", "0.0" }
+			});
+		codeParams.H_MatrixFilename = matricesFolder + filename;
+
+		auto results = simulate(simulationParams, codeParams);
+
+		std::cout << "\n" + filename + "\n";
+		std::cout << "============================================================\n";
+		std::cout << results.ToString() << std::endl;
+		std::cout << "============================================================\n";
+
+		std::string resultsFilename = resultsFolder + filename;
+		std::ofstream resultsFile;
+		resultsFile.open(resultsFilename, std::fstream::out);
+		resultsFile << results.ToString();
+		resultsFile.close();
+	}
 	
-	CodeParams codeParams;
-	codeParams.decoderType = decoderType::ONMS;
-	codeParams.decoderParams = std::unordered_map<std::string, std::string>(
-		{
-			{ "iterationsCount", "20" },
-			{ "scale", "0.72" },
-			{ "offset", "0.0" }
-		});
-	codeParams.H_MatrixFilename = "../Matrices/FromMatlabScript/h_3_4_512.csv";
-	//codeParams.G_MatrixFilename = "../Matrices/FromMatlabScript/g_3_4_512.csv";
 
-	/*auto results = simulate(simulationParams, codeParams);
-
-	std::cout << "\nMC\n";
-	std::cout << results.ToString() << std::endl;
-
-	std::string resultsFilename = "../Results/FromMatlabScript/h_3_4_512.csv";
-	std::ofstream resultsFile;
-	resultsFile.open(resultsFilename, std::fstream::out);
-	resultsFile << results.ToString();
-	resultsFile.close();*/
-	
 	// Не убрал FFH в Simulate пока
 	/*auto snr_array = simulationParams.snrArray;
 	auto ffh_fer_array = std::vector<double>{ 0, 0, 0, 0 };
@@ -62,9 +93,4 @@ int main() {
 	}
 	resultsFileFFH.close();*/
 	//--------------------------------------------
-
-	size_t m;
-	size_t n;
-	auto T = readSprsAsRowSparseMatrix("../Matrices/FromMatlabScript/h_3_4_512.sprs", &m, &n);
-
 }
