@@ -63,7 +63,7 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 			counter = 0;
 			for (auto &i : _checks[j])
 			{
-				double abs_value = abs(_alpha_beta[j][counter]);
+				double abs_value = fabs(_alpha_beta[j][counter]);
 				if (abs_value < first_min)
 				{
 					second_min = first_min;
