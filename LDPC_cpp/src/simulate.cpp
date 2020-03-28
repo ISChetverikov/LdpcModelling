@@ -7,6 +7,7 @@
 #include "../include/ONMS_decoder.h"
 #include "../include/MatrixReading.h"
 #include "../include/MonteCarloSimulator.h"
+#include "../include/FastFlatHistSimulator.h"
 #include "../include/BaseSimulator.h"
 
 
@@ -19,22 +20,21 @@ Base_decoder * BuildDecoder(
 
 	switch (decoderType)
 	{
-	case decoderType::ONMS:
-	{
-		int interationsCount = std::stoi(decoderParams["iterationsCount"]);
-		double scale = std::stod(decoderParams["scale"]);
-		double offset = std::stod(decoderParams["offset"]);
+		case decoderType::ONMS: {
+			int interationsCount = std::stoi(decoderParams["iterationsCount"]);
+			double scale = std::stod(decoderParams["scale"]);
+			double offset = std::stod(decoderParams["offset"]);
 
-		decoderPtr = new ONMS_decoder(H_matrix, interationsCount, scale, offset);
+			decoderPtr = new ONMS_decoder(H_matrix, interationsCount, scale, offset);
 
-	}
-	break;
-	case decoderType::MS: {
-		int interationsCount = std::stoi(decoderParams["iterationsCount"]);
+		}
+		break;
+		case decoderType::MS: {
+			int interationsCount = std::stoi(decoderParams["iterationsCount"]);
 
-		decoderPtr = new ONMS_decoder(H_matrix, interationsCount, 1, 0);
-	}
-						  break;
+			decoderPtr = new ONMS_decoder(H_matrix, interationsCount, 1, 0);
+		}
+		break;
 	default:
 		break;
 	}
@@ -51,13 +51,23 @@ BaseSimulator * BuildSimulator(
 
 	switch (simulationType)
 	{
-	case simulationType::MC: {
-		int maxTestsCount = std::stoi(simulationTypeParams["maxTestsCount"]);
-		int maxRjectionsCount = std::stoi(simulationTypeParams["maxRjectionsCount"]);
+		case simulationType::MC: {
+			int maxTestsCount = std::stoi(simulationTypeParams["maxTestsCount"]);
+			int maxRjectionsCount = std::stoi(simulationTypeParams["maxRjectionsCount"]);
 
-		simulator = new MonteCarloSimulator(maxTestsCount, maxRjectionsCount, decoderPtr);
-	}
-							 break;
+			simulator = new MonteCarloSimulator(maxTestsCount, maxRjectionsCount, decoderPtr);
+		}
+		break;
+		case simulationType::FFH: {
+			int maxTestsCount = std::stoi(simulationTypeParams["maxTestsCount"]);
+			int maxRjectionsCount = std::stoi(simulationTypeParams["maxRjectionsCount"]);
+			int skipIterations = std::stoi(simulationTypeParams["skipIterations"]);
+			double epsilon = std::stod(simulationTypeParams["epsilon"]);
+			double percent = std::stod(simulationTypeParams["percent"]);
+
+			simulator = new FastFlatHistSimulator(maxTestsCount, maxRjectionsCount, decoderPtr, skipIterations, epsilon, percent);
+		}
+		break;
 	default:
 		break;
 	}
@@ -80,7 +90,7 @@ SimulationResult simulate(SimulationParams simulationParams, CodeParams codePara
 	results.elapsedTimeArray = std::vector<std::chrono::milliseconds>(snrCount);
 
 	try {
-		auto H_matrix = readSprsAsRowSparseMatrix(codeParams.H_MatrixFilename);
+		auto H_matrix = readAsRowSparseMatrix(codeParams.H_MatrixFilename);
 		decoderPtr = BuildDecoder(codeParams.decoder, codeParams.decoderParams, H_matrix);
 		simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
 		simulatorPtr->Run(simulationParams.snrArray,

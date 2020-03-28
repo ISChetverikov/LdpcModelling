@@ -22,6 +22,7 @@
     <ClInclude Include="include\BaseSimulator.h" />
     <ClInclude Include="include\Base_decoder.h" />
     <ClInclude Include="include\BF_decoder.h" />
+    <ClInclude Include="include\FastFlatHistSimulator.h" />
     <ClInclude Include="include\SimulationParameters.h" />
     <ClInclude Include="include\Exceptions.h" />
     <ClInclude Include="include\FFH_simulate.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="include\SP_decoder.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\FastFlatHistSimulator.cpp" />
     <ClCompile Include="src\FFH_simulate.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MatrixReading.cpp" />

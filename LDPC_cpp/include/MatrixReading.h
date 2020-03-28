@@ -12,4 +12,6 @@ std::vector<std::vector<int>> readCsvAsRowSparseMatrix(std::string filename, siz
 std::vector<std::vector<int>> readSprsAsRowSparseMatrix(std::string filename);
 std::vector<std::vector<int>> readSprsAsRowSparseMatrix(std::string filename, size_t * m, size_t * n);
 
+std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename);
+
 void getMatrixShape(std::vector<std::vector<int>> rowSparseMatrix, size_t & m, size_t & n);

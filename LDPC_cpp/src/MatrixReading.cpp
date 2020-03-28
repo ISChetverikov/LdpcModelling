@@ -1,6 +1,23 @@
 #include "../include/MatrixReading.h"
 #include "../include/Exceptions.h"
 
+std::vector<std::vector<int>> readAsRowSparseMatrix(std::string filename) {
+
+	auto idx = filename.rfind('.');
+
+	if (idx == std::string::npos)
+		throw ExtensionException("File of matrix has no extension");
+
+	std::string extension = filename.substr(idx + 1);
+	if (extension == "sprs")
+		return readSprsAsRowSparseMatrix(filename);
+	else if (extension == "csv")
+		return readCsvAsRowSparseMatrix(filename);
+	else
+		throw ExtensionException("Extension \"" + extension + "\n is not supported");
+}
+
+
 std::vector<std::vector<int>> readCsvAsRowSparseMatrix(std::string filename) {
 	size_t m;
 	size_t n;
