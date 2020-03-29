@@ -7,7 +7,7 @@
 #include <iostream>
 
 enum decoderType { ONMS, MS };
-enum simulationType { MC, FFH };
+enum simulationType { MC, FFH, LFH };
 
 struct CodeParams{
 	decoderType decoder;

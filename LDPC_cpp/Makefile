@@ -3,23 +3,26 @@ all: bin main
 bin:
 	mkdir -p bin 
 
-main: bin/main.o bin/BaseSimulator.o bin/simulate.o bin/FFH_simulate.o bin/MonteCarloSimulator.o bin/Base_decoder.o bin/ONMS_decoder.o bin/BF_decoder.o bin/SP_decoder.o bin/MathOperations.o bin/MatrixReading.o
-	g++ bin/main.o bin/BaseSimulator.o bin/simulate.o bin/FFH_simulate.o bin/MonteCarloSimulator.o bin/Base_decoder.o bin/ONMS_decoder.o bin/SP_decoder.o bin/BF_decoder.o bin/MathOperations.o bin/MatrixReading.o -pthread -std=c++17 -ltbb -Wall -W -o main
+main: bin/main.o bin/BaseSimulator.o bin/simulate.o bin/MonteCarloSimulator.o bin/FastFlatHistSimulator.o bin/LocalFlatHistSimulator.o bin/Base_decoder.o bin/ONMS_decoder.o bin/BF_decoder.o bin/SP_decoder.o bin/MathOperations.o bin/MatrixReading.o
+	g++ bin/main.o bin/BaseSimulator.o bin/simulate.o bin/MonteCarloSimulator.o bin/FastFlatHistSimulator.o bin/LocalFlatHistSimulator.o bin/Base_decoder.o bin/ONMS_decoder.o bin/SP_decoder.o bin/BF_decoder.o bin/MathOperations.o bin/MatrixReading.o -pthread -std=c++17 -ltbb -Wall -W -o main
 
-bin/main.o: src/main.cpp include/simulate.h include/FFH_simulate.h include/SimulationParameters.h
+bin/main.o: src/main.cpp include/simulate.h include/SimulationParameters.h include/MatrixReading.h
 	g++ -std=c++17 -c src/main.cpp -Wall -W -o bin/main.o
 
 bin/BaseSimulator.o: src/BaseSimulator.cpp include/BaseSimulator.h include/Base_decoder.h
 	g++ -std=c++17 -c src/BaseSimulator.cpp -Wall -W -o bin/BaseSimulator.o
 
-bin/simulate.o: src/simulate.cpp include/simulate.h include/SimulationParameters.h include/Base_decoder.h include/ONMS_decoder.h include/BF_decoder.h include/MonteCarloSimulator.h include/BaseSimulator.h include/MatrixReading.h
+bin/simulate.o: src/simulate.cpp include/simulate.h include/SimulationParameters.h include/Base_decoder.h include/ONMS_decoder.h include/BF_decoder.h include/MonteCarloSimulator.h include/FastFlatHistSimulator.h include/LocalFlatHistSimulator.h include/BaseSimulator.h include/MatrixReading.h
 	g++ -std=c++17 -c src/simulate.cpp -Wall -W -o bin/simulate.o
-
-bin/FFH_simulate.o: src/FFH_simulate.cpp include/FFH_simulate.h include/ONMS_decoder.h include/MatrixReading.h
-	g++ -std=c++17 -c src/FFH_simulate.cpp -Wall -W -o bin/FFH_simulate.o
 
 bin/MonteCarloSimulator.o: src/MonteCarloSimulator.cpp include/MonteCarloSimulator.h include/Base_decoder.h include/BaseSimulator.h
 	g++ -std=c++17 -c src/MonteCarloSimulator.cpp -Wall -W -o bin/MonteCarloSimulator.o
+
+bin/FastFlatHistSimulator.o: src/FastFlatHistSimulator.cpp include/FastFlatHistSimulator.h include/Base_decoder.h include/BaseSimulator.h
+	g++ -std=c++17 -c src/FastFlatHistSimulator.cpp -Wall -W -o bin/FastFlatHistSimulator.o
+
+bin/LocalFlatHistSimulator.o: src/LocalFlatHistSimulator.cpp include/LocalFlatHistSimulator.h include/Base_decoder.h include/BaseSimulator.h
+	g++ -std=c++17 -c src/LocalFlatHistSimulator.cpp -Wall -W -o bin/LocalFlatHistSimulator.o
 
 bin/Base_decoder.o: src/Base_decoder.cpp 
 	g++ -std=c++17 -c src/Base_decoder.cpp -Wall -W -o bin/Base_decoder.o
