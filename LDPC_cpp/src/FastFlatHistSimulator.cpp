@@ -142,17 +142,17 @@ double FastFlatHistSimulator::normal_pdf(double x, double m, double s) {
 
 
 double FastFlatHistSimulator::loss_func(const std::vector<double>& z, const std::vector<int>& codeword) {
-	int n = codeword.size();
+	size_t n = codeword.size();
 	double loss_sum = 0;
 	for (size_t l = 0; l < n; l++) {
-		int q = pow(-1, codeword[l]);
+		int q = 1 - 2 * codeword[l];	// pow(-1, codeword[l]) in article
 		loss_sum += pow((q * z[l] < 0) * z[l], 2);
 	}
 	return sqrt(loss_sum / n);
 }
 
 
-bool FastFlatHistSimulator::hist_is_flat(std::vector<std::vector<int>>& H, int iter) {
+bool FastFlatHistSimulator::hist_is_flat(std::vector<std::vector<int>>& H, size_t iter) {
 	int sum = 0;
 	for (size_t bin_num = 0; bin_num < H.size(); ++bin_num) {
 		sum += H[bin_num][iter];
@@ -166,7 +166,7 @@ bool FastFlatHistSimulator::hist_is_flat(std::vector<std::vector<int>>& H, int i
 }
 
 
-std::pair<double, double> FastFlatHistSimulator::find_opt_V(int L, int snr, const std::vector<int>& codeword,
+std::pair<double, double> FastFlatHistSimulator::find_opt_V(int L, double snr, const std::vector<int>& codeword,
 	double sigma, double f) {
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -203,14 +203,15 @@ std::pair<double, double> FastFlatHistSimulator::find_opt_V(int L, int snr, cons
 			H[cur_bin] += 1;
 		}
 	}
-	double min_bin = -1.0, max_bin = -1.0;
+	size_t min_bin = L, max_bin = L;
 	for (size_t bin_num = 0; bin_num < L; ++bin_num) {
 		if (H[bin_num] != 0) {
 			max_bin = bin_num;
-			if (min_bin == -1.0) {
+			if (min_bin == L) {
 				min_bin = bin_num;
 			}
 		}
 	}
+
 	return std::make_pair(min_bin / L, (max_bin + 1) / L);
 }

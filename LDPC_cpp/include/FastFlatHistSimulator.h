@@ -13,8 +13,8 @@ protected:
 	
 	double normal_pdf(double x, double m, double s);
 	double loss_func(const std::vector<double>& z, const std::vector<int>& codeword);
-	bool hist_is_flat(std::vector<std::vector<int>>& H, int iter);
-	std::pair<double, double> find_opt_V(int L, int snr, const std::vector<int>& codeword,
+	bool hist_is_flat(std::vector<std::vector<int>>& H, size_t iter);
+	std::pair<double, double> find_opt_V(int L, double snr, const std::vector<int>& codeword,
 		double sigma, double f);
 
 public:

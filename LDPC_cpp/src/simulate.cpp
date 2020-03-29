@@ -16,7 +16,7 @@ Base_decoder * BuildDecoder(
 	std::unordered_map<std::string, std::string> decoderParams,
 	std::vector<std::vector<int>> H_matrix)
 {
-	Base_decoder * decoderPtr;
+	Base_decoder * decoderPtr = NULL;
 
 	switch (decoderType)
 	{
@@ -47,7 +47,7 @@ BaseSimulator * BuildSimulator(
 	std::unordered_map<std::string, std::string> simulationTypeParams,
 	Base_decoder * decoderPtr)
 {
-	BaseSimulator * simulator;
+	BaseSimulator * simulator = NULL;
 
 	switch (simulationType)
 	{
