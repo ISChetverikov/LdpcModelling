@@ -13,6 +13,7 @@
     <ClInclude Include="include\simulate.h" />
     <ClInclude Include="include\BaseSimulator.h" />
     <ClInclude Include="include\FastFlatHistSimulator.h" />
+    <ClInclude Include="include\LocalFlatHistSimulator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BF_decoder.cpp" />
@@ -26,5 +27,6 @@
     <ClCompile Include="src\MonteCarloSimulator.cpp" />
     <ClCompile Include="src\BaseSimulator.cpp" />
     <ClCompile Include="src\FastFlatHistSimulator.cpp" />
+    <ClCompile Include="src\LocalFlatHistSimulator.cpp" />
   </ItemGroup>
 </Project>

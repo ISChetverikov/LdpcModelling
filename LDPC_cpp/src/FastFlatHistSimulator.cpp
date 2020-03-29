@@ -34,7 +34,8 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 		
 		int iterations_count = 0;
 
-		int L = (int)std::round(pow(10, 1 / sigma) * _n / 10);
+		int L = (int)std::round(pow(10, 1 / sigma) * _n / 50);
+		std::cout << L << std::endl;
 		std::vector<std::vector<int>> H, G;
 		for (size_t itn = 0; itn < L; itn++) {
 			H.push_back(std::vector<int>(_maxTestsCount, 0));
@@ -78,10 +79,12 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 				new_bin = std::min(new_bin, L - 1);
 				new_bin = std::max(new_bin, 0);
 
-				double prob_stat_acceptance = std::min(std::exp(prob[cur_bin]) / std::exp(prob[new_bin]), 1.0);
+				double prob_stat_acceptance = std::min(std::exp(prob[cur_bin] - prob[new_bin]), 1.0);
+				ar_total++;
 				if (un_distr(gen) <= prob_stat_acceptance) {
 					z = new_z;
 					cur_bin = new_bin;
+					ar_ac++;
 				}
 				prob[cur_bin] += log(f);
 				for (size_t i = 0; i < _n; i++) {
@@ -109,7 +112,7 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 			}
 			f = sqrt(f);
 		}
-
+		std::cout << (double)ar_ac / ar_total << std::endl;
 		double prob_error = 0;
 		double prob_sum = 0;
 		for (auto p : prob) {
@@ -147,7 +150,7 @@ double FastFlatHistSimulator::loss_func(const std::vector<double>& z, const std:
 	size_t n = codeword.size();
 	double loss_sum = 0;
 	for (size_t l = 0; l < n; l++) {
-		int q = 1 - 2 * codeword[l];	// pow(-1, codeword[l]) in article
+		int q = 1 - 2 * codeword[l]; 
 		loss_sum += pow((q * z[l] < 0) * z[l], 2);
 	}
 	return sqrt(loss_sum / n);
@@ -179,7 +182,8 @@ std::pair<double, double> FastFlatHistSimulator::find_opt_V(int L, double snr, c
 	std::uniform_real_distribution<double> un_distr(0.0, 1.0);
 	int cur_bin = 0;
 	std::vector<int> H(L, 0);
-	for (size_t it = 0; it < GetEbN0(snr, _m, _n) * L + _skip_iterations; ++it) {
+	auto e = GetEbN0(snr, _m, _n) * L;
+	for (size_t it = 0; it < e + _skip_iterations; ++it) {
 		std::vector<double> new_z = z;
 		for (size_t l = 0; l < _n; ++l) {
 			double dz = norm_distr(gen);
@@ -195,7 +199,7 @@ std::pair<double, double> FastFlatHistSimulator::find_opt_V(int L, double snr, c
 		new_bin = std::min(new_bin, L - 1);
 		new_bin = std::max(new_bin, 0);
 
-		double prob_stat_acceptance = std::min(std::exp(prob[cur_bin]) / std::exp(prob[new_bin]), 1.0);
+		double prob_stat_acceptance = std::min(std::exp(prob[cur_bin] - prob[new_bin]), 1.0);
 		if (un_distr(gen) <= prob_stat_acceptance) {
 			z = new_z;
 			cur_bin = new_bin;
@@ -215,5 +219,5 @@ std::pair<double, double> FastFlatHistSimulator::find_opt_V(int L, double snr, c
 		}
 	}
 
-	return std::make_pair(min_bin / L, (max_bin + 1) / L);
+	return std::make_pair((double)min_bin / L, ((double)max_bin + 1) / L);
 }
