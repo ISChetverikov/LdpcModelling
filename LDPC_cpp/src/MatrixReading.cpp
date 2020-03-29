@@ -77,15 +77,15 @@ std::vector<std::vector<int>> readSprsAsRowSparseMatrix(std::string filename, si
 
 	// First line
 	std::getline(myFile, line);
-	std::stringstream ss(line);
-	ss >> rowIndex;
+	std::stringstream ss_first(line);
+	ss_first >> rowIndex;
 	rowIndex--; // matlab numeration
-	ss >> columnIndex;
+	ss_first >> columnIndex;
 	columnIndex--;
 
-	ss >> val;
+	ss_first >> val;
 	if (val != 1)
-		throw new NotBinaryMatrixException("Sprarse matrix elements not from GF(2)");
+		throw new NotBinaryMatrixException("Sparse matrix elements not from GF(2)");
 
 	temp.push_back(columnIndex);
 	previousRowIndex = rowIndex;
