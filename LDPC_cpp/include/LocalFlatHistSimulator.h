@@ -20,7 +20,7 @@ protected:
 	
 	double normalPDF(double x, double m, double s);
 	double lossFunc(const std::vector<double>& z, const std::vector<int>& codeword);
-	std::vector<double> findStartPoint();
+	std::vector<double> findStartPoint(const std::vector<int>& codeword);
 
 public:
 	LocalFlatHistSimulator(Base_decoder * decoderPtr, double epsilon, int l, int kMin, int alpha, int beta,

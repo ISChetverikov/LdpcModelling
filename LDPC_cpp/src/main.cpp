@@ -164,12 +164,12 @@ void LfhRun() {
 		simulationParams.type = simulationType::LFH;
 		simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
 			{
-				{ "epsilon", "14.45" },
+				{ "epsilon", "0.2" },
 				{ "l", "300" },
 				{ "kMin", "150" },
 				{ "alpha", "2" },
 				{ "beta", "2" },
-				{ "unconWithoutAB", "10" },
+				{ "unconWithoutAB", "2000" },
 				{ "unconWithAB", "10" },
 				{ "conWithoutAB", "10" },
 				{ "conWithAB", "10" }
