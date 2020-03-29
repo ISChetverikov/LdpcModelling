@@ -16,7 +16,7 @@ Base_decoder * BuildDecoder(
 	std::unordered_map<std::string, std::string> decoderParams,
 	std::vector<std::vector<int>> H_matrix)
 {
-	Base_decoder * decoderPtr = NULL;
+	Base_decoder * decoderPtr;
 
 	switch (decoderType)
 	{
@@ -47,7 +47,7 @@ BaseSimulator * BuildSimulator(
 	std::unordered_map<std::string, std::string> simulationTypeParams,
 	Base_decoder * decoderPtr)
 {
-	BaseSimulator * simulator = NULL;
+	BaseSimulator * simulator;
 
 	switch (simulationType)
 	{
@@ -66,6 +66,21 @@ BaseSimulator * BuildSimulator(
 			double percent = std::stod(simulationTypeParams["percent"]);
 
 			simulator = new FastFlatHistSimulator(maxTestsCount, maxRjectionsCount, decoderPtr, skipIterations, epsilon, percent);
+		}
+		break;
+		case simulationType::LFH: {
+			double epsilon = std::stod(simulationTypeParams["epsilon"]);
+			int l = std::stoi(simulationTypeParams["l"]);
+			int kMin = std::stoi(simulationTypeParams["kMin"]);
+			int alpha = std::stoi(simulationTypeParams["alpha"]);
+			int beta = std::stoi(simulationTypeParams["beta"]);
+			int unconWithoutAB = std::stoi(simulationTypeParams["unconWithoutAB"]);
+			int unconWithAB = std::stoi(simulationTypeParams["unconWithAB"]);
+			int conWithoutAB = std::stoi(simulationTypeParams["conWithoutAB"]);
+			int conWithAB = std::stoi(simulationTypeParams["conWithAB"]);
+
+			simulator = new LocalFlatHistSimulator(decoderPtr, epsilon, l, kMin, alpha, beta, unconWithoutAB,
+			                                       unconWithAB, conWithoutAB, conWithAB);
 		}
 		break;
 	default:

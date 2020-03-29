@@ -8,41 +8,37 @@
 #include "../include/MatrixReading.h"
 
 void McRun() {
-	
+	// Simulation Params
+	SimulationParams simulationParams;
+	simulationParams.type = simulationType::MC;
+	simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
+		{
+			{ "maxTestsCount", "100000" },
+			{ "maxRjectionsCount", "20" }
+		});
+	simulationParams.snrArray = std::vector<double>();
+	for (double i = -3; i <= -2.8; i += 0.2)
+	{
+		simulationParams.snrArray.push_back(i);
+	}
+
+	// Codes Params
 	std::string matricesFolder = "../Matrices/FromMatlabScript/";
 	std::string resultsFolder = "../Results/FromMatlabScript/";
 
-	std::vector<std::tuple<std::string, double, double>> tests = {
-		{"h_3_4_128.sprs", -6.0, -1.0},
-		{"h_3_4_512.sprs", -6.0, -1.0},
-		{"h_3_4_2048.sprs", -6.0, -1.0},
-		{"h_3_6_128.sprs", -3.0, 1.0},
-		{"h_3_6_512.sprs", -3.0, 1.0},
-		{"h_3_6_2048.sprs", -3.0, 1.0},
-		{"h_3_15_128.sprs", 1.0, 3.6},
-		{"h_3_15_512.sprs", 1.0, 3.6},
-		{"h_3_15_2048.sprs", 1.0, 3.6}
+	std::vector<std::string> filenameArr = {
+		"h_3_4_128.sprs",
+		//"h_3_4_512.sprs"
+		/*"h_3_4_2048.sprs",
+		"h_3_6_128.sprs",
+		"h_3_6_512.sprs",
+		"h_3_6_2048.sprs",
+		"h_3_15_128.sprs",
+		"h_3_15_512.sprs",
+		"h_3_15_2048.sprs"*/
 	};
 
-	for (auto& test : tests) {
-
-		std::string filename;
-		double minSnr;
-		double maxSnr;
-		std::tie(filename, minSnr, maxSnr) = test;
-
-		SimulationParams simulationParams;
-		simulationParams.type = simulationType::MC;
-		simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
-			{
-			{ "maxTestsCount", "100000" },
-			{ "maxRjectionsCount", "20" }
-			});
-		simulationParams.snrArray = std::vector<double>();
-		for (double i = minSnr; i <= maxSnr; i += 0.2)
-		{
-			simulationParams.snrArray.push_back(i);
-		}
+	for (auto& filename : filenameArr) {
 
 		CodeParams codeParams;
 		codeParams.decoder = decoderType::ONMS;
@@ -75,15 +71,18 @@ void FfhRun() {
 	std::string resultsFolder = "../Results/FromMatlabScript/";
 
 	std::vector<std::tuple<std::string, double, double>> tests = {
-		{"h_3_4_128.sprs", -3.0, -3.0}/*,
-		{"h_3_4_512.sprs", -6.0, -1.0},
-		{"h_3_4_2048.sprs", -6.0, -1.0},
-		{"h_3_6_128.sprs", -3.0, 1.0},
-		{"h_3_6_512.sprs", -3.0, 1.0},
-		{"h_3_6_2048.sprs", -3.0, 1.0},
-		{"h_3_15_128.sprs", 1.0, 3.6},
-		{"h_3_15_512.sprs", 1.0, 3.6},
-		{"h_3_15_2048.sprs", 1.0, 3.6}*/
+		{"h_3_4_128.sprs", -6.0, -1.0}/*
+		"h_3_4_512.sprs"
+		"h_3_4_2048.sprs",
+		"h_3_6_128.sprs",
+		"h_3_6_512.sprs",
+		"h_3_6_2048.sprs",
+		"h_3_15_128.sprs",
+		"h_3_15_512.sprs",
+		"h_3_15_2048.sprs",
+		"h_8_16_128.sprs",
+		"h_8_16_512.sprs",
+		"h_8_16_2048.sprs"*/
 	};
 
 	for (auto& test : tests) {
@@ -97,11 +96,11 @@ void FfhRun() {
 		simulationParams.type = simulationType::FFH;
 		simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
 			{
-				{ "maxTestsCount", "2" },
-				{ "maxRjectionsCount", "2" },
+				{ "maxTestsCount", "1" },
+				{ "maxRjectionsCount", "1" },
 				{ "skipIterations", "2000" },
 				{ "epsilon", "4.45" },
-				{ "percent", "0.05" }
+				{ "percent", "0.07" }
 			});
 		simulationParams.snrArray = std::vector<double>();
 		for (double i = minSnr; i <= maxSnr; i += 0.2)
@@ -134,8 +133,80 @@ void FfhRun() {
 	}
 }
 
+void LfhRun() {
+	
+	std::string matricesFolder = "../Matrices/FromMatlabScript/";
+	std::string resultsFolder = "../Results/FromMatlabScript/";
+
+	std::vector<std::tuple<std::string, double, double>> tests = {
+		{"h_3_4_128.sprs", -3.0, -3.0}/*
+		"h_3_4_512.sprs"
+		"h_3_4_2048.sprs",
+		"h_3_6_128.sprs",
+		"h_3_6_512.sprs",
+		"h_3_6_2048.sprs",
+		"h_3_15_128.sprs",
+		"h_3_15_512.sprs",
+		"h_3_15_2048.sprs",
+		"h_8_16_128.sprs",
+		"h_8_16_512.sprs",
+		"h_8_16_2048.sprs"*/
+	};
+
+	for (auto& test : tests) {
+
+		std::string filename;
+		double minSnr;
+		double maxSnr;
+		std::tie(filename, minSnr, maxSnr) = test;
+
+		SimulationParams simulationParams;
+		simulationParams.type = simulationType::LFH;
+		simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
+			{
+				{ "epsilon", "14.45" },
+				{ "l", "300" },
+				{ "kMin", "150" },
+				{ "alpha", "2" },
+				{ "beta", "2" },
+				{ "unconWithoutAB", "10" },
+				{ "unconWithAB", "10" },
+				{ "conWithoutAB", "10" },
+				{ "conWithAB", "10" }
+			});
+		simulationParams.snrArray = std::vector<double>();
+		for (double i = minSnr; i <= maxSnr; i += 0.2)
+		{
+			simulationParams.snrArray.push_back(i);
+		}
+
+		CodeParams codeParams;
+		codeParams.decoder = decoderType::ONMS;
+		codeParams.decoderParams = std::unordered_map<std::string, std::string>(
+			{
+				{ "iterationsCount", "50" },
+				{ "scale", "0.72" },
+				{ "offset", "0.0" }
+			});
+		codeParams.H_MatrixFilename = matricesFolder + filename;
+
+		auto results = simulate(simulationParams, codeParams);
+
+		std::cout << "\n" + filename + "\n";
+		std::cout << "============================================================\n";
+		std::cout << results.ToString() << std::endl;
+		std::cout << "============================================================\n";
+
+		std::string resultsFilename = resultsFolder + filename + ".ffh.results";
+		std::ofstream resultsFile;
+		resultsFile.open(resultsFilename, std::fstream::out);
+		resultsFile << results.ToString();
+		resultsFile.close();
+	}
+}
+
 
 int main() {
 
-	FfhRun();
+	LfhRun();
 }
