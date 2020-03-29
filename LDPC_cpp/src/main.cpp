@@ -61,7 +61,7 @@ void McRun() {
 		std::cout << results.ToString() << std::endl;
 		std::cout << "============================================================\n";
 
-		std::string resultsFilename = resultsFolder + filename + ".results";
+		std::string resultsFilename = resultsFolder + filename + ".mc.results";
 		std::ofstream resultsFile;
 		resultsFile.open(resultsFilename, std::fstream::out);
 		resultsFile << results.ToString();
