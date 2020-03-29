@@ -34,7 +34,7 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 		
 		int iterations_count = 0;
 
-		int L = 20;// (int)std::round(pow(10, 1 / sigma) * _n / 25);
+		int L = (int)std::round(pow(10, 1 / sigma) * _n / 10);
 		std::vector<std::vector<int>> H, G;
 		for (size_t itn = 0; itn < L; itn++) {
 			H.push_back(std::vector<int>(_maxTestsCount, 0));
@@ -52,6 +52,8 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 		std::uniform_real_distribution<double> un_distr(0.0, 1.0);
 		int cur_bin = 0;
 		int wrong_dec = 0;
+		int ar_total = 0;
+		int ar_ac = 0;
 
 		for (size_t it = 0; it < _maxTestsCount; ++it) {
 			bool is_flat = false;
