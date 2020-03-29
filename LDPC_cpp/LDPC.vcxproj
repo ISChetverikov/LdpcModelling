@@ -25,7 +25,6 @@
     <ClInclude Include="include\FastFlatHistSimulator.h" />
     <ClInclude Include="include\SimulationParameters.h" />
     <ClInclude Include="include\Exceptions.h" />
-    <ClInclude Include="include\FFH_simulate.h" />
     <ClInclude Include="include\MathOperations.h" />
     <ClInclude Include="include\MatrixReading.h" />
     <ClInclude Include="include\MonteCarloSimulator.h" />
@@ -35,7 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\FastFlatHistSimulator.cpp" />
-    <ClCompile Include="src\FFH_simulate.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MatrixReading.cpp" />
     <ClCompile Include="src\Base_decoder.cpp" />

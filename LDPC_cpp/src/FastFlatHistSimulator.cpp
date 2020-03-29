@@ -1,5 +1,6 @@
 #include <random>
 #include <chrono>
+#include <iostream>
 #include "../include/FastFlatHistSimulator.h"
 
 FastFlatHistSimulator::FastFlatHistSimulator(
@@ -27,11 +28,13 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 
 	for (size_t ii = 0; ii < snrArray.size(); ii++) {
 
+		auto t1 = std::chrono::steady_clock::now();
+
 		double sigma = GetSigma(snrArray[ii]);
 		
 		int iterations_count = 0;
 
-		int L = (int)std::round(pow(10, 1 / sigma) * _n / 10);
+		int L = 20;// (int)std::round(pow(10, 1 / sigma) * _n / 25);
 		std::vector<std::vector<int>> H, G;
 		for (size_t itn = 0; itn < L; itn++) {
 			H.push_back(std::vector<int>(_maxTestsCount, 0));
@@ -52,6 +55,8 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 
 		for (size_t it = 0; it < _maxTestsCount; ++it) {
 			bool is_flat = false;
+
+			std::cout << "---------New iteration-------------------------------" << it << "---\n";
 
 			while (!is_flat) {
 				std::vector<double> new_z = z;
@@ -96,6 +101,7 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 					if (hist_is_flat(H, it)) {
 						is_flat = true;
 					}
+					std::cout << "Is flat: " << is_flat << "\n";
 					iterations_count = 0;
 				}
 			}
@@ -117,8 +123,13 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 				prob_error += std::exp(prob[bin_num]) / prob_sum * er_num / el_num;
 			}
 		}
+		auto t2 = std::chrono::steady_clock::now();
 
+		sigmaArray[ii] = sigma;
+		ebn0Array[ii] = GetEbN0(snrArray[ii], _m, _n);
 		ferArray[ii] = prob_error;
+		elapsedTimeArray[ii] = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+		testsCountArray [ii] = iterations_count;
 	}
 }
 
