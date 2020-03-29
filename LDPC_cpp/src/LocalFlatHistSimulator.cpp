@@ -28,18 +28,19 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::vector<int> codeword(_n, 0);
-	std::vector<double> llrs(_n, 0);
+	std::vector<double> llrs(_n, 0), startPoint;
 	std::vector<int> decoded(_n, 0);
 	std::vector<double> F(_l);
 	for (size_t i = 0; i < _l; i++) {
 		if (i < _kMin) F[i] = _alpha * pow(_l - i, _beta);
 		else F[i] = 1;
 	}
-	bool isFailed = false;
-	double vMin = 0, vMax = 2;
+	startPoint = findStartPoint(codeword);
 
 	for (size_t ii = 0; ii < snrArray.size(); ii++) {
 		double sigma = GetSigma(snrArray[ii]);
+		double vMin = _n * sigma / 700, vMax = 1 + _n * sigma / 8000;
+		std::cout << "Vmin: " << vMin << ", Vmax: " << vMax << "\n";
 
 		std::vector<int> H(_l, 0), G(_l, 0), E(_l, 0);
 		std::vector<double> prob(_l, log(1.0 / _l)), probNew(_l), probPrev(_l),
@@ -49,10 +50,10 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
 		std::uniform_real_distribution<double> unDistr(0.0, 1.0);
 		double newLoss, newBit, dz, probBitAcceptance, probStateAcceptance, probOmega, gSum, 
 		       gHat, probSumAB, normCoef;
-		int curBin, newBin;
-		bool isFlat = false, isError;
+		int curBin, newBin, numPoints = 0, numAccepted = 0;
+		bool isFlat = false, isError, isFailed;
 
-		z = findStartPoint();
+		z = startPoint;
 		newLoss = lossFunc(z, codeword);
 		curBin = (int) floor((newLoss - vMin) / (vMax - vMin) * (_l - 1));
 		curBin = std::min(curBin, _l - 1);
@@ -69,7 +70,6 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
 				decoded = _decoderPtr->Decode(llrs, &isFailed);
 				if (decoded != codeword) {
 					G[curBin] += 1;
-					std::cout << "error!\n";
 				}
 
 				newZ = z;
@@ -79,8 +79,9 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
 					probBitAcceptance = std::min(normalPDF(newBit, 0, sigma) /
 						normalPDF(z[i], 0, sigma),
 						1.0);
-					if (unDistr(gen) <= probBitAcceptance)
+					if (unDistr(gen) <= probBitAcceptance) {
 						newZ[i] = newBit;
+					}
 				}
 
 				newLoss = lossFunc(newZ, codeword);
@@ -89,10 +90,13 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
 				newBin = std::min(newBin, _l - 1);
 				newBin = std::max(newBin, 0);
 				
+				numPoints++;
 				probStateAcceptance = std::min(prob[curBin] - prob[newBin], 0.0);
+				//std::cout << std::exp(probStateAcceptance) << " acceptance rate\n";
 				if (log(unDistr(gen)) <= probStateAcceptance) {
 					z = newZ;
 					curBin = newBin;
+					numAccepted++;
 				}
 				H[curBin]++;
 			}
@@ -162,11 +166,11 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
 			for (size_t i = 0; i < _l; i++) {
 				probNew[i] -= log(normCoef);
 			}
-			std::cout << "Prob:\n";
+			/*std::cout << "Prob:\n";
             for (int i = 0; i < _l; i++) {
 				std::cout << std::exp(probNew[i]) << " ";
 			}
-			std::cout << "\n";
+			std::cout << "\n";*/
 
 			isFlat = true;
 			for (size_t i = 0; i < _l; i++) {
@@ -177,7 +181,7 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
 			}
 			prob = probNew;
 
-			z = findStartPoint();
+			z = startPoint;
 			newLoss = lossFunc(z, codeword);
 			curBin = (int) floor((newLoss - vMin) / (vMax - vMin) * (_l - 1));
 			curBin = std::min(curBin, _l - 1);
@@ -302,6 +306,8 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
 			}
 		}
 
+		std::cout << "Acceptance rate: " << (double) numAccepted / numPoints << "\n";
+
 		std::cout << "H:\n";
 		for(int i = 0; i < _l; i++) {
 			std::cout << H[i] << " ";
@@ -327,9 +333,9 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
 
 
 double LocalFlatHistSimulator::normalPDF(double x, double m, double s) {
-	static const double inv_sqrt_2pi = 0.3989422804014327;
+	static const double invSqrt2Pi = 0.3989422804014327;
 	double a = (x - m) / s;
-	return inv_sqrt_2pi / s * std::exp(-0.5 * a * a);
+	return invSqrt2Pi / s * std::exp(-0.5 * a * a);
 }
 
 
@@ -342,12 +348,47 @@ double LocalFlatHistSimulator::lossFunc(const std::vector<double>& z, const std:
 	return pow(lossSum / _n, 1.0 / 3);
 }
 
-std::vector<double> LocalFlatHistSimulator::findStartPoint() {
-	// TODO: bsearch
-	std::vector<double> startPoint(_n, 2.001);
-	startPoint[0] = 2.001;
-	startPoint[1] = 2.001;
-	startPoint[2] = 2.001;
-	//startPoint[3] = 2.001;
+
+std::vector<double> LocalFlatHistSimulator::findStartPoint(const std::vector<int>& codeword) {
+	std::vector<double> startPoint(_n, 0), llrs(_n);
+	std::vector<int> decoded;
+    int l = -1, r = _n + 1;
+	bool isError, isFailed;
+	int mPrev = -1, m;
+    while (r - l > 1) {
+        m = (l + r) / 2;
+
+		// Invariant: [0, mPrev] inversed
+		if (m > mPrev) {
+			for (int i = mPrev + 1; i <= m; i++) {
+				if (!codeword[i]) startPoint[i] = 1.001;
+				else startPoint[i] = -1.001;
+			}
+		}
+		else {
+			for (size_t i = m + 1; i <= mPrev; i++) {
+				startPoint[i] = 0;
+			}
+		}
+		mPrev = m;
+
+		for (size_t i = 0; i < _n; i++) {
+			llrs[i] = -1 * (2 * codeword[i] - 1 + startPoint[i]);
+		}
+		isError = false;
+		decoded = _decoderPtr->Decode(llrs, &isFailed);
+		if (decoded != codeword) {
+			isError = true;
+		}
+
+        if (!isError) {
+            l = m;
+        }
+        else {
+            r = m;
+        }
+    }
+    if (!codeword[r]) startPoint[r] = 1.001;
+	else startPoint[r] = -1.001;
 	return startPoint;
 }
