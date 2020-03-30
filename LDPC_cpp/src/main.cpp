@@ -135,75 +135,76 @@ void FfhRun() {
 }
 
 void LfhRun() {
-	
-	std::string matricesFolder = "../Matrices/FromMatlabScript/";
-	std::string resultsFolder = "../Results/FromMatlabScript/";
+    
+    std::string matricesFolder = "../Matrices/FromMatlabScript/";
+    std::string resultsFolder = "../Results/FromMatlabScript/";
 
-	std::vector<std::tuple<std::string, double, double>> tests = {
-		{"h_3_4_128.sprs", -3.0, -3.0}/*
-		"h_3_4_512.sprs"
-		"h_3_4_2048.sprs",
-		"h_3_6_128.sprs",
-		"h_3_6_512.sprs",
-		"h_3_6_2048.sprs",
-		"h_3_15_128.sprs",
-		"h_3_15_512.sprs",
-		"h_3_15_2048.sprs",
-		"h_8_16_128.sprs",
-		"h_8_16_512.sprs",
-		"h_8_16_2048.sprs"*/
-	};
+    std::vector<std::tuple<std::string, double, double>> tests = {
+        {"h_3_4_128.sprs", -3.0, -3.0}/*
+        "h_3_4_512.sprs"
+        "h_3_4_2048.sprs",
+        "h_3_6_128.sprs",
+        "h_3_6_512.sprs",
+        "h_3_6_2048.sprs",
+        "h_3_15_128.sprs",
+        "h_3_15_512.sprs",
+        "h_3_15_2048.sprs",
+        "h_8_16_128.sprs",
+        "h_8_16_512.sprs",
+        "h_8_16_2048.sprs"*/
+    };
 
-	for (auto& test : tests) {
+    for (auto& test : tests) {
 
-		std::string filename;
-		double minSnr;
-		double maxSnr;
-		std::tie(filename, minSnr, maxSnr) = test;
+        std::string filename;
+        double minSnr;
+        double maxSnr;
+        std::tie(filename, minSnr, maxSnr) = test;
 
-		SimulationParams simulationParams;
-		simulationParams.type = simulationType::LFH;
-		simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
-			{
-				{ "epsilon", "0.2" },
-				{ "l", "300" },
-				{ "kMin", "150" },
-				{ "alpha", "2" },
-				{ "beta", "2" },
-				{ "unconWithoutAB", "2000" },
-				{ "unconWithAB", "10" },
-				{ "conWithoutAB", "10" },
-				{ "conWithAB", "10" }
-			});
-		simulationParams.snrArray = std::vector<double>();
-		for (double i = minSnr; i <= maxSnr; i += 0.2)
-		{
-			simulationParams.snrArray.push_back(i);
-		}
+        SimulationParams simulationParams;
+        simulationParams.type = simulationType::LFH;
+        simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
+            {
+                { "epsilon", "0.3" },
+                { "l", "300" },
+                { "kMin", "150" },
+                { "alpha", "2" },
+                { "beta", "2" },
+                { "unconWithoutAB", "3500" },
+                { "unconWithAB", "5000" },
+                { "conWithoutAB", "4000" },
+                { "conWithAB", "7000" },
+                { "numIterForFindingV", "50000" }
+            });
+        simulationParams.snrArray = std::vector<double>();
+        for (double i = minSnr; i <= maxSnr; i += 0.2)
+        {
+            simulationParams.snrArray.push_back(i);
+        }
 
-		CodeParams codeParams;
-		codeParams.decoder = decoderType::ONMS;
-		codeParams.decoderParams = std::unordered_map<std::string, std::string>(
-			{
-				{ "iterationsCount", "50" },
-				{ "scale", "0.72" },
-				{ "offset", "0.0" }
-			});
-		codeParams.H_MatrixFilename = matricesFolder + filename;
+        CodeParams codeParams;
+        codeParams.decoder = decoderType::ONMS;
+        codeParams.decoderParams = std::unordered_map<std::string, std::string>(
+            {
+                { "iterationsCount", "50" },
+                { "scale", "0.72" },
+                { "offset", "0.0" }
+            });
+        codeParams.H_MatrixFilename = matricesFolder + filename;
 
-		auto results = simulate(simulationParams, codeParams);
+        auto results = simulate(simulationParams, codeParams);
 
-		std::cout << "\n" + filename + "\n";
-		std::cout << "============================================================\n";
-		std::cout << results.ToString() << std::endl;
-		std::cout << "============================================================\n";
+        std::cout << "\n" + filename + "\n";
+        std::cout << "============================================================\n";
+        std::cout << results.ToString() << std::endl;
+        std::cout << "============================================================\n";
 
-		std::string resultsFilename = resultsFolder + filename + ".ffh.results";
-		std::ofstream resultsFile;
-		resultsFile.open(resultsFilename, std::fstream::out);
-		resultsFile << results.ToString();
-		resultsFile.close();
-	}
+        std::string resultsFilename = resultsFolder + filename + ".lfh.results";
+        std::ofstream resultsFile;
+        resultsFile.open(resultsFilename, std::fstream::out);
+        resultsFile << results.ToString();
+        resultsFile.close();
+    }
 }
 
 void test() {
