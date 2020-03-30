@@ -78,9 +78,10 @@ BaseSimulator * BuildSimulator(
 			int unconWithAB = std::stoi(simulationTypeParams["unconWithAB"]);
 			int conWithoutAB = std::stoi(simulationTypeParams["conWithoutAB"]);
 			int conWithAB = std::stoi(simulationTypeParams["conWithAB"]);
+			int numIterForFindingV = std::stoi(simulationTypeParams["numIterForFindingV"]);
 
 			simulator = new LocalFlatHistSimulator(decoderPtr, epsilon, l, kMin, alpha, beta, unconWithoutAB,
-			                                       unconWithAB, conWithoutAB, conWithAB);
+			                                       unconWithAB, conWithoutAB, conWithAB, numIterForFindingV);
 		}
 		break;
 	default:
