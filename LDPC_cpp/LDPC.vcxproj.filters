@@ -8,16 +8,25 @@
     <ClInclude Include="include\SP_decoder.h" />
     <ClInclude Include="include\Base_decoder.h" />
     <ClInclude Include="include\MatrixReading.h" />
-    <ClInclude Include="include\ONMS2_decoder.h" />
+    <ClInclude Include="include\MonteCarloSimulator.h" />
+    <ClInclude Include="include\SimulationParameters.h" />
+    <ClInclude Include="include\simulate.h" />
+    <ClInclude Include="include\BaseSimulator.h" />
+    <ClInclude Include="include\FastFlatHistSimulator.h" />
+    <ClInclude Include="include\LocalFlatHistSimulator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BF_decoder.cpp" />
     <ClCompile Include="src\MathOperations.cpp" />
     <ClCompile Include="src\ONMS_decoder.cpp" />
-    <ClCompile Include="src\simulate.cpp" />
     <ClCompile Include="src\SP_decoder.cpp" />
     <ClCompile Include="src\Base_decoder.cpp" />
     <ClCompile Include="src\MatrixReading.cpp" />
-    <ClCompile Include="src\ONMS2_decoder.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\simulate.cpp" />
+    <ClCompile Include="src\MonteCarloSimulator.cpp" />
+    <ClCompile Include="src\BaseSimulator.cpp" />
+    <ClCompile Include="src\FastFlatHistSimulator.cpp" />
+    <ClCompile Include="src\LocalFlatHistSimulator.cpp" />
   </ItemGroup>
 </Project>

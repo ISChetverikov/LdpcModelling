@@ -62,7 +62,7 @@ std::vector<int> BF_decoder::Decode(std::vector<int> llr, int max_iter){
     }
     int iter_num = 0;
     int sum_incorect = 0;
-    int i = 0;
+    
     int full_cycle_flg = 1;
     while(iter_num<max_iter and full_cycle_flg==1){
         full_cycle_flg=0;

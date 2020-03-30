@@ -1,6 +1,8 @@
-l=3;
-n0=6;
-m=4;
+l=8;
+n0=16;
+m=128;
 q = 2;
 
-matrices_gen(l, n0, m, q, '..\Matrices\FromMatlabScript\', "h4.csv", "g4.csv")
+isSparseH = true;
+isOnlyH = true;
+matrices_gen(l, n0, m, q, '..\Matrices\FromMatlabScript\', isSparseH, isOnlyH)

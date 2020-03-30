@@ -19,23 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BaseSimulator.h" />
     <ClInclude Include="include\Base_decoder.h" />
     <ClInclude Include="include\BF_decoder.h" />
+    <ClInclude Include="include\FastFlatHistSimulator.h" />
+    <ClInclude Include="include\LocalFlatHistSimulator.h" />
+    <ClInclude Include="include\SimulationParameters.h" />
     <ClInclude Include="include\Exceptions.h" />
     <ClInclude Include="include\MathOperations.h" />
     <ClInclude Include="include\MatrixReading.h" />
-    <ClInclude Include="include\ONMS2_decoder.h" />
+    <ClInclude Include="include\MonteCarloSimulator.h" />
     <ClInclude Include="include\ONMS_decoder.h" />
+    <ClInclude Include="include\simulate.h" />
     <ClInclude Include="include\SP_decoder.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\ONMS2_decoder.cpp" />
+    <ClCompile Include="src\FastFlatHistSimulator.cpp" />
+    <ClCompile Include="src\LocalFlatHistSimulator.cpp" />
+    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MatrixReading.cpp" />
     <ClCompile Include="src\Base_decoder.cpp" />
     <ClCompile Include="src\BF_decoder.cpp" />
     <ClCompile Include="src\MathOperations.cpp" />
+    <ClCompile Include="src\MonteCarloSimulator.cpp" />
     <ClCompile Include="src\ONMS_decoder.cpp" />
     <ClCompile Include="src\simulate.cpp" />
+    <ClCompile Include="src\BaseSimulator.cpp" />
     <ClCompile Include="src\SP_decoder.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -94,11 +103,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,38 +119,46 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -29,3 +29,30 @@ public:
 	IncorrectDimensionsException(const std::string err) : m_error(err.c_str()) {};
 	const char* what() const noexcept { return m_error.c_str(); }
 };
+
+class NotBinaryMatrixException : public std::exception
+{
+private:
+	std::string m_error;
+public:
+	NotBinaryMatrixException(const std::string err) : m_error(err.c_str()) {};
+	const char* what() const noexcept { return m_error.c_str(); }
+};
+
+class MatrixRowSkippedException : public std::exception
+{
+private:
+	std::string m_error;
+public:
+	MatrixRowSkippedException(const std::string err) : m_error(err.c_str()) {};
+	const char* what() const noexcept { return m_error.c_str(); }
+};
+
+class ExtensionException : public std::exception
+{
+private:
+	std::string m_error;
+public:
+	ExtensionException(const std::string err) : m_error(err.c_str()) {};
+	const char* what() const noexcept { return m_error.c_str(); }
+};

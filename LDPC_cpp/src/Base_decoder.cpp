@@ -1,6 +1,8 @@
-#include <algorithm>
 #include "../include/Exceptions.h"
 #include "../include/Base_decoder.h"
+
+Base_decoder::Base_decoder() {
+}
 
 Base_decoder::Base_decoder(std::vector<std::vector<int>> H_row_sparse, int iterationsCount) {
 
@@ -28,7 +30,7 @@ Base_decoder::Base_decoder(std::vector<std::vector<int>> H_row_sparse, int itera
 	{
 		for (size_t i = 0; i < _checks[j].size(); i++)
 		{
-			_bits[_checks[j][i]].push_back(j);
+			_bits[_checks[j][i]].push_back((int)j);
 		}
 	}
 
@@ -36,4 +38,12 @@ Base_decoder::Base_decoder(std::vector<std::vector<int>> H_row_sparse, int itera
 	_n = _bits.size();
 
 	return;
+}
+
+size_t Base_decoder::GetCodewordLegth() {
+	return _n;
+}
+
+size_t Base_decoder::GetChecksSymbolsCount() {
+	return _m;
 }
