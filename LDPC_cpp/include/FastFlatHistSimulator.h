@@ -11,6 +11,7 @@ protected:
 	double _epsilon = 0;
 	double _percent = 0;
 	
+	std::vector<double> findStartPoint(const std::vector<int>& codeword);
 	double normal_pdf(double x, double m, double s);
 	double loss_func(const std::vector<double>& z, const std::vector<int>& codeword);
 	bool hist_is_flat(std::vector<std::vector<int>>& H, size_t iter);

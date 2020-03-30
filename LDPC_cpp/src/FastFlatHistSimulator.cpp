@@ -1,6 +1,9 @@
 #include <random>
 #include <chrono>
 #include <iostream>
+#include <algorithm>
+#include <numeric>
+#include <fstream>
 #include "../include/FastFlatHistSimulator.h"
 
 FastFlatHistSimulator::FastFlatHistSimulator(
@@ -30,12 +33,12 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 
 		auto t1 = std::chrono::steady_clock::now();
 
-		double sigma = GetSigma(snrArray[ii]);
-		
-		int iterations_count = 0;
+		// Hard code
+		int L = 200; //(int)std::round(pow(10, 1 / sigma) * _n / 50);
+		const int MaxFlatnessCheck = 50;
 
-		int L = (int)std::round(pow(10, 1 / sigma) * _n / 50);
-		std::cout << L << std::endl;
+		double sigma = GetSigma(snrArray[ii]);
+	
 		std::vector<std::vector<int>> H, G;
 		for (size_t itn = 0; itn < L; itn++) {
 			H.push_back(std::vector<int>(_maxTestsCount, 0));
@@ -49,19 +52,26 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 
 		std::vector<double> prob(L, log(1.0 / L));
 		std::vector<double> z(_n, 0);
+		//z = findStartPoint(codeword);
 		std::normal_distribution<double> norm_distr(0, sigma);
 		std::uniform_real_distribution<double> un_distr(0.0, 1.0);
 		int cur_bin = 0;
 		int wrong_dec = 0;
 		int ar_total = 0;
 		int ar_ac = 0;
+		int real_it = 0;
+		bool isReached = false;
+		int iterations_count = 0;
+		
 
 		for (size_t it = 0; it < _maxTestsCount; ++it) {
 			bool is_flat = false;
 
 			std::cout << "---------New iteration-------------------------------" << it << "---\n";
 
-			while (!is_flat) {
+			int flatnessCheck = 0;
+			while (!is_flat && flatnessCheck < MaxFlatnessCheck) {
+				
 				std::vector<double> new_z = z;
 
 				for (size_t l = 0; l < _n; ++l) {
@@ -95,29 +105,62 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 				
 				if (decoded != codeword) {
 					G[cur_bin][it] += 1;
-					wrong_dec++;
+					if (it != 0)      // skip one iteration
+						wrong_dec++;
 				}
-				if (wrong_dec >= _maxRejectionsCount) {
-					it = _maxTestsCount;
-					break;
+				if (!isReached && wrong_dec >= _maxRejectionsCount) {
+					isReached = true;
+					std::cout << "Found-----------------------" << wrong_dec << "\n";
 				}
 				iterations_count += 1;
 				if (iterations_count == check_const) {
+					flatnessCheck++;
 					if (hist_is_flat(H, it)) {
 						is_flat = true;
 					}
-					std::cout << "Is flat: " << is_flat << "\n";
+					// std::cout << "Is flat: " << is_flat << "\n";
 					iterations_count = 0;
 				}
 			}
 			f = sqrt(f);
+			if (isReached)
+				break;
 		}
+
+#ifdef DEBUG // Save info to file
+		std::string resultsFilename = "ffh.prob.H.G.debug";
+		std::ofstream resultsFile;
+		resultsFile.open(resultsFilename, std::fstream::out);
+		for (size_t i = 0; i < prob.size(); i++)
+		{
+			resultsFile << prob[i] << ",";
+		}
+		resultsFile << std::endl;
+		for (size_t i = 0; i < prob.size(); i++)
+		{
+			resultsFile << H[i][real_it] << ",";
+		}
+		resultsFile << std::endl;
+		for (size_t i = 0; i < prob.size(); i++)
+		{
+			resultsFile << G[i][real_it] << ",";
+		}
+		resultsFile << std::endl;
+		resultsFile.close();
+
+		std::cout << "Acceptance rate: ";
 		std::cout << (double)ar_ac / ar_total << std::endl;
+#endif // DEBUG
+
 		double prob_error = 0;
 		double prob_sum = 0;
+
+		double prob_mean = std::accumulate(prob.begin(), prob.end(), 0.0) / L;
 		for (auto p : prob) {
-			prob_sum += std::exp(p);
+			
+			prob_sum += std::exp(p - prob_mean);
 		}
+		 
 		for (size_t bin_num = 0; bin_num < L; ++bin_num) {
 			int el_num = 0, er_num = 0;
 			for (size_t it_num = 0; it_num < _maxTestsCount; ++it_num) {
@@ -125,7 +168,8 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 				er_num += G[bin_num][it_num];
 			}
 			if (el_num != 0) {
-				prob_error += std::exp(prob[bin_num]) / prob_sum * er_num / el_num;
+				
+				prob_error += std::exp(prob[bin_num] - prob_mean) / prob_sum * er_num / el_num;
 			}
 		}
 		auto t2 = std::chrono::steady_clock::now();
@@ -138,6 +182,49 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 	}
 }
 
+std::vector<double> FastFlatHistSimulator::findStartPoint(const std::vector<int>& codeword) {
+	std::vector<double> startPoint(_n, 0), llrs(_n);
+	std::vector<int> decoded;
+	int l = -1, r = _n + 1;
+	bool isError, isFailed;
+	int mPrev = -1, m;
+	while (r - l > 1) {
+		m = (l + r) / 2;
+
+		// Invariant: [0, mPrev] inversed
+		if (m > mPrev) {
+			for (int i = mPrev + 1; i <= m; i++) {
+				if (!codeword[i]) startPoint[i] = 1.001;
+				else startPoint[i] = -1.001;
+			}
+		}
+		else {
+			for (size_t i = m + 1; i <= mPrev; i++) {
+				startPoint[i] = 0;
+			}
+		}
+		mPrev = m;
+
+		for (size_t i = 0; i < _n; i++) {
+			llrs[i] = -1 * (2 * codeword[i] - 1 + startPoint[i]);
+		}
+		isError = false;
+		decoded = _decoderPtr->Decode(llrs, &isFailed);
+		if (decoded != codeword) {
+			isError = true;
+		}
+
+		if (!isError) {
+			l = m;
+		}
+		else {
+			r = m;
+		}
+	}
+	if (!codeword[r]) startPoint[r] = 1.001;
+	else startPoint[r] = -1.001;
+	return startPoint;
+}
 
 double FastFlatHistSimulator::normal_pdf(double x, double m, double s) {
 	static const double inv_sqrt_2pi = 0.3989422804014327;
@@ -151,7 +238,7 @@ double FastFlatHistSimulator::loss_func(const std::vector<double>& z, const std:
 	double loss_sum = 0;
 	for (size_t l = 0; l < n; l++) {
 		int q = 1 - 2 * codeword[l]; 
-		loss_sum += pow((q * z[l] < 0) * z[l], 2);
+		loss_sum += pow((q * z[l] > 0) * z[l], 2);
 	}
 	return sqrt(loss_sum / n);
 }
@@ -211,7 +298,7 @@ std::pair<double, double> FastFlatHistSimulator::find_opt_V(int L, double snr, c
 	}
 	size_t min_bin = L, max_bin = L;
 	for (size_t bin_num = 0; bin_num < L; ++bin_num) {
-		if (H[bin_num] != 0) {
+		if (H[bin_num] > 1) {
 			max_bin = bin_num;
 			if (min_bin == L) {
 				min_bin = bin_num;
