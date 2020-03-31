@@ -10,12 +10,11 @@ protected:
 	int _skip_iterations = 0;
 	double _epsilon = 0;
 	double _percent = 0;
-	
-	std::vector<double> findStartPoint(const std::vector<int>& codeword);
+
 	double normal_pdf(double x, double m, double s);
 	double loss_func(const std::vector<double>& z, const std::vector<int>& codeword);
 	bool hist_is_flat(std::vector<std::vector<int>>& H, size_t iter);
-	std::pair<double, double> find_opt_V(int L, double snr, const std::vector<int>& codeword,
+	std::tuple<double, double, std::vector<double>> find_opt_V(int L, double snr, const std::vector<int>& codeword,
 		double sigma, double f);
 
 public:

@@ -75,7 +75,7 @@ void FfhRun() {
 	std::string resultsFolder = "../Results/FromMatlabScript/";
 
 	std::vector<std::tuple<std::string, double, double>> tests = {
-		{"h_3_4_128.sprs", -1.6, -1.6}/*,
+		{"h_3_4_128.sprs", -3, -3}/*,
 		{"h_3_4_512.sprs", -6.0, -1.5},
 		{"h_3_4_2048.sprs", -6.0, -1.5},
 		{"h_3_6_128.sprs", -3.0, 1.0},
@@ -97,10 +97,10 @@ void FfhRun() {
 		simulationParams.type = simulationType::FFH;
 		simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
 			{
-				{ "maxTestsCount", "10" },
+				{ "maxTestsCount", "5" },
 				{ "maxRjectionsCount", "500" },
 				{ "skipIterations", "2000" },
-				{ "epsilon", "1" },
+				{ "epsilon", "0.1" },
 				{ "percent", "0.9" }
 			});
 		simulationParams.snrArray = std::vector<double>();
