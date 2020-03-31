@@ -34,7 +34,7 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 		auto t1 = std::chrono::steady_clock::now();
 
 		// Hard code
-		int L = 200; //(int)std::round(pow(10, 1 / sigma) * _n / 50);
+		int L = 150; //(int)std::round(pow(10, 1 / sigma) * _n / 50);
 		const int MaxFlatnessCheck = 50;
 
 		double sigma = GetSigma(snrArray[ii]);
@@ -53,7 +53,6 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 		std::vector<double> prob(L, log(1.0 / L));
 
 		std::vector<double> z(_n, 0);
-		//z = findStartPoint(codeword);
 		std::normal_distribution<double> norm_distr(0, sigma);
 		std::uniform_real_distribution<double> un_distr(0.0, 1.0);
 		int cur_bin = 0;
@@ -62,6 +61,7 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 		//int ar_ac = 0;
 		bool isReached = false;
 		int iterations_count = 0;
+		bool is_accepted = true; // first decoding is required
 		size_t current_iteration = 0;
 		
 		std::cout << "SNR: " << snrArray[ii] << " ===== sigma: " << sigma << " =========" << std::endl;
@@ -96,12 +96,17 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 					z = new_z;
 					cur_bin = new_bin;
 					//ar_ac++;
+					is_accepted = true;
 				}
 				prob[cur_bin] += log(f);
-				for (size_t i = 0; i < _n; i++) {
-					llrs[i] = -2 * (2 * codeword[i] - 1 + z[i]) / (sigma * sigma);
+				if (is_accepted) { // economize on not accepted z - it does not change
+					for (size_t i = 0; i < _n; i++) {
+						llrs[i] = -2 * (2 * codeword[i] - 1 + z[i]) / (sigma * sigma);
+					}
+					decoded = _decoderPtr->Decode(llrs, &isFailed);
+					is_accepted = false;
 				}
-				decoded = _decoderPtr->Decode(llrs, &isFailed);
+				
 				H[cur_bin][current_iteration] += 1;
 				
 				if (decoded != codeword) {
@@ -164,7 +169,10 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 		}
 		
 		int iterationsCountsTotal = 0;
+		if (current_iteration == _maxTestsCount)
+			current_iteration--;
 		size_t iteration_counts = current_iteration + 1;
+
 		for (size_t bin_num = 0; bin_num < L; ++bin_num) {
 			int el_num = 0, er_num = 0;
 			for (size_t iter = 0; iter <= iteration_counts; ++iter) {
