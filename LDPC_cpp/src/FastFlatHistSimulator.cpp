@@ -8,12 +8,13 @@
 #include "../include/FastFlatHistSimulator.h"
 
 FastFlatHistSimulator::FastFlatHistSimulator(
-	int maxTests, int maxRejectionsCount, Base_decoder * decoderPtr, int skipInterations, double epsilon, double percent)
+	int maxTests, int minTests, int maxRejectionsCount, Base_decoder * decoderPtr, int skipInterations, double epsilon, double percent)
 	: BaseSimulator(maxTests, maxRejectionsCount, decoderPtr) {
 
 	_skip_iterations = skipInterations;
 	_epsilon = epsilon;
 	_percent = percent;
+	_minIterationsCount = minTests;
 }
 
 void FastFlatHistSimulator::Run(std::vector<double> snrArray,
@@ -36,7 +37,7 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 
 		// Hard code
 		int L = 100; //(int)std::round(pow(10, 1 / sigma) * _n / 50);
-		const int MaxFlatnessCheck = 50;
+		const int MaxFlatnessCheck = 1;
 
 		double sigma = GetSigma(snrArray[ii]);
 	
@@ -121,10 +122,10 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 					if (current_iteration != 0)      // skip one iteration
 						wrong_dec++;
 				}
-				//if (!isReached && wrong_dec >= _maxRejectionsCount) {
-					//isReached = true;
-					//std::cout << "----Found rejections: " << wrong_dec << " --------------\n";
-				//}
+				if (!isReached && _minIterationsCount <= current_iteration && wrong_dec >= _maxRejectionsCount) {
+					isReached = true;
+					std::cout << "----Found rejections: " << wrong_dec << " --------------\n";
+				}
 				iterations_count += 1;
 				if (iterations_count == check_const) {
 					flatnessCheck++;

@@ -8,6 +8,7 @@
 class FastFlatHistSimulator : public BaseSimulator {
 protected:
 	int _skip_iterations = 0;
+	int _minIterationsCount = 0;
 	double _epsilon = 0;
 	double _percent = 0;
 
@@ -18,7 +19,7 @@ protected:
 		double sigma, double f);
 
 public:
-	FastFlatHistSimulator(int maxTests, int rejectionsCount, Base_decoder * decoder, int skipInterations, double eps, double percent);
+	FastFlatHistSimulator(int maxTests, int minTests, int rejectionsCount, Base_decoder * decoder, int skipInterations, double eps, double percent);
 	~FastFlatHistSimulator() {};
 	void Run(std::vector<double> snrArray,
 		std::vector<double>& ebn0Array,
