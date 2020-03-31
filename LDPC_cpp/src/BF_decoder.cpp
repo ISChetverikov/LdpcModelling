@@ -28,33 +28,32 @@ std::vector<int> BF_decoder::Decode(std::vector<double> llr, bool * isFailed) {
     if (n != _n)
         throw IncorrectCodewordException("The codeword is not from a code with given check matrix");
     std::vector<int> result(n);
+    std::vector<int> check_values(_m, 0);
     result = _llr;
-    /*for(size_t i=0; i < n; i++){
-     if(_llr[i] == 0) continue;
-     for(size_t j=0; j<_bits[i].size(); j++){
-     std::cout << _bits[i][j] << std::endl;
-     _checks[_bits[i][j]] = (_checks[_bits[i][j]] + 1) % 2;
-     }
-     }
-     int iter_num = 0;
-     int sum_incorect = 0;
-     std::cout << "tttt";
-     int full_cycle_flg = 1;
-     while(iter_num<50 and full_cycle_flg==1){
-     full_cycle_flg=0;
-     for(size_t i=0; i<n; i++){
-     iter_num++;
-     sum_incorect = 0;
-     for(size_t j=0; j<_bits[i].size(); j++)
-     sum_incorect+= _checks[_bits[i][j]];
-     if (sum_incorect > int(_bits[i].size()/2)){
-     result[i] = (result[i] + 1) % 2;
-     for(size_t k=0; k<_bits[i].size(); k++)
-     _checks[_bits[i][k]] = (_checks[_bits[i][k]] + 1) % 2;
-     full_cycle_flg = 1;
-     }
-     }
-     }
-     */
+    for (size_t i = 0; i < n; i++) { // initial checks compute
+        if (_llr[i] == 0) continue;
+        for (size_t j = 0; j < _bits[i].size(); j++) {
+            check_values[_bits[i][j]] = (check_values[_bits[i][j]] + 1) % 2;
+        }
+    }
+    int iter_num = 0;
+    bool full_cycle_flg = true;
+    while (iter_num < 200 and full_cycle_flg) {
+        iter_num++;
+        full_cycle_flg = false;
+        for (size_t i = 0; i < n; i++) {
+            int sum_incorrect = 0;
+            for (size_t j = 0; j < _bits[i].size(); j++) {
+                sum_incorrect += check_values[_bits[i][j]];
+            }
+            if (sum_incorrect > int(_bits[i].size() / 2)) {
+                result[i] = (result[i] + 1) % 2;
+                for (size_t k = 0; k < _bits[i].size(); k++) {
+                    check_values[_bits[i][k]] = (check_values[_bits[i][k]] + 1) % 2;
+                    full_cycle_flg = true;
+                }
+            }
+        }
+    }
     return result;
 }
