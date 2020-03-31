@@ -75,15 +75,15 @@ void FfhRun() {
 	std::string resultsFolder = "../Results/FromMatlabScript/";
 
 	std::vector<std::tuple<std::string, double, double>> tests = {
-		{"h_3_4_128.sprs", -3.0, -1.0}/*,
-		{"h_3_4_512.sprs", -6.0, -1.0},
-		{"h_3_4_2048.sprs", -6.0, -1.0},
+		{"h_3_4_128.sprs", -6.0, -1.5},
+		{"h_3_4_512.sprs", -6.0, -1.5},
+		{"h_3_4_2048.sprs", -6.0, -1.5},
 		{"h_3_6_128.sprs", -3.0, 1.0},
 		{"h_3_6_512.sprs", -3.0, 1.0},
 		{"h_3_6_2048.sprs", -3.0, 1.0},
 		{"h_3_15_128.sprs", 1.0, 3.6},
 		{"h_3_15_512.sprs", 1.0, 3.6},
-		{"h_3_15_2048.sprs", 1.0, 3.6}*/
+		{"h_3_15_2048.sprs", 1.0, 3.6}
 	};
 
 	for (auto& test : tests) {
@@ -98,7 +98,7 @@ void FfhRun() {
 		simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
 			{
 				{ "maxTestsCount", "10" },
-				{ "maxRjectionsCount", "200" },
+				{ "maxRjectionsCount", "500" },
 				{ "skipIterations", "2000" },
 				{ "epsilon", "1" },
 				{ "percent", "0.9" }
@@ -140,7 +140,7 @@ void LfhRun() {
 	std::string resultsFolder = "../Results/FromMatlabScript/";
 
 	std::vector<std::tuple<std::string, double, double>> tests = {
-		{"h_3_4_128.sprs", -3.0, -3.0}/*
+		{"h_3_4_128.sprs", -6.0, -1.5}/*
 		"h_3_4_512.sprs"
 		"h_3_4_2048.sprs",
 		"h_3_6_128.sprs",
