@@ -53,6 +53,11 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 		double Vmin, Vmax;
 		std::vector<double> z(_n, 0);
 		std::tie(Vmin, Vmax, z) = V;
+		/*for (size_t i = 0; i < _n; i++)
+		{
+			std::cout << z[i] << ", ";
+		}*/
+		std::cout << loss_func(z, codeword) << std::endl;
 		std::cout << Vmin << "-" << Vmax << std::endl;
 		std::vector<double> prob(L, log(1.0 / L));
 
@@ -92,9 +97,10 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 
 				double new_loss = loss_func(new_z, codeword);
 				int new_bin = (int)floor((new_loss - Vmin) / (Vmax - Vmin) * (L - 1));
-				if (new_bin < 0 || new_bin >(L - 1))
+				if (new_bin < 0 || new_bin >(L - 1)) {
+					//std::cout << "---------Out of bin encountered. Dont worry, stay calm!-----" << std::endl;
 					continue;
-
+				}
 				//new_bin = std::min(new_bin, L - 1);
 				//new_bin = std::max(new_bin, 0);
 
@@ -248,7 +254,7 @@ std::tuple<double, double, std::vector<double>> FastFlatHistSimulator::find_opt_
 	double sigma, double f) {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	double Vmin = 0, Vmax = 1.2;
+	double Vmin = 0, Vmax = 2;
 	std::vector<double> prob(L, log(1.0 / L));
 	std::vector<double> z(_n, 0);
 	std::normal_distribution<double> norm_distr(0, sigma);
@@ -292,5 +298,5 @@ std::tuple<double, double, std::vector<double>> FastFlatHistSimulator::find_opt_
 		}
 	}
 
-	return std::make_tuple((double)min_bin / L, ((double)max_bin + 1) / L, z);
+	return std::make_tuple((double)min_bin * (Vmax - Vmin) / L, ((double)max_bin + 1) * (Vmax - Vmin) / L, z);
 }
