@@ -30,7 +30,7 @@ void MonteCarloSimulator::Run(std::vector<double> snrArray,
 		bool isFailed = false;
 		std::normal_distribution<double> distribution(0, sigma);
 
-		while ((tests < _maxTestsCount) && (wrong_dec < _maxRejectionsCount)) {
+		while (((tests < _maxTestsCount) && (wrong_dec < _maxRejectionsCount)) || ((_maxTestsCount == -1) && (wrong_dec < _maxRejectionsCount))) {
 			tests++;
 
 			for (size_t i = 0; i < _n; i++) {
