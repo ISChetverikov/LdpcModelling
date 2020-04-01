@@ -352,13 +352,12 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
         }
 
         double probPartSum = 0;
-        int cntNonZeroBins = 0;
+        int cntNonZeroBins = _l - _kMin;
         for (size_t i = _kMin; i < _l; i++) {
             if (H[i] == 0) {
                 continue;
             }
             probPartSum += (double) G[i] / H[i] * std::exp(prob[i]) / std::exp(probCond[i]);
-            cntNonZeroBins++;
         }
 
         double PErr = probPartSum / cntNonZeroBins;
