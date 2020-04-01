@@ -38,7 +38,7 @@ std::vector<int> BF_decoder::Decode(std::vector<double> llr, bool * isFailed) {
     }
     int iter_num = 0;
     bool full_cycle_flg = true;
-    while (iter_num < 200 and full_cycle_flg) {
+    while (iter_num < _iterationsCount and full_cycle_flg) {
         iter_num++;
         full_cycle_flg = false;
         for (size_t i = 0; i < n; i++) {
