@@ -65,13 +65,14 @@ BaseSimulator * BuildSimulator(
         }
             break;
         case simulationType::FFH: {
-            int maxTestsCount = std::stoi(simulationTypeParams["maxTestsCount"]);
+            int maxIterationssCount = std::stoi(simulationTypeParams["maxIterationsCount"]);
+			int minIterationsCount = std::stoi(simulationTypeParams["minIterationsCount"]);
             int maxRjectionsCount = std::stoi(simulationTypeParams["maxRjectionsCount"]);
             int skipIterations = std::stoi(simulationTypeParams["skipIterations"]);
             double epsilon = std::stod(simulationTypeParams["epsilon"]);
             double percent = std::stod(simulationTypeParams["percent"]);
             
-            simulator = new FastFlatHistSimulator(maxTestsCount, maxRjectionsCount, decoderPtr, skipIterations, epsilon, percent);
+            simulator = new FastFlatHistSimulator(maxIterationssCount, minIterationsCount, maxRjectionsCount, decoderPtr, skipIterations, epsilon, percent);
         }
             break;
         case simulationType::LFH: {

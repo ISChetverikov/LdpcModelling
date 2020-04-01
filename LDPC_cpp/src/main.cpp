@@ -61,7 +61,7 @@ void McRun() {
 		std::cout << results.ToString() << std::endl;
 		std::cout << "============================================================\n";
 
-		std::string resultsFilename = resultsFolder + filename + ".mc.results.temp";
+		std::string resultsFilename = resultsFolder + filename + ".mc.onms.results";
 		std::ofstream resultsFile;
 		resultsFile.open(resultsFilename, std::fstream::out);
 		resultsFile << results.ToString();
@@ -75,15 +75,15 @@ void FfhRun() {
 	std::string resultsFolder = "../Results/FromMatlabScript/";
 
 	std::vector<std::tuple<std::string, double, double>> tests = {
-		{"h_3_4_128.sprs", -1.6, -1.6}/*,
-		{"h_3_4_512.sprs", -6.0, -1.5},
-		{"h_3_4_2048.sprs", -6.0, -1.5},
-		{"h_3_6_128.sprs", -3.0, 1.0},
-		{"h_3_6_512.sprs", -3.0, 1.0},
-		{"h_3_6_2048.sprs", -3.0, 1.0},
-		{"h_3_15_128.sprs", 1.0, 3.6},
-		{"h_3_15_512.sprs", 1.0, 3.6},
-		{"h_3_15_2048.sprs", 1.0, 3.6}*/
+		//{"h_3_4_128.sprs", -6.0, -0.5},
+		{"h_3_4_512.sprs", -6.0, -0.5},
+		//{"h_3_4_2048.sprs", -6.0, -1.5},
+		//{"h_3_6_128.sprs", -3.0, 1.5},
+		{"h_3_6_512.sprs", -3.0, 1.5},
+		//{"h_3_6_2048.sprs", -3.0, 1.5},
+		//{"h_3_15_128.sprs", 1.0, 4.0},
+		{"h_3_15_512.sprs", 1.0, 4.0},
+		//{"h_3_15_2048.sprs", 1.0, 4.0}
 	};
 
 	for (auto& test : tests) {
@@ -97,10 +97,11 @@ void FfhRun() {
 		simulationParams.type = simulationType::FFH;
 		simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
 			{
-				{ "maxTestsCount", "10" },
+				{ "maxIterationsCount", "10" },
+				{ "minIterationsCount", "5" },
 				{ "maxRjectionsCount", "500" },
 				{ "skipIterations", "2000" },
-				{ "epsilon", "1" },
+				{ "epsilon", "0.1" },
 				{ "percent", "0.9" }
 			});
 		simulationParams.snrArray = std::vector<double>();
@@ -126,7 +127,7 @@ void FfhRun() {
 		std::cout << results.ToString() << std::endl;
 		std::cout << "============================================================\n";
 
-		std::string resultsFilename = resultsFolder + filename + ".ffh.results";
+		std::string resultsFilename = resultsFolder + filename + ".ffh.onms.results";
 		std::ofstream resultsFile;
 		resultsFile.open(resultsFilename, std::fstream::out);
 		resultsFile << results.ToString();

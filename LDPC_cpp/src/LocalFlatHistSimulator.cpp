@@ -37,7 +37,7 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
         else F[i] = 0;
     }
     startPoint = findStartPoint(codeword, 0);
-    startPointCon = findStartPoint(codeword, _n);
+    startPointCon = findStartPoint(codeword, 0);
 
     for (size_t ii = 0; ii < snrArray.size(); ii++) {
         auto t1 = std::chrono::steady_clock::now();
@@ -53,27 +53,31 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
         std::normal_distribution<double> normDistr(0, sigma);
         std::uniform_real_distribution<double> unDistr(0.0, 1.0);
         double newLoss, newBit, dz, probBitAcceptance, probStateAcceptance, probOmega,
-               gHat, probSumAB, normCoef, probDiff;
+               gHat, probSumAB, normCoef;
         int curBin, newBin, numPoints = 0, numAccepted = 0;
-        bool isFlat = false, isError, isFailed;
+        bool isFlat = false, isError, isFailed, inV;
 
         z = startPoint;
         newLoss = lossFunc(z, codeword);
         curBin = (int) floor((newLoss - vMin) / (vMax - vMin) * (_l - 1));
-        curBin = std::min(curBin, _l - 1);
-        curBin = std::max(curBin, 0);
-        H[curBin]++;
+        //curBin = std::min(curBin, _l - 1);
+        //curBin = std::max(curBin, 0);
+        if (curBin > _l - 1 || curBin < 0) inV = false;
+        else inV = true;
+        if (inV) H[curBin]++;
 
         while (!isFlat) {
-            std::cout << "<<<=====NewIteration=====>>>\n";
+            std::cout << "<<<=====NewIteration=====>>>\nSNR:" << snrArray[ii] << "\n";
             for (size_t it = 0; it < _unconWithoutAB; it++) {
-                for (size_t i = 0; i < _n; i++) {
-                    llrs[i] = -2 * (2 * codeword[i] - 1 + z[i]) / (sigma * sigma);
-                }
-                iterationsCount++;
-                decoded = _decoderPtr->Decode(llrs, &isFailed);
-                if (decoded != codeword) {
-                    G[curBin] += 1;
+                if (inV) {
+                    for (size_t i = 0; i < _n; i++) {
+                        llrs[i] = -2 * (2 * codeword[i] - 1 + z[i]) / (sigma * sigma);
+                    }
+                    iterationsCount++;
+                    decoded = _decoderPtr->Decode(llrs, &isFailed);
+                    if (decoded != codeword) {
+                        G[curBin] += 1;
+                    }
                 }
 
                 newZ = z;
@@ -90,27 +94,33 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
 
                 newLoss = lossFunc(newZ, codeword);
                 newBin = (int) floor((newLoss - vMin) / (vMax - vMin) * (_l - 1));
-                newBin = std::min(newBin, _l - 1);
-                newBin = std::max(newBin, 0);
+                //newBin = std::min(newBin, _l - 1);
+                //newBin = std::max(newBin, 0);
+                if (newBin > _l - 1 || newBin < 0) inV = false;
+                else inV = true;
                 
-                numPoints++;
-                probStateAcceptance = std::min(prob[curBin] - prob[newBin], 0.0);
-                if (log(unDistr(gen)) <= probStateAcceptance) {
-                    z = newZ;
-                    curBin = newBin;
-                    numAccepted++;
+                if (inV) {
+                    numPoints++;
+                    probStateAcceptance = std::min(prob[curBin] - prob[newBin], 0.0);
+                    if (log(unDistr(gen)) <= probStateAcceptance) {
+                        z = newZ;
+                        curBin = newBin;
+                        numAccepted++;
+                    }
+                    H[curBin]++;
                 }
-                H[curBin]++;
             }
 
             for (size_t it = 0; it < _unconWithAB; it++) {
-                for (size_t i = 0; i < _n; i++) {
-                    llrs[i] = -2 * (2 * codeword[i] - 1 + z[i]) / (sigma * sigma);
-                }
-                iterationsCount++;
-                decoded = _decoderPtr->Decode(llrs, &isFailed);
-                if (decoded != codeword) {
-                    G[curBin] += 1;
+                if (inV) {
+                    for (size_t i = 0; i < _n; i++) {
+                        llrs[i] = -2 * (2 * codeword[i] - 1 + z[i]) / (sigma * sigma);
+                    }
+                    iterationsCount++;
+                    decoded = _decoderPtr->Decode(llrs, &isFailed);
+                    if (decoded != codeword) {
+                        G[curBin] += 1;
+                    }
                 }
 
                 newZ = z;
@@ -126,14 +136,19 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
 
                 newLoss = lossFunc(newZ, codeword);
                 newBin = (int) floor((newLoss - vMin) / (vMax - vMin) * (_l - 1));
-                newBin = std::min(newBin, _l - 1);
-                newBin = std::max(newBin, 0);
-                probStateAcceptance = std::min(prob[curBin] + F[curBin] - prob[newBin] - F[newBin], 0.0);
-                if (log(unDistr(gen)) <= probStateAcceptance) {
-                    z = newZ;
-                    curBin = newBin;
+                //newBin = std::min(newBin, _l - 1);
+                //newBin = std::max(newBin, 0);
+                if (newBin > _l - 1 || newBin < 0) inV = false;
+                else inV = true;
+
+                if (inV) {
+                    probStateAcceptance = std::min(prob[curBin] + F[curBin] - prob[newBin] - F[newBin], 0.0);
+                    if (log(unDistr(gen)) <= probStateAcceptance) {
+                        z = newZ;
+                        curBin = newBin;
+                    }
+                    H[curBin]++;
                 }
-                H[curBin]++;
             }
 
             probOmega = 1;
@@ -199,12 +214,14 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
         z = startPointCon;
         newLoss = lossFunc(z, codeword);
         curBin = (int) floor((newLoss - vMin) / (vMax - vMin) * (_l - 1));
-        curBin = std::min(curBin, _l - 1);
-        curBin = std::max(curBin, 0);
-        E[curBin]++;
+        //curBin = std::min(curBin, _l - 1);
+        //curBin = std::max(curBin, 0);
+        if (curBin > _l - 1 || curBin < 0) inV = false;
+        else inV = true;
+        if (inV) E[curBin]++;
 
         while (!isFlat) {
-            std::cout << "<<<=====NewIteration=====>>>\n";
+            std::cout << "<<<=====NewIteration=====>>>\nSNR:" << snrArray[ii] << "\n";
             for (size_t it = 0; it < _conWithoutAB; it++) {
                 newZ = z;
                 for (size_t i = 0; i < _n; i++) {
@@ -217,28 +234,32 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
                         newZ[i] = newBit;
                 }
 
-                for (size_t i = 0; i < _n; i++) {
-                    llrs[i] = -2 * (2 * codeword[i] - 1 + newZ[i]) / (sigma * sigma);
-                }
-                isError = false;
-                iterationsCount++;
-                decoded = _decoderPtr->Decode(llrs, &isFailed);
-                if (decoded != codeword) {
-                    isError = true;
-                }
-
                 newLoss = lossFunc(newZ, codeword);
                 newBin = (int) floor((newLoss - vMin) / (vMax - vMin) * (_l - 1));
-                newBin = std::min(newBin, _l - 1);
-                newBin = std::max(newBin, 0);
-                
-                if (!isError) probStateAcceptance = 1.0; // illegal value (ln(P) <= 0)
-                else probStateAcceptance = std::min(probCond[curBin] - probCond[newBin], 0.0);
-                if (probStateAcceptance != 1.0 && log(unDistr(gen)) <= probStateAcceptance) {
-                    z = newZ;
-                    curBin = newBin;
+                //newBin = std::min(newBin, _l - 1);
+                //newBin = std::max(newBin, 0);
+                if (newBin > _l - 1 || newBin < 0) inV = false;
+                else inV = true;
+
+                if (inV) {
+                    for (size_t i = 0; i < _n; i++) {
+                        llrs[i] = -2 * (2 * codeword[i] - 1 + newZ[i]) / (sigma * sigma);
+                    }
+                    isError = false;
+                    iterationsCount++;
+                    decoded = _decoderPtr->Decode(llrs, &isFailed);
+                    if (decoded != codeword) {
+                        isError = true;
+                    }
+                    
+                    if (!isError) probStateAcceptance = 1.0; // illegal value (ln(P) <= 0)
+                    else probStateAcceptance = std::min(probCond[curBin] - probCond[newBin], 0.0);
+                    if (probStateAcceptance != 1.0 && log(unDistr(gen)) <= probStateAcceptance) {
+                        z = newZ;
+                        curBin = newBin;
+                    }
+                    E[curBin]++;
                 }
-                E[curBin]++;
             }
 
             for (size_t it = 0; it < _conWithAB; it++) {
@@ -253,28 +274,32 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
                         newZ[i] = newBit;
                 }
 
-                for (size_t i = 0; i < _n; i++) {
-                    llrs[i] = -2 * (2 * codeword[i] - 1 + newZ[i]) / (sigma * sigma);
-                }
-                isError = false;
-                iterationsCount++;
-                decoded = _decoderPtr->Decode(llrs, &isFailed);
-                if (decoded != codeword) {
-                    isError = true;
-                }
-
                 newLoss = lossFunc(newZ, codeword);
                 newBin = (int) floor((newLoss - vMin) / (vMax - vMin) * (_l - 1));
-                newBin = std::min(newBin, _l - 1);
-                newBin = std::max(newBin, 0);
-                
-                if (!isError) probStateAcceptance = 1.0; // illegal value (ln(P) <= 0)
-                else probStateAcceptance = std::min(probCond[curBin] + F[curBin] - probCond[newBin] - F[newBin], 0.0);
-                if (probStateAcceptance != 1.0 && log(unDistr(gen)) <= probStateAcceptance) {
-                    z = newZ;
-                    curBin = newBin;
+                //newBin = std::min(newBin, _l - 1);
+                //newBin = std::max(newBin, 0);
+
+                if (newBin > _l - 1 || newBin < 0) inV = false;
+                else inV = true;
+                if (inV) {
+                    for (size_t i = 0; i < _n; i++) {
+                        llrs[i] = -2 * (2 * codeword[i] - 1 + newZ[i]) / (sigma * sigma);
+                    }
+                    isError = false;
+                    iterationsCount++;
+                    decoded = _decoderPtr->Decode(llrs, &isFailed);
+                    if (decoded != codeword) {
+                        isError = true;
+                    }
+                    
+                    if (!isError) probStateAcceptance = 1.0; // illegal value (ln(P) <= 0)
+                    else probStateAcceptance = std::min(probCond[curBin] + F[curBin] - probCond[newBin] - F[newBin], 0.0);
+                    if (probStateAcceptance != 1.0 && log(unDistr(gen)) <= probStateAcceptance) {
+                        z = newZ;
+                        curBin = newBin;
+                    }
+                    E[curBin]++;
                 }
-                E[curBin]++;
             }
 
             probOmega = 1;
@@ -308,11 +333,6 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
                 probCondNew[i] -= log(normCoef);
             }
 
-            for (int i = 0; i < _l; i++) {
-                std::cout << probCondNew[i] << " ";
-            }
-            std::cout << "\n";
-
 
             isFlat = true;
             for (size_t i = 0; i < _l; i++) {
@@ -332,18 +352,18 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
         }
 
         double probPartSum = 0;
-        for (size_t i = 200; i < 250; i++) {
+        for (size_t i = _kMin; i < _l; i++) {
             if (H[i] == 0) continue;
             probPartSum += (double) G[i] / H[i] * std::exp(prob[i]) / std::exp(probCond[i]);
         }
 
-        double PErr = probPartSum / 50;
+        double PErr = probPartSum / (_l - _kMin);
         auto t2 = std::chrono::steady_clock::now();
         sigmaArray[ii] = sigma;
         ebn0Array[ii] = GetEbN0(snrArray[ii], _m, _n);
         ferArray[ii] = PErr;
         elapsedTimeArray[ii] = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
-        testsCountArray [ii] = iterationsCount;
+        testsCountArray[ii] = iterationsCount;
     }
 }
 
