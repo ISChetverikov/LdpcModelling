@@ -11,8 +11,8 @@ protected:
     double _epsilon;
     int _l;
     int _kMin;
-    int _alpha;
-    int _beta;
+    double _alpha;
+    double _beta;
     int _unconWithoutAB;
     int _unconWithAB;
     int _conWithoutAB;
