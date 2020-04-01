@@ -37,7 +37,8 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 
 		// Hard code
 		int L = 100; //(int)std::round(pow(10, 1 / sigma) * _n / 50);
-		const int MaxFlatnessCheck = 1;
+		const int MaxFlatnessCheck = 50;
+		int check_const = 50 * L;
 
 		double sigma = GetSigma(snrArray[ii]);
 	
@@ -47,8 +48,7 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 			G.push_back(std::vector<int>(_maxTestsCount, 0));
 		}
 		double f = std::exp(1);
-		int check_const = 50 * L;
-
+		
 		std::tuple<double, double, std::vector<double>> V = find_opt_V(L, snrArray[ii], codeword, sigma, f);
 		double Vmin, Vmax;
 		std::vector<double> z(_n, 0);
@@ -182,7 +182,6 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 #endif // DEBUG
 
 		double prob_error = 0;
-		double prob_error2 = 0;
 		double prob_sum = 0;
 
 		double prob_mean = std::accumulate(prob.begin(), prob.end(), 0.0) / L;
@@ -194,7 +193,6 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 		int iterationsCountsTotal = 0;
 		for (size_t bin_num = 0; bin_num < L; ++bin_num) {
 			int el_num = 0, er_num = 0;
-			int el_num2 = 0, er_num2 = 0;
 			for (size_t iter = 0; iter < iteration_counts; ++iter) {
 				el_num += H[bin_num][iter];
 				er_num += G[bin_num][iter];
