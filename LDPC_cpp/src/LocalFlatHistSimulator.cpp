@@ -352,12 +352,16 @@ void LocalFlatHistSimulator::Run(std::vector<double> snrArray,
         }
 
         double probPartSum = 0;
+        int cntNonZeroBins = 0;
         for (size_t i = _kMin; i < _l; i++) {
-            if (H[i] == 0) continue;
+            if (H[i] == 0) {
+                continue;
+            }
             probPartSum += (double) G[i] / H[i] * std::exp(prob[i]) / std::exp(probCond[i]);
+            cntNonZeroBins++;
         }
 
-        double PErr = probPartSum / (_l - _kMin);
+        double PErr = probPartSum / cntNonZeroBins;
         auto t2 = std::chrono::steady_clock::now();
         sigmaArray[ii] = sigma;
         ebn0Array[ii] = GetEbN0(snrArray[ii], _m, _n);
@@ -439,6 +443,9 @@ std::pair<double, double> LocalFlatHistSimulator::findRangeV(const std::vector<d
     std::vector<double> z, newZ;
     double minLoss = 10, maxLoss = 0, newLoss, newBit, probBitAcceptance, dz;
     z = startPoint;
+    newLoss = lossFunc(z, codeword);
+    minLoss = std::min(newLoss, minLoss);
+    maxLoss = std::max(newLoss, maxLoss);
     for (int it = 0; it < _numIterForFindingV; it++) {
         newZ = z;
         for (size_t i = 0; i < _n; i++) {
