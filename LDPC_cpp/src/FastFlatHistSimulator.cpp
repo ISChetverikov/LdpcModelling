@@ -69,7 +69,7 @@ void FastFlatHistSimulator::Run(std::vector<double> snrArray,
 		size_t current_iteration = 0;
 		std::vector<bool> isFlatArr(_maxTestsCount, false);
 
-		std::cout << "SNR: " << snrArray[ii] << " ===== sigma: " << sigma << " =========" << std::endl;
+		std::cout << "SNR: " << snrArray[ii] << " ===== sigma: " << sigma << " ========= EbN0: " << GetEbN0(snrArray[ii], _m, _n) << std::endl;
 		for (current_iteration = 0; current_iteration < _maxTestsCount; ++current_iteration) {
 			bool is_flat = false;
 
@@ -248,14 +248,14 @@ std::tuple<double, double, std::vector<double>> FastFlatHistSimulator::find_opt_
 	double sigma, double f) {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	double Vmin = 0, Vmax = 1;
+	double Vmin = 0, Vmax = 1.2;
 	std::vector<double> prob(L, log(1.0 / L));
 	std::vector<double> z(_n, 0);
 	std::normal_distribution<double> norm_distr(0, sigma);
 	std::uniform_real_distribution<double> un_distr(0.0, 1.0);
 	int cur_bin = 0;
 	std::vector<int> H(L, 0);
-	auto e = GetEbN0(snr, _m, _n) * L * 200;
+	auto e = L * 1000;
 	for (size_t it = 0; it < e + _skip_iterations; ++it) {
 		std::vector<double> new_z = z;
 		for (size_t l = 0; l < _n; ++l) {
