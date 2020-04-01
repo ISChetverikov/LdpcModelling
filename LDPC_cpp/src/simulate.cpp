@@ -6,6 +6,7 @@
 #include "../include/Base_decoder.h"
 #include "../include/ONMS_decoder.h"
 #include "../include/BF_decoder.h"
+#include "../include/SP_decoder.h"
 #include "../include/MatrixReading.h"
 #include "../include/MonteCarloSimulator.h"
 #include "../include/FastFlatHistSimulator.h"
@@ -40,6 +41,12 @@ Base_decoder * BuildDecoder(
             int interationsCount = std::stoi(decoderParams["iterationsCount"]);
             
             decoderPtr = new BF_decoder(H_matrix, interationsCount);
+        }
+            break;
+        case decoderType::SP: {
+            int interationsCount = std::stoi(decoderParams["iterationsCount"]);
+            
+            decoderPtr = new SP_decoder(H_matrix, interationsCount);
         }
         default:
             break;

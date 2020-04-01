@@ -4,7 +4,7 @@ bin:
 	mkdir -p bin 
 
 main: bin/main.o bin/BaseSimulator.o bin/simulate.o bin/MonteCarloSimulator.o bin/FastFlatHistSimulator.o bin/LocalFlatHistSimulator.o bin/Base_decoder.o bin/ONMS_decoder.o bin/BF_decoder.o bin/SP_decoder.o bin/MathOperations.o bin/MatrixReading.o
-	g++ bin/main.o bin/BaseSimulator.o bin/simulate.o bin/MonteCarloSimulator.o bin/FastFlatHistSimulator.o bin/LocalFlatHistSimulator.o bin/Base_decoder.o bin/ONMS_decoder.o bin/SP_decoder.o bin/BF_decoder.o bin/MathOperations.o bin/MatrixReading.o -pthread -std=c++17 -ltbb -Wall -W -o main
+	g++ bin/main.o bin/BaseSimulator.o bin/simulate.o bin/MonteCarloSimulator.o bin/FastFlatHistSimulator.o bin/LocalFlatHistSimulator.o bin/Base_decoder.o bin/ONMS_decoder.o bin/SP_decoder.o bin/BF_decoder.o bin/MathOperations.o bin/MatrixReading.o -pthread -std=c++17 -Wall -W -o main
 
 bin/main.o: src/main.cpp include/simulate.h include/SimulationParameters.h include/MatrixReading.h
 	g++ -std=c++17 -c src/main.cpp -Wall -W -o bin/main.o

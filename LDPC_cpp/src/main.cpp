@@ -13,7 +13,7 @@ void McRun() {
 	std::string resultsFolder = "../Results/FromMatlabScript/";
 
 	std::vector<std::tuple<std::string, double, double>> tests = {
-		{"h_3_4_128.sprs", -3.0, -3.0}/*,
+		{"h_3_4_128.sprs", -3.0, -2.0}/*,
 		{"h_3_4_512.sprs", -6.0, -1.0},
 		{"h_3_4_2048.sprs", -6.0, -1.0},
 		{"h_3_6_128.sprs", -3.0, 1.0},
@@ -35,8 +35,8 @@ void McRun() {
 		simulationParams.type = simulationType::MC;
 		simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
 			{
-				{ "maxTestsCount", "1000000" },
-				{ "maxRjectionsCount", "2000" }
+				{ "maxTestsCount", "10000" },
+				{ "maxRjectionsCount", "20" }
 			});
 		simulationParams.snrArray = std::vector<double>();
 		for (double i = minSnr; i <= maxSnr; i += 0.2)
@@ -45,7 +45,7 @@ void McRun() {
 		}
 
 		CodeParams codeParams;
-		codeParams.decoder = decoderType::ONMS;
+		codeParams.decoder = decoderType::SP;
 		codeParams.decoderParams = std::unordered_map<std::string, std::string>(
 			{
 				{ "iterationsCount", "20" },
@@ -227,5 +227,5 @@ void test() {
 
 int main() {
 
-	FfhRun();
+	McRun();
 }

@@ -1,5 +1,6 @@
 #include <random>
 #include <chrono>
+#include <iostream>
 #include "../include/MonteCarloSimulator.h"
 
 MonteCarloSimulator::MonteCarloSimulator(int maxTests, int maxRejectionsCount, Base_decoder * decoderPtr)
@@ -38,10 +39,10 @@ void MonteCarloSimulator::Run(std::vector<double> snrArray,
 			}
 
 			decoded = _decoderPtr->Decode(llrs, &isFailed);
-			if (decoded != codeword)
+            if (decoded != codeword) {
 				wrong_dec += 1;
+            }
 		}
-
 		auto t2 = std::chrono::steady_clock::now();
 
 		elapsedTimeArray[ii] = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
