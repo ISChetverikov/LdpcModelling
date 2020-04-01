@@ -61,7 +61,7 @@ void McRun() {
 		std::cout << results.ToString() << std::endl;
 		std::cout << "============================================================\n";
 
-		std::string resultsFilename = resultsFolder + filename + ".mc.results.temp";
+		std::string resultsFilename = resultsFolder + filename + ".mc.onms.results";
 		std::ofstream resultsFile;
 		resultsFile.open(resultsFilename, std::fstream::out);
 		resultsFile << results.ToString();
@@ -127,7 +127,7 @@ void FfhRun() {
 		std::cout << results.ToString() << std::endl;
 		std::cout << "============================================================\n";
 
-		std::string resultsFilename = resultsFolder + filename + ".ffh.results";
+		std::string resultsFilename = resultsFolder + filename + ".ffh.onms.results";
 		std::ofstream resultsFile;
 		resultsFile.open(resultsFilename, std::fstream::out);
 		resultsFile << results.ToString();
