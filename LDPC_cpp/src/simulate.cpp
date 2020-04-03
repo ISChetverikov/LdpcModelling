@@ -41,6 +41,12 @@ Base_decoder * BuildDecoder(
             
             decoderPtr = new BF_decoder(H_matrix, interationsCount);
         }
+            break;
+        case decoderType::SP: {
+            int interationsCount = std::stoi(decoderParams["iterationsCount"]);
+            
+            decoderPtr = new SP_decoder(H_matrix, interationsCount);
+        }
         default:
             break;
     }

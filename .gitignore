@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
@@ -29,3 +29,5 @@
 /Results/.ipynb_checkpoints/
 /Results/.ipynb_checkpoints/
 /Results/.ipynb_checkpoints
+/.DS_Store
+*/.DS_Store
