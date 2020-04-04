@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iostream>
 
-enum decoderType { ONMS, MS, BF };
+enum decoderType { ONMS, MS, BF, SP };
 enum simulationType { MC, FFH, LFH };
 
 struct CodeParams{
