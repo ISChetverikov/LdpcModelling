@@ -13,11 +13,11 @@
 #include "../include/BaseSimulator.h"
 
 
+
 Base_decoder * BuildDecoder(
                             decoderType decoderType,
                             std::unordered_map<std::string, std::string> decoderParams,
-                            std::vector<std::vector<int>> H_matrix)
-{
+                            std::vector<std::vector<int>> H_matrix) {
     Base_decoder * decoderPtr;
     
     switch (decoderType)
@@ -48,6 +48,7 @@ Base_decoder * BuildDecoder(
             
             decoderPtr = new SP_decoder(H_matrix, interationsCount);
         }
+            break;
         default:
             break;
     }
