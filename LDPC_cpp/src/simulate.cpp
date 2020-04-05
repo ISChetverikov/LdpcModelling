@@ -6,17 +6,18 @@
 #include "../include/Base_decoder.h"
 #include "../include/ONMS_decoder.h"
 #include "../include/BF_decoder.h"
+#include "../include/SP_decoder.h"
 #include "../include/MatrixReading.h"
 #include "../include/MonteCarloSimulator.h"
 #include "../include/FastFlatHistSimulator.h"
 #include "../include/BaseSimulator.h"
 
 
+
 Base_decoder * BuildDecoder(
                             decoderType decoderType,
                             std::unordered_map<std::string, std::string> decoderParams,
-                            std::vector<std::vector<int>> H_matrix)
-{
+                            std::vector<std::vector<int>> H_matrix) {
     Base_decoder * decoderPtr;
     
     switch (decoderType)
@@ -41,6 +42,13 @@ Base_decoder * BuildDecoder(
             
             decoderPtr = new BF_decoder(H_matrix, interationsCount);
         }
+            break;
+        case decoderType::SP: {
+            int interationsCount = std::stoi(decoderParams["iterationsCount"]);
+            
+            decoderPtr = new SP_decoder(H_matrix, interationsCount);
+        }
+            break;
         default:
             break;
     }

@@ -141,7 +141,7 @@ void LfhRun() {
     std::string resultsFolder = "../Results/FromMatlabScript/";
 
     std::vector<std::tuple<std::string, double, double>> tests = {
-        {"h_3_4_128.sprs", -3.0, -3.0}/*
+        {"h_3_4_128.sprs", -2.0, -1.8}/*
         "h_3_4_512.sprs"
         "h_3_4_2048.sprs",
         "h_3_6_128.sprs",
@@ -166,16 +166,16 @@ void LfhRun() {
         simulationParams.type = simulationType::LFH;
         simulationParams.simulationTypeParams = std::unordered_map<std::string, std::string>(
             {
-                { "epsilon", "0.3" },
-                { "l", "300" },
-                { "kMin", "150" },
+                { "epsilon", "1" },
+                { "l", "200" },
+                { "kMin", "100" },
                 { "alpha", "2" },
                 { "beta", "2" },
-                { "unconWithoutAB", "3500" },
-                { "unconWithAB", "5000" },
+                { "unconWithoutAB", "2000" },
+                { "unconWithAB", "4000" },
                 { "conWithoutAB", "4000" },
-                { "conWithAB", "7000" },
-                { "numIterForFindingV", "50000" }
+                { "conWithAB", "5000" },
+                { "numIterForFindingV", "500000" }
             });
         simulationParams.snrArray = std::vector<double>();
         for (double i = minSnr; i <= maxSnr; i += 0.2)
@@ -227,5 +227,5 @@ void test() {
 
 int main() {
 
-	FfhRun();
+	LfhRun();
 }

@@ -24,6 +24,8 @@ protected:
     std::vector<double> findStartPoint(const std::vector<int>& codeword, int minN);
     std::pair<double, double> findRangeV(const std::vector<double>& startPoint,
                                          const std::vector<int>& codeword, double sigma);
+    std::vector<double> findEvristicStartPoint(const std::vector<int>& codeword, double sigma,
+                                               double minV, double maxV, int& iterationsCount);
 
 public:
     LocalFlatHistSimulator(Base_decoder * decoderPtr, double epsilon, int l, int kMin, int alpha, int beta,
