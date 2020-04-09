@@ -108,7 +108,7 @@ BaseSimulator * BuildSimulator(
 }
 
 void LogIntoFile(std::string filename, std::string message) {
-
+	std::cout << "Log into file:" << message;
 }
 
 void LogIntoConsole(std::string message) {

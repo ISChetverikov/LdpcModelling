@@ -6,5 +6,7 @@
 SimulationParams ReadConfig(std::string configFilename) {
 	SimulationParams result;
 
+
+
 	return result;
 }
