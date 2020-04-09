@@ -3,4 +3,4 @@
 #include "SimulationParameters.h"
 #include "LocalFlatHistSimulator.h"
 
-SimulationResult simulate(SimulationParams simulationParams, CodeParams codeParams);
+void simulate(std::string configFilename);

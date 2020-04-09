@@ -31,10 +31,5 @@ public:
     LocalFlatHistSimulator(Base_decoder * decoderPtr, double epsilon, int l, int kMin, int alpha, int beta,
     int unconWithoutAB, int unconWithAB, int conWithoutAB, int conWithAB, int numIterForFindingV);
     ~LocalFlatHistSimulator() {};
-    void Run(std::vector<double> snrArray,
-        std::vector<double>& ebn0Array,
-        std::vector<double>& ferArray,
-        std::vector<double>& sigmaArray,
-        std::vector<int>& testsCountArray,
-        std::vector<std::chrono::milliseconds>& elapsedTimeArray) override;
+	SimulationIterationResults Run(double snr) override;
 };

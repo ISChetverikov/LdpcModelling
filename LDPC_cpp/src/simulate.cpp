@@ -1,5 +1,6 @@
 #include <exception>
 #include <chrono>
+#include <string>
 
 #include "../include/simulate.h"
 #include "../include/SimulationParameters.h"
@@ -11,6 +12,7 @@
 #include "../include/MonteCarloSimulator.h"
 #include "../include/FastFlatHistSimulator.h"
 #include "../include/BaseSimulator.h"
+#include "../include/ConfigReading.h"
 
 
 
@@ -18,7 +20,7 @@ Base_decoder * BuildDecoder(
                             decoderType decoderType,
                             std::unordered_map<std::string, std::string> decoderParams,
                             std::vector<std::vector<int>> H_matrix) {
-    Base_decoder * decoderPtr;
+    Base_decoder * decoderPtr = NULL;
     
     switch (decoderType)
     {
@@ -61,7 +63,7 @@ BaseSimulator * BuildSimulator(
                                std::unordered_map<std::string, std::string> simulationTypeParams,
                                Base_decoder * decoderPtr)
 {
-    BaseSimulator * simulator;
+    BaseSimulator * simulator = NULL;
     
     switch (simulationType)
     {
@@ -105,36 +107,46 @@ BaseSimulator * BuildSimulator(
     return simulator;
 }
 
-SimulationResult simulate(SimulationParams simulationParams, CodeParams codeParams) {
+void LogIntoFile(std::string filename, std::string message) {
+
+}
+
+void LogIntoConsole(std::string message) {
+	std::cout << message;
+}
+
+void simulate(std::string configFilename) {
     
     Base_decoder * decoderPtr = NULL;
     BaseSimulator * simulatorPtr = NULL;
-    
-    SimulationResult results;
-    results.snrArray = simulationParams.snrArray;
-    
-    auto snrCount = results.snrArray.size();
-    results.ebn0Array = std::vector<double>(snrCount, 0);
-    results.ferArray = std::vector<double>(snrCount, 0);
-    results.sigmaArray = std::vector<double>(snrCount, 0);
-    results.testsCountArray = std::vector<int>(snrCount, 0);
-    results.elapsedTimeArray = std::vector<std::chrono::milliseconds>(snrCount);
-    
+	SimulationParams simulationParams;
+	
     try {
-        auto H_matrix = readAsRowSparseMatrix(codeParams.H_MatrixFilename);
-        decoderPtr = BuildDecoder(codeParams.decoder, codeParams.decoderParams, H_matrix);
+		simulationParams = ReadConfig(configFilename);
+        auto H_matrix = readAsRowSparseMatrix(simulationParams.H_MatrixFilename);
+        decoderPtr = BuildDecoder(simulationParams.decoder, simulationParams.decoderParams, H_matrix);
         simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
-        simulatorPtr->Run(simulationParams.snrArray,
-                          results.ebn0Array, results.ferArray, results.sigmaArray, results.testsCountArray, results.elapsedTimeArray);
+
+		LogIntoFile(simulationParams.resultsFilename, SimulationIterationResults::GetHeader() + "\n");
+		LogIntoConsole("Simulation has been started.");
+
+		for (size_t i = 0; i < simulationParams.snrArray.size(); i++)
+		{
+			LogIntoConsole("Iteration has been started. SNR: " +  std::to_string(simulationParams.snrArray[i]) + "\n");
+
+			auto result = simulatorPtr->Run(simulationParams.snrArray[i]);
+			auto message = result.ToString() + "\n";
+
+			LogIntoFile(simulationParams.resultsFilename, message);
+			LogIntoConsole("Iteration has been ended with result:\n" + message);
+		}
     }
     catch (const std::exception& err) {
-        results.isError = true;
-        results.errorText = err.what();
+		std::string message = "Error was ocurred:\n" + std::string(err.what());
+		LogIntoConsole(message);
+		LogIntoFile(simulationParams.resultsFilename, err.what());
     }
     
     delete decoderPtr;
-    delete simulatorPtr;
-    
-    return results;
-    
+    delete simulatorPtr;    
 }

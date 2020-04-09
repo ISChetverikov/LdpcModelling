@@ -22,6 +22,7 @@
     <ClInclude Include="include\BaseSimulator.h" />
     <ClInclude Include="include\Base_decoder.h" />
     <ClInclude Include="include\BF_decoder.h" />
+    <ClInclude Include="include\ConfigReading.h" />
     <ClInclude Include="include\FastFlatHistSimulator.h" />
     <ClInclude Include="include\LocalFlatHistSimulator.h" />
     <ClInclude Include="include\SimulationParameters.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="include\SP_decoder.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ConfigReading.cpp" />
     <ClCompile Include="src\FastFlatHistSimulator.cpp" />
     <ClCompile Include="src\LocalFlatHistSimulator.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -46,6 +48,14 @@
     <ClCompile Include="src\simulate.cpp" />
     <ClCompile Include="src\BaseSimulator.cpp" />
     <ClCompile Include="src\SP_decoder.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="resourses\test_config.xml">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Xml>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -109,6 +119,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,6 +135,8 @@
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,6 +151,8 @@
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -154,6 +169,8 @@
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
