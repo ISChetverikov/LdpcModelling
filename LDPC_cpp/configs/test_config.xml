@@ -1,4 +1,4 @@
-<Config include="true">
+<Config>
   <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
   <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.ONMS.mc.results</ResultsFilename>
   <Simulation type="MC">

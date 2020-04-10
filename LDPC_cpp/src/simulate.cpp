@@ -123,6 +123,7 @@ void simulate(std::string configFilename) {
 	
     try {
 		simulationParams = ReadConfig(configFilename);
+		return;
         auto H_matrix = readAsRowSparseMatrix(simulationParams.H_MatrixFilename);
         decoderPtr = BuildDecoder(simulationParams.decoder, simulationParams.decoderParams, H_matrix);
         simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);

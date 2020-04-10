@@ -15,6 +15,10 @@
     <ClInclude Include="include\FastFlatHistSimulator.h" />
     <ClInclude Include="include\LocalFlatHistSimulator.h" />
     <ClInclude Include="include\ConfigReading.h" />
+    <ClInclude Include="lib\pugixml-1.10\src\pugiconfig.hpp" />
+    <ClInclude Include="lib\pugixml-1.10\src\pugixml.hpp" />
+    <ClInclude Include="include\DecoderType.h" />
+    <ClInclude Include="include\SimulationType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BF_decoder.cpp" />
@@ -30,8 +34,8 @@
     <ClCompile Include="src\FastFlatHistSimulator.cpp" />
     <ClCompile Include="src\LocalFlatHistSimulator.cpp" />
     <ClCompile Include="src\ConfigReading.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="resourses\test_config.xml" />
+    <ClCompile Include="lib\pugixml-1.10\src\pugixml.cpp" />
+    <ClCompile Include="src\SimulationType.cpp" />
+    <ClCompile Include="src\DecoderType.cpp" />
   </ItemGroup>
 </Project>

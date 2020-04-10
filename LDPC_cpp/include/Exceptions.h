@@ -56,3 +56,12 @@ public:
 	ExtensionException(const std::string err) : m_error(err.c_str()) {};
 	const char* what() const noexcept { return m_error.c_str(); }
 };
+
+class ConfigParseException : public std::exception
+{
+private:
+	std::string m_error;
+public:
+	ConfigParseException(const std::string err) : m_error(err.c_str()) {};
+	const char* what() const noexcept { return m_error.c_str(); }
+};

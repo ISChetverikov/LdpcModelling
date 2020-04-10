@@ -226,7 +226,7 @@
 //}
 
 void NewRun() {
-	simulate("test_config.xml");
+	simulate("configs/test_config.xml");
 }
 
 int main() {
