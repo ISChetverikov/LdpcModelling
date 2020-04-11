@@ -38,4 +38,8 @@
     <ClCompile Include="src\SimulationType.cpp" />
     <ClCompile Include="src\DecoderType.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="configs\test_config_FFH.xml" />
+    <Xml Include="configs\test_config.xml" />
+  </ItemGroup>
 </Project>

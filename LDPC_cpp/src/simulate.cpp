@@ -34,7 +34,7 @@ double ExtractDouble(std::unordered_map<std::string, std::string> map, std::stri
 	if (map.count(key) <= 0)
 		throw MissedParamException("Missed parameters \"" + key + "\" in section " + section);
 
-	int result;
+	double result;
 	try {
 		result = std::stod(map[key]);
 	}
@@ -55,27 +55,27 @@ Base_decoder * BuildDecoder(
     switch (decoderType)
     {
         case decoderType::ONMS: {
-            int interationsCount = std::stoi(decoderParams["iterationsCount"]);
-            double scale = std::stod(decoderParams["scale"]);
-            double offset = std::stod(decoderParams["offset"]);
+            int interationsCount = ExtractInt(decoderParams, "iterationsCount", "ONMS decoder");
+            double scale = ExtractDouble(decoderParams, "scale", "ONMS decoder");
+            double offset = ExtractDouble(decoderParams, "offset", "ONMS decoder");
             
             decoderPtr = new ONMS_decoder(H_matrix, interationsCount, scale, offset);
         }
             break;
         case decoderType::MS: {
-            int interationsCount = std::stoi(decoderParams["iterationsCount"]);
+			int interationsCount = ExtractInt(decoderParams, "iterationsCount", "ONMS decoder");
             
             decoderPtr = new ONMS_decoder(H_matrix, interationsCount, 1, 0);
         }
             break;
         case decoderType::BF: {
-            int interationsCount = std::stoi(decoderParams["iterationsCount"]);
+			int interationsCount = ExtractInt(decoderParams, "iterationsCount", "BF decoder");
             
             decoderPtr = new BF_decoder(H_matrix, interationsCount);
         }
             break;
         case decoderType::SP: {
-            int interationsCount = std::stoi(decoderParams["iterationsCount"]);
+			int interationsCount = ExtractInt(decoderParams, "iterationsCount", "SP decoder");
             
             decoderPtr = new SP_decoder(H_matrix, interationsCount);
         }
@@ -106,12 +106,12 @@ BaseSimulator * BuildSimulator(
         case simulationType::FFH: {
             int maxIterationssCount = ExtractInt(simulationTypeParams, "maxIterationsCount", "FFH simulator");
 			int minIterationsCount = ExtractInt(simulationTypeParams, "minIterationsCount", "FFH simulator");
-            int maxRjectionsCount = ExtractInt(simulationTypeParams, "maxRjectionsCount", "FFH simulator");
+            int maxRejectionsCount = ExtractInt(simulationTypeParams, "maxRejectionsCount", "FFH simulator");
             int skipIterations = ExtractInt(simulationTypeParams, "skipIterations", "FFH simulator");
             double epsilon = ExtractDouble(simulationTypeParams, "epsilon", "FFH simulator");
             double percent = ExtractDouble(simulationTypeParams, "percent", "FFH simulator");
             
-            simulator = new FastFlatHistSimulator(maxIterationssCount, minIterationsCount, maxRjectionsCount, decoderPtr, skipIterations, epsilon, percent);
+            simulator = new FastFlatHistSimulator(maxIterationssCount, minIterationsCount, maxRejectionsCount, decoderPtr, skipIterations, epsilon, percent);
         }
             break;
         case simulationType::LFH: {
@@ -137,8 +137,7 @@ BaseSimulator * BuildSimulator(
 }
 
 void LogIntoFile(std::string filename, std::string message, std::string stringPrefix="") {
-	std::cout << "Log into file:" << message;
-
+	
 	std::ofstream resultsFileStream;
 	resultsFileStream.open(filename, std::fstream::out | std::fstream::app);
 
@@ -165,12 +164,20 @@ void simulate(std::string configFilename) {
     BaseSimulator * simulatorPtr = NULL;
 	SimulationParams simulationParams;
 	
-    try {
-		LogIntoConsole("Simulation is starting....\n");
+	try {
+		LogIntoConsole("Simulation initializing is starting....\n");
 
 		simulationParams = ReadConfig(configFilename);
-		LogIntoConsole("\tConfiguration file has been read succesfully.\n");
+	}
+	catch (const std::exception& err) {
+		std::string message = "Error was ocurred:\n" + std::string(err.what()) + "\n";
+		LogIntoConsole(message);
+		return;
+	}
 
+	LogIntoConsole("\tConfiguration file has been read succesfully.\n");
+	
+	try {
         auto H_matrix = readAsRowSparseMatrix(simulationParams.H_MatrixFilename);
 		LogIntoConsole("\tMatrix file has been read succesfully.\n");
 
@@ -181,6 +188,8 @@ void simulate(std::string configFilename) {
 		LogIntoConsole("\tSimulator has been built succesfully.\n");
 
 		LogIntoFile(simulationParams.resultsFilename, simulationParams.ToString(), "# ");
+		LogIntoConsole(simulationParams.ToString());
+
 		LogIntoFile(simulationParams.resultsFilename, SimulationIterationResults::GetHeader() + "\n");
 		LogIntoConsole("Simulation has been started.\n");
 

@@ -99,7 +99,7 @@
 //			{
 //				{ "maxIterationsCount", "10" },
 //				{ "minIterationsCount", "5" },
-//				{ "maxRjectionsCount", "500" },
+//				{ "maxRejectionsCount", "500" },
 //				{ "skipIterations", "2000" },
 //				{ "epsilon", "0.1" },
 //				{ "percent", "0.9" }
@@ -226,7 +226,7 @@
 //}
 
 void NewRun() {
-	simulate("configs/test_config.xml");
+	simulate("configs/test_config_FFH.xml");
 }
 
 int main() {

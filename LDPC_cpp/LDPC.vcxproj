@@ -60,6 +60,18 @@
     <Content Include="configs\test_config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="configs\test_config_FFH.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="configs\test_config.xml">
+      <DeploymentContent>true</DeploymentContent>
+      <SubType>Designer</SubType>
+    </Xml>
+    <Xml Include="configs\test_config_FFH.xml">
+      <DeploymentContent>true</DeploymentContent>
+    </Xml>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
