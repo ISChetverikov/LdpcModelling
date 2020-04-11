@@ -187,11 +187,12 @@ void simulate(std::string configFilename) {
         simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
 		LogIntoConsole("\tSimulator has been built succesfully.\n");
 
+		LogIntoConsole("Simulation has been started.\n\n");
 		LogIntoFile(simulationParams.resultsFilename, simulationParams.ToString(), "# ");
 		LogIntoConsole(simulationParams.ToString());
 
 		LogIntoFile(simulationParams.resultsFilename, SimulationIterationResults::GetHeader() + "\n");
-		LogIntoConsole("Simulation has been started.\n");
+		
 
 		for (size_t i = 0; i < simulationParams.snrArray.size(); i++)
 		{

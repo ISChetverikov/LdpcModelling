@@ -328,3 +328,54 @@ SNR, EbN0, sigma, FER, rejectionsCount, testsCount, time(ms)
 # C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
 # ############################################################
 SNR, EbN0, sigma, FER, rejectionsCount, testsCount, time(ms)
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: FFH
+# Simulation parameters:
+# 	maxIterationsCount: 2
+# 	minIterationsCount: 1
+# 	skipIterations: 2000
+# 	maxRejectionsCount: 500
+# 	epsilon: 0.1
+# 	percent: 0.90
+# 
+# SNR: 1.5, 
+# Decoder type: BF
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+SNR, EbN0, sigma, FER, rejectionsCount, testsCount, time(ms)
+1.5, 7.5206, 0.594956, 0.647125, 35369, 145000, 22986
+Error was ocurred:
+Missed parameters "maxIterationsCount" in section FFH simulator
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: LFH
+# Simulation parameters:
+# 	unconWithoutAB: 2000
+# 	epsilon: 0.1
+# 	alpha: 2
+# 	l: 200
+# 	kMin: 100
+# 	beta: 2
+# 	unconWithAB: 4000
+# 	conWithoutAB: 4000
+# 	conWithAB: 5000
+# 	numIterForFindingV: 500000
+# 
+# SNR: 1.5, 
+# Decoder type: BF
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+SNR, EbN0, sigma, FER, rejectionsCount, testsCount, time(ms)

@@ -41,5 +41,6 @@
   <ItemGroup>
     <Xml Include="configs\test_config_FFH.xml" />
     <Xml Include="configs\test_config.xml" />
+    <Xml Include="configs\test_config_LFH.xml" />
   </ItemGroup>
 </Project>

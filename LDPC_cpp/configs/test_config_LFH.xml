@@ -1,13 +1,17 @@
 <Config>
   <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
   <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.MS.mc.results</ResultsFilename>
-  <Simulation type="FFH">
-    <SimulationParam name="maxIterationsCount">2</SimulationParam>
-    <SimulationParam name="minIterationsCount">1</SimulationParam>
-    <SimulationParam name="maxRejectionsCount">500</SimulationParam>
-    <SimulationParam name="skipIterations">2000</SimulationParam>
+  <Simulation type="LFH">
     <SimulationParam name="epsilon">0.1</SimulationParam>
-    <SimulationParam name="percent">0.90</SimulationParam>
+    <SimulationParam name="l">200</SimulationParam>
+    <SimulationParam name="kMin">100</SimulationParam>
+    <SimulationParam name="alpha">2</SimulationParam>
+    <SimulationParam name="beta">2</SimulationParam>
+    <SimulationParam name="unconWithoutAB">2000</SimulationParam>
+    <SimulationParam name="unconWithAB">4000</SimulationParam>
+    <SimulationParam name="conWithoutAB">4000</SimulationParam>
+    <SimulationParam name="conWithAB">5000</SimulationParam>
+    <SimulationParam name="numIterForFindingV">50000</SimulationParam>
   </Simulation>
   <!--<SnrRange start="-6.0" stop="1.0" step="0.2"></SnrRange>-->
   <!-- Also it could be used for different poitns of SNR -->
