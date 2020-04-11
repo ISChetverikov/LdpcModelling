@@ -12,3 +12,15 @@ simulationType simulationTypeFromString(std::string str){
 	
 	return UnknownSimulation;
 }
+
+std::string simulationTypeToString(simulationType type) {
+	std::unordered_map<simulationType, std::string> simulationTypeStringResolver = {
+		{MC, "MC"},
+		{FFH, "FFH"},
+		{LFH, "LFH"},
+		{UnknownSimulation, "UnknownSimulation"}
+	};
+
+	return simulationTypeStringResolver[type];
+}
+

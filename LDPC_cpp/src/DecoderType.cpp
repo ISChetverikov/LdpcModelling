@@ -13,3 +13,15 @@ decoderType decoderTypeFromString(std::string str) {
 
 	return UnknownDecoder;
 }
+
+std::string decoderTypeToString(decoderType type) {
+
+	std::unordered_map<decoderType, std::string> decoderTypeStringResolver = {
+		{decoderType::ONMS, "ONMS"},
+		{decoderType::MS, "MS"},
+		{decoderType::BF, "BF"},
+		{decoderType::SP, "SP"}
+	};
+
+	return decoderTypeStringResolver[type];
+}

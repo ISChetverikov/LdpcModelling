@@ -107,8 +107,23 @@ BaseSimulator * BuildSimulator(
     return simulator;
 }
 
-void LogIntoFile(std::string filename, std::string message) {
+void LogIntoFile(std::string filename, std::string message, std::string stringPrefix="") {
 	std::cout << "Log into file:" << message;
+
+	std::ofstream resultsFileStream;
+	resultsFileStream.open(filename, std::fstream::out | std::fstream::app);
+
+	std::string sentense;
+	std::istringstream splitStream(message);
+	while (std::getline(splitStream, sentense, '\n'))
+	{
+		if (!stringPrefix.empty())
+			resultsFileStream << stringPrefix << " ";
+
+		resultsFileStream << sentense << std::endl;
+	}
+	
+	resultsFileStream.close();
 }
 
 void LogIntoConsole(std::string message) {
@@ -123,7 +138,6 @@ void simulate(std::string configFilename) {
 	
     try {
 		simulationParams = ReadConfig(configFilename);
-		return;
         auto H_matrix = readAsRowSparseMatrix(simulationParams.H_MatrixFilename);
         decoderPtr = BuildDecoder(simulationParams.decoder, simulationParams.decoderParams, H_matrix);
         simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);

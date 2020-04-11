@@ -19,6 +19,37 @@ struct SimulationParams {
 	std::string G_MatrixFilename;
 
 	std::string resultsFilename;
+
+	std::string ToString() {
+		std::stringstream ss;
+
+		ss << "Prameters of simulation run\n";
+		ss << "Simulation type: " + simulationTypeToString(type) + "\n";
+		ss << "Simulation parameters:\n";
+		for (auto simulationParam : simulationTypeParams)
+		{
+			ss << "\t" << simulationParam.first + ": " + simulationParam.second + "\n";
+		}
+
+		ss << "\n";
+		ss << "SNR:\n";
+		for (size_t i = 0; i < snrArray.size(); i++)
+		{
+			ss << "\t" << snrArray[i] << "\n";
+		}
+
+		ss << "Decoder type: " + decoderTypeToString(decoder) + "\n";
+		ss << "Decoder params:\n";
+		for (auto decoderParam : decoderParams)
+		{
+			ss << "\t" << decoderParam.first + ": " + decoderParam.second + "\n";
+		}
+
+		ss << "Matrix filename:\n";
+		ss << H_MatrixFilename + "\n";
+
+		return ss.str();
+	}
 };
 
 struct SimulationIterationResults {
