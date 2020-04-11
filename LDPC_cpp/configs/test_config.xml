@@ -2,7 +2,7 @@
   <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
   <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.ONMS.mc.results</ResultsFilename>
   <Simulation type="MC">
-    <SimulationParam name="maxIterationsCount">100000</SimulationParam>
+    <SimulationParam name="maxTestsCount">1000</SimulationParam>
     <SimulationParam name="maxRejectionsCount">20</SimulationParam>
   </Simulation>
   <SnrRange start="-6.0" stop="1.0" step="0.2"></SnrRange>

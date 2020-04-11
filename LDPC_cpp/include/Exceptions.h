@@ -65,3 +65,22 @@ public:
 	ConfigParseException(const std::string err) : m_error(err.c_str()) {};
 	const char* what() const noexcept { return m_error.c_str(); }
 };
+
+class MissedParamException : public std::exception
+{
+private:
+	std::string m_error;
+public:
+	MissedParamException(const std::string err) : m_error(err.c_str()) {};
+	const char* what() const noexcept { return m_error.c_str(); }
+};
+
+class ParseParamException : public std::exception
+{
+private:
+	std::string m_error;
+public:
+	ParseParamException(const std::string err) : m_error(err.c_str()) {};
+	const char* what() const noexcept { return m_error.c_str(); }
+};
+

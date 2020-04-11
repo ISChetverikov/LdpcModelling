@@ -23,7 +23,8 @@ struct SimulationParams {
 	std::string ToString() {
 		std::stringstream ss;
 
-		ss << "Prameters of simulation run\n";
+		ss << std::string(60, '#') << "\n";
+		ss << "Prameters of simulation run\n\n";
 		ss << "Simulation type: " + simulationTypeToString(type) + "\n";
 		ss << "Simulation parameters:\n";
 		for (auto simulationParam : simulationTypeParams)
@@ -32,11 +33,12 @@ struct SimulationParams {
 		}
 
 		ss << "\n";
-		ss << "SNR:\n";
+		ss << "SNR: ";
 		for (size_t i = 0; i < snrArray.size(); i++)
 		{
-			ss << "\t" << snrArray[i] << "\n";
+			ss <<  snrArray[i] << ", ";
 		}
+		ss << "\n";
 
 		ss << "Decoder type: " + decoderTypeToString(decoder) + "\n";
 		ss << "Decoder params:\n";
@@ -47,6 +49,7 @@ struct SimulationParams {
 
 		ss << "Matrix filename:\n";
 		ss << H_MatrixFilename + "\n";
+		ss << std::string(60, '#') << "\n";
 
 		return ss.str();
 	}

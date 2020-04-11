@@ -13,7 +13,37 @@
 #include "../include/FastFlatHistSimulator.h"
 #include "../include/BaseSimulator.h"
 #include "../include/ConfigReading.h"
+#include "../include/Exceptions.h"
 
+int ExtractInt(std::unordered_map<std::string, std::string> map, std::string key, std::string section) {
+	if (map.count(key) <= 0)
+		throw MissedParamException("Missed parameters \"" + key + "\" in section " + section);
+
+	int result;
+	try {
+		result = std::stoi(map[key]);
+	}
+	catch (std::exception& e) {
+		throw ParseParamException("Parse error of parameter \"" + key + "\": " + e.what());
+	}
+	
+	return result;
+}
+
+double ExtractDouble(std::unordered_map<std::string, std::string> map, std::string key, std::string section) {
+	if (map.count(key) <= 0)
+		throw MissedParamException("Missed parameters \"" + key + "\" in section " + section);
+
+	int result;
+	try {
+		result = std::stod(map[key]);
+	}
+	catch (std::exception& e) {
+		throw ParseParamException("Parse error of parameter \"" + key + "\": " + e.what());
+	}
+
+	return result;
+}
 
 
 Base_decoder * BuildDecoder(
@@ -30,7 +60,6 @@ Base_decoder * BuildDecoder(
             double offset = std::stod(decoderParams["offset"]);
             
             decoderPtr = new ONMS_decoder(H_matrix, interationsCount, scale, offset);
-            
         }
             break;
         case decoderType::MS: {
@@ -68,34 +97,34 @@ BaseSimulator * BuildSimulator(
     switch (simulationType)
     {
         case simulationType::MC: {
-            int maxTestsCount = std::stoi(simulationTypeParams["maxTestsCount"]);
-            int maxRjectionsCount = std::stoi(simulationTypeParams["maxRjectionsCount"]);
+            int maxTestsCount = ExtractInt(simulationTypeParams, "maxTestsCount", "MC simulator");
+            int maxRejectionsCount = ExtractInt(simulationTypeParams, "maxRejectionsCount", "MC simulator");
             
-            simulator = new MonteCarloSimulator(maxTestsCount, maxRjectionsCount, decoderPtr);
+            simulator = new MonteCarloSimulator(maxTestsCount, maxRejectionsCount, decoderPtr);
         }
             break;
         case simulationType::FFH: {
-            int maxIterationssCount = std::stoi(simulationTypeParams["maxIterationsCount"]);
-			int minIterationsCount = std::stoi(simulationTypeParams["minIterationsCount"]);
-            int maxRjectionsCount = std::stoi(simulationTypeParams["maxRjectionsCount"]);
-            int skipIterations = std::stoi(simulationTypeParams["skipIterations"]);
-            double epsilon = std::stod(simulationTypeParams["epsilon"]);
-            double percent = std::stod(simulationTypeParams["percent"]);
+            int maxIterationssCount = ExtractInt(simulationTypeParams, "maxIterationsCount", "FFH simulator");
+			int minIterationsCount = ExtractInt(simulationTypeParams, "minIterationsCount", "FFH simulator");
+            int maxRjectionsCount = ExtractInt(simulationTypeParams, "maxRjectionsCount", "FFH simulator");
+            int skipIterations = ExtractInt(simulationTypeParams, "skipIterations", "FFH simulator");
+            double epsilon = ExtractDouble(simulationTypeParams, "epsilon", "FFH simulator");
+            double percent = ExtractDouble(simulationTypeParams, "percent", "FFH simulator");
             
             simulator = new FastFlatHistSimulator(maxIterationssCount, minIterationsCount, maxRjectionsCount, decoderPtr, skipIterations, epsilon, percent);
         }
             break;
         case simulationType::LFH: {
-            double epsilon = std::stod(simulationTypeParams["epsilon"]);
-            int l = std::stoi(simulationTypeParams["l"]);
-            int kMin = std::stoi(simulationTypeParams["kMin"]);
-            int alpha = std::stoi(simulationTypeParams["alpha"]);
-            int beta = std::stoi(simulationTypeParams["beta"]);
-            int unconWithoutAB = std::stoi(simulationTypeParams["unconWithoutAB"]);
-            int unconWithAB = std::stoi(simulationTypeParams["unconWithAB"]);
-            int conWithoutAB = std::stoi(simulationTypeParams["conWithoutAB"]);
-            int conWithAB = std::stoi(simulationTypeParams["conWithAB"]);
-            int numIterForFindingV = std::stoi(simulationTypeParams["numIterForFindingV"]);
+            double epsilon = ExtractDouble(simulationTypeParams, "epsilon", "LFH simulator");
+            int l = ExtractInt(simulationTypeParams, "l", "LFH simulator");
+            int kMin = ExtractInt(simulationTypeParams, "kMin", "LFH simulator");
+            int alpha = ExtractInt(simulationTypeParams, "alpha", "LFH simulator");
+            int beta = ExtractInt(simulationTypeParams, "beta", "LFH simulator");
+            int unconWithoutAB = ExtractInt(simulationTypeParams, "unconWithoutAB", "LFH simulator");
+            int unconWithAB = ExtractInt(simulationTypeParams, "unconWithAB", "LFH simulator");
+            int conWithoutAB = ExtractInt(simulationTypeParams, "conWithoutAB", "LFH simulator");
+            int conWithAB = ExtractInt(simulationTypeParams, "conWithAB", "LFH simulator");
+            int numIterForFindingV = ExtractInt(simulationTypeParams, "numIterForFindingV", "LFH simulator");
             
             simulator = new LocalFlatHistSimulator(decoderPtr, epsilon, l, kMin, alpha, beta, unconWithoutAB,
                                                    unconWithAB, conWithoutAB, conWithAB, numIterForFindingV);
@@ -118,7 +147,7 @@ void LogIntoFile(std::string filename, std::string message, std::string stringPr
 	while (std::getline(splitStream, sentense, '\n'))
 	{
 		if (!stringPrefix.empty())
-			resultsFileStream << stringPrefix << " ";
+			resultsFileStream << stringPrefix;
 
 		resultsFileStream << sentense << std::endl;
 	}
@@ -137,13 +166,23 @@ void simulate(std::string configFilename) {
 	SimulationParams simulationParams;
 	
     try {
-		simulationParams = ReadConfig(configFilename);
-        auto H_matrix = readAsRowSparseMatrix(simulationParams.H_MatrixFilename);
-        decoderPtr = BuildDecoder(simulationParams.decoder, simulationParams.decoderParams, H_matrix);
-        simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
+		LogIntoConsole("Simulation is starting....\n");
 
+		simulationParams = ReadConfig(configFilename);
+		LogIntoConsole("\tConfiguration file has been read succesfully.\n");
+
+        auto H_matrix = readAsRowSparseMatrix(simulationParams.H_MatrixFilename);
+		LogIntoConsole("\tMatrix file has been read succesfully.\n");
+
+        decoderPtr = BuildDecoder(simulationParams.decoder, simulationParams.decoderParams, H_matrix);
+		LogIntoConsole("\tDecoder has been built succesfully.\n");
+
+        simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
+		LogIntoConsole("\tSimulator has been built succesfully.\n");
+
+		LogIntoFile(simulationParams.resultsFilename, simulationParams.ToString(), "# ");
 		LogIntoFile(simulationParams.resultsFilename, SimulationIterationResults::GetHeader() + "\n");
-		LogIntoConsole("Simulation has been started.");
+		LogIntoConsole("Simulation has been started.\n");
 
 		for (size_t i = 0; i < simulationParams.snrArray.size(); i++)
 		{
@@ -153,13 +192,13 @@ void simulate(std::string configFilename) {
 			auto message = result.ToString() + "\n";
 
 			LogIntoFile(simulationParams.resultsFilename, message);
-			LogIntoConsole("Iteration has been ended with result:\n" + message);
+			LogIntoConsole("Iteration has been ended with result:\n\t" + message);
 		}
     }
     catch (const std::exception& err) {
-		std::string message = "Error was ocurred:\n" + std::string(err.what());
+		std::string message = "Error was ocurred:\n" + std::string(err.what()) + "\n";
 		LogIntoConsole(message);
-		LogIntoFile(simulationParams.resultsFilename, err.what());
+		LogIntoFile(simulationParams.resultsFilename, message);
     }
     
     delete decoderPtr;
