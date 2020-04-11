@@ -162,12 +162,12 @@ void simulate(std::string configFilename) {
     
     Base_decoder * decoderPtr = NULL;
     BaseSimulator * simulatorPtr = NULL;
-	SimulationParams simulationParams;
+	std::vector<SimulationParams> simulationParamsArray;
 	
 	try {
 		LogIntoConsole("Simulation initializing is starting....\n");
 
-		simulationParams = ReadConfig(configFilename);
+		simulationParamsArray = ReadConfig(configFilename);
 	}
 	catch (const std::exception& err) {
 		std::string message = "Error was ocurred:\n" + std::string(err.what()) + "\n";
@@ -177,40 +177,43 @@ void simulate(std::string configFilename) {
 
 	LogIntoConsole("\tConfiguration file has been read succesfully.\n");
 	
-	try {
-        auto H_matrix = readAsRowSparseMatrix(simulationParams.H_MatrixFilename);
-		LogIntoConsole("\tMatrix file has been read succesfully.\n");
-
-        decoderPtr = BuildDecoder(simulationParams.decoder, simulationParams.decoderParams, H_matrix);
-		LogIntoConsole("\tDecoder has been built succesfully.\n");
-
-        simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
-		LogIntoConsole("\tSimulator has been built succesfully.\n");
-
-		LogIntoConsole("Simulation has been started.\n\n");
-		LogIntoFile(simulationParams.resultsFilename, simulationParams.ToString(), "# ");
-		LogIntoConsole(simulationParams.ToString());
-
-		LogIntoFile(simulationParams.resultsFilename, SimulationIterationResults::GetHeader() + "\n");
+	for (auto simulationParams : simulationParamsArray) {
+		try {
 		
+			auto H_matrix = readAsRowSparseMatrix(simulationParams.H_MatrixFilename);
+			LogIntoConsole("\tMatrix file has been read succesfully.\n");
 
-		for (size_t i = 0; i < simulationParams.snrArray.size(); i++)
-		{
-			LogIntoConsole("Iteration has been started. SNR: " +  std::to_string(simulationParams.snrArray[i]) + "\n");
+			decoderPtr = BuildDecoder(simulationParams.decoder, simulationParams.decoderParams, H_matrix);
+			LogIntoConsole("\tDecoder has been built succesfully.\n");
 
-			auto result = simulatorPtr->Run(simulationParams.snrArray[i]);
-			auto message = result.ToString() + "\n";
+			simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
+			LogIntoConsole("\tSimulator has been built succesfully.\n");
 
+			LogIntoConsole("Simulation has been started.\n\n");
+			LogIntoFile(simulationParams.resultsFilename, simulationParams.ToString(), "# ");
+			LogIntoConsole(simulationParams.ToString());
+
+			LogIntoFile(simulationParams.resultsFilename, SimulationIterationResults::GetHeader() + "\n");
+
+
+			for (size_t i = 0; i < simulationParams.snrArray.size(); i++)
+			{
+				LogIntoConsole("Iteration has been started. SNR: " + std::to_string(simulationParams.snrArray[i]) + "\n");
+
+				auto result = simulatorPtr->Run(simulationParams.snrArray[i]);
+				auto message = result.ToString() + "\n";
+
+				LogIntoFile(simulationParams.resultsFilename, message);
+				LogIntoConsole("Iteration has been ended with result:\n\t" + message);
+			}
+		}
+		catch (const std::exception& err) {
+			std::string message = "Error was ocurred:\n" + std::string(err.what()) + "\n";
+			LogIntoConsole(message);
 			LogIntoFile(simulationParams.resultsFilename, message);
-			LogIntoConsole("Iteration has been ended with result:\n\t" + message);
 		}
     }
-    catch (const std::exception& err) {
-		std::string message = "Error was ocurred:\n" + std::string(err.what()) + "\n";
-		LogIntoConsole(message);
-		LogIntoFile(simulationParams.resultsFilename, message);
-    }
-    
+
     delete decoderPtr;
     delete simulatorPtr;    
 }

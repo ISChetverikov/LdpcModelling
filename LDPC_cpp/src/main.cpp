@@ -226,7 +226,7 @@
 //}
 
 void NewRun() {
-	simulate("configs/test_config_LFH.xml");
+	simulate("configs/test_config_multi.xml");
 }
 
 int main() {

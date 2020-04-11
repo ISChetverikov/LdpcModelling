@@ -32,25 +32,15 @@ pugi::xml_attribute TryGetAttribute(pugi::xml_node node, std::string name) {
 	return attr;
 }
 
-
-SimulationParams ReadConfig(std::string configFilename) {
+SimulationParams ReadSimulationSection(pugi::xml_node simulation_node) {
 	SimulationParams params;
 
-	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file(configFilename.c_str());
+	params.H_MatrixFilename = GetChildNode(simulation_node, "MatrixFilename").child_value();
+	params.resultsFilename = GetChildNode(simulation_node, "ResultsFilename").child_value();
 
-	if (!result)
-	{
-		throw ConfigParseException("Error during open config xml file:" + std::string(result.description()));
-	}
+	pugi::xml_node simulator_node = GetChildNode(simulation_node, "Simulator");
 
-	pugi::xml_node config_node = GetChildNode(doc, "Config");
-	params.H_MatrixFilename = GetChildNode(config_node, "MatrixFilename").child_value();
-	params.resultsFilename = GetChildNode(config_node, "ResultsFilename").child_value();
-	
-	pugi::xml_node simulation_node = GetChildNode(config_node, "Simulation");
-
-	std::string simulationTypeStr = TryGetAttribute(simulation_node, "type").value();
+	std::string simulationTypeStr = TryGetAttribute(simulator_node, "type").value();
 	simulationType simulationType_ = simulationTypeFromString(simulationTypeStr);
 	if (simulationType_ == simulationType::UnknownSimulation)
 		throw ConfigParseException("Parse config error: unsupported value of simulation type: " + simulationTypeStr);
@@ -58,13 +48,13 @@ SimulationParams ReadConfig(std::string configFilename) {
 	params.type = simulationType_;
 
 	std::unordered_map <std::string, std::string > simulationParams;
-	for (pugi::xml_node simulationParam_node : simulation_node.children("SimulationParam"))
+	for (pugi::xml_node simulationParam_node : simulator_node.children("SimulationParam"))
 	{
 		simulationParams[TryGetAttribute(simulationParam_node, "name").value()] = simulationParam_node.child_value();
 	}
 	params.simulationTypeParams = simulationParams;
 
-	pugi::xml_node decoder_node = GetChildNode(config_node, "Decoder");
+	pugi::xml_node decoder_node = GetChildNode(simulation_node, "Decoder");
 
 	std::string decoderTypeStr = TryGetAttribute(decoder_node, "type").value();
 	decoderType decoderType_ = decoderTypeFromString(decoderTypeStr);
@@ -80,7 +70,7 @@ SimulationParams ReadConfig(std::string configFilename) {
 	}
 	params.decoderParams = decoderParams;
 
-	pugi::xml_node snrRange_node = TryGetChildNode(config_node, "SnrRange");
+	pugi::xml_node snrRange_node = TryGetChildNode(simulation_node, "SnrRange");
 	bool isSnrPresent = false;
 	if (snrRange_node != NULL) {
 		for (double i = std::stod(TryGetAttribute(snrRange_node, "start").value());
@@ -89,8 +79,8 @@ SimulationParams ReadConfig(std::string configFilename) {
 			params.snrArray.push_back(i);
 		isSnrPresent = true;
 	}
-		
-	pugi::xml_node snrArray_node = TryGetChildNode(config_node, "SnrArray");
+
+	pugi::xml_node snrArray_node = TryGetChildNode(simulation_node, "SnrArray");
 	if (snrArray_node != NULL) {
 		for (pugi::xml_node snr_node : snrArray_node.children("Snr"))
 		{
@@ -98,9 +88,32 @@ SimulationParams ReadConfig(std::string configFilename) {
 		}
 		isSnrPresent = true;
 	}
-	
+
 	if (!isSnrPresent)
 		throw ConfigParseException("Parse config error: either \"SnrArray\" and \"SnrRange\" sections are absent.");
-	
+
 	return params;
+}
+
+std::vector<SimulationParams> ReadConfig(std::string configFilename) {
+	std::vector<SimulationParams> paramsArray;
+
+	pugi::xml_document doc;
+	pugi::xml_parse_result result = doc.load_file(configFilename.c_str());
+
+	if (!result)
+	{
+		throw ConfigParseException("Error during open config xml file:" + std::string(result.description()));
+	}
+
+	pugi::xml_node config_node = GetChildNode(doc, "Config");
+	for (pugi::xml_node simulation_node : config_node.children("Simulation"))
+	{
+		paramsArray.push_back(ReadSimulationSection(simulation_node));
+	}
+
+	if (paramsArray.empty())
+		throw ConfigParseException("Parse config error: any \"Simulation\" section is absent.");
+
+	return paramsArray;
 }

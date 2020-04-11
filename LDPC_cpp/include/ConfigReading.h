@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "SimulationParameters.h"
 
-SimulationParams ReadConfig(std::string configFilename);
+std::vector<SimulationParams> ReadConfig(std::string configFilename);
