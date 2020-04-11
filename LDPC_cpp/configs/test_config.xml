@@ -1,7 +1,7 @@
 <Config>
   <Simulation>
     <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
-    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.MS.mc.results</ResultsFilename>
+    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.SP.mc.results</ResultsFilename>
     <Simulator type="MC">
       <SimulationParam name="maxTestsCount">1000</SimulationParam>
       <SimulationParam name="maxRejectionsCount">20</SimulationParam>
@@ -11,7 +11,7 @@
     <!--<SnrArray>
       <Snr>1.5</Snr>
     </SnrArray>-->
-    <Decoder type="BF">
+    <Decoder type="SP">
       <DecoderParam name="iterationsCount">20</DecoderParam>
       <DecoderParam name="scale">0.72</DecoderParam>
       <DecoderParam name="offset">0.0</DecoderParam>
