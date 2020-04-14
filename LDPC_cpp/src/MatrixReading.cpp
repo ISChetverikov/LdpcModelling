@@ -85,7 +85,7 @@ std::vector<std::vector<int>> readSprsAsRowSparseMatrix(std::string filename, si
 
 	ss_first >> val;
 	if (val != 1)
-		throw new NotBinaryMatrixException("Sparse matrix elements not from GF(2)");
+		throw NotBinaryMatrixException("Sparse matrix elements not from GF(2)");
 
 	temp.push_back(columnIndex);
 	previousRowIndex = rowIndex;
