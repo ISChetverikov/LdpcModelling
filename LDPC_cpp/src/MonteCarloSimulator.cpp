@@ -23,7 +23,6 @@ SimulationIterationResults MonteCarloSimulator::Run(double snr)
 	double sigma = GetSigma(snr);
 	int tests = 0;
 	int wrong_dec = 0;
-	bool isFailed = false;
 	std::normal_distribution<double> distribution(0, sigma);
 
 	while (((tests < _maxTestsCount) && (wrong_dec < _maxRejectionsCount)) || ((_maxTestsCount == -1) && (wrong_dec < _maxRejectionsCount))) {
@@ -33,7 +32,7 @@ SimulationIterationResults MonteCarloSimulator::Run(double snr)
 			llrs[i] = -2 * (2 * codeword[i] - 1 + distribution(randomDevice)) / (sigma * sigma);
 		}
 
-		decoded = _decoderPtr->Decode(llrs, &isFailed);
+		decoded = _decoderPtr->Decode(llrs);
 		if (decoded != codeword)
 			wrong_dec += 1;
 	}

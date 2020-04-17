@@ -51,7 +51,7 @@ SimulationIterationResults LocalFlatHistSimulator::Run(double snr)
     double newLoss, newBit, dz, probBitAcceptance, probStateAcceptance, probOmega,
             gHat, probSumAB, normCoef;
     int curBin, newBin, numPoints = 0, numAccepted = 0;
-    bool isFlat = false, isError, isFailed, inV, startToOne = false, isCStart = false;
+    bool isFlat = false, isError, inV, startToOne = false, isCStart = false;
 
     z = startPoint;
     newLoss = lossFunc(z, codeword);
@@ -69,7 +69,7 @@ SimulationIterationResults LocalFlatHistSimulator::Run(double snr)
                     llrs[i] = -2 * (2 * codeword[i] - 1 + z[i]) / (sigma * sigma);
                 }
                 iterationsCount++;
-                decoded = _decoderPtr->Decode(llrs, &isFailed);
+                decoded = _decoderPtr->Decode(llrs);
                 if (decoded != codeword) {
                     G[curBin] += 1;
                     if (curBin != startPointBin && !isCStart) {
@@ -114,7 +114,7 @@ SimulationIterationResults LocalFlatHistSimulator::Run(double snr)
                     llrs[i] = -2 * (2 * codeword[i] - 1 + z[i]) / (sigma * sigma);
                 }
                 iterationsCount++;
-                decoded = _decoderPtr->Decode(llrs, &isFailed);
+                decoded = _decoderPtr->Decode(llrs);
                 if (decoded != codeword) {
                     G[curBin] += 1;
                     if (curBin != startPointBin && !isCStart) {
@@ -265,7 +265,7 @@ SimulationIterationResults LocalFlatHistSimulator::Run(double snr)
                 }
                 isError = false;
                 iterationsCount++;
-                decoded = _decoderPtr->Decode(llrs, &isFailed);
+                decoded = _decoderPtr->Decode(llrs);
                 if (decoded != codeword) {
                     isError = true;
                 }
@@ -309,7 +309,7 @@ SimulationIterationResults LocalFlatHistSimulator::Run(double snr)
                 }
                 isError = false;
                 iterationsCount++;
-                decoded = _decoderPtr->Decode(llrs, &isFailed);
+                decoded = _decoderPtr->Decode(llrs);
                 if (decoded != codeword) {
                     isError = true;
                 }
@@ -476,7 +476,7 @@ std::vector<double> LocalFlatHistSimulator::findStartPoint(const std::vector<int
             llrs[i] = -1 * (2 * codeword[i] - 1 + startPoint[i]);
         }
         isError = false;
-        decoded = _decoderPtr->Decode(llrs, &isFailed);
+        decoded = _decoderPtr->Decode(llrs);
         if (decoded != codeword) {
             isError = true;
         }
@@ -553,7 +553,7 @@ std::vector<double> LocalFlatHistSimulator::findEvristicStartPoint(const std::ve
             llrs[i] = -2 * (2 * codeword[i] - 1 + newZ[i]) / (sigma * sigma);
         }
         iterationsCount++;
-        decoded = _decoderPtr->Decode(llrs, &isFailed);
+        decoded = _decoderPtr->Decode(llrs);
         if (decoded != codeword && newLoss >= minV && newLoss <= maxV) {
             return newZ;
         }

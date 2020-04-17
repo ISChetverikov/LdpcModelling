@@ -105,7 +105,7 @@ int sp_sign(double x) {
 //	}
 //}
 
-vector<int> SP_decoder::Decode(vector<double> llr, bool *isFailed) {
+vector<int> SP_decoder::Decode(vector<double> llr) {
 
 	size_t n = llr.size();
 	// if (n != _n)
@@ -184,6 +184,7 @@ vector<int> SP_decoder::Decode(vector<double> llr, bool *isFailed) {
 		for (size_t i = 0; i < n; i++)
 			result[i] = (bits_values[i] <= 0) ? 1 : 0;
 
+		bool isFailed = false;
 		for (size_t j = 0; j < _m; j++)
 		{
 			int sum = 0;
@@ -192,11 +193,13 @@ vector<int> SP_decoder::Decode(vector<double> llr, bool *isFailed) {
 				sum ^= result[i];
 			}
 			if ((bool)sum) {
-				*isFailed = true;
+				isFailed = true;
 				break;
 			}
 		}
 
+		if (!isFailed)
+			break;
 
 		if (iteration >= _iterationsCount)
 			break;

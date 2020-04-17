@@ -12,5 +12,5 @@ private:
     
 public:
     BF_decoder(std::vector<std::vector<int>> H, int iterationsCount);
-    std::vector<int> Decode(std::vector<double> llr, bool * isFailed) override;
+    std::vector<int> Decode(std::vector<double> llr) override;
 };

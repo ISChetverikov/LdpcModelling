@@ -28,8 +28,6 @@ SimulationIterationResults FastFlatHistSimulator::Run(double snr)
 	std::vector<double> llrs(_n, 0);
 	std::vector<int> decoded(_n, 0);
 
-	bool isFailed = false;
-
 	auto t1 = std::chrono::steady_clock::now();
 
 	// Hard code
@@ -114,7 +112,7 @@ SimulationIterationResults FastFlatHistSimulator::Run(double snr)
 				for (size_t i = 0; i < _n; i++) {
 					llrs[i] = -2 * (2 * codeword[i] - 1 + z[i]) / (sigma * sigma);
 				}
-				decoded = _decoderPtr->Decode(llrs, &isFailed);
+				decoded = _decoderPtr->Decode(llrs);
 				is_accepted = false;
 			}
 				

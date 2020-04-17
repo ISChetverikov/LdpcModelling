@@ -14,7 +14,7 @@ BF_decoder::BF_decoder(std::vector<std::vector<int>> H, int iterationsCount) : B
     
 }
 
-std::vector<int> BF_decoder::Decode(std::vector<double> llr, bool * isFailed) {
+std::vector<int> BF_decoder::Decode(std::vector<double> llr) {
     std::vector<int> _llr;
     for (auto i : llr) {
         if (i >= 0) {

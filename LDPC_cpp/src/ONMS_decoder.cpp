@@ -30,7 +30,7 @@ ONMS_decoder::ONMS_decoder(std::vector<std::vector<int>> H_row_sparse, int itera
 	}
 }
 
-std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) {
+std::vector<int> ONMS_decoder::Decode(std::vector<double> llr) {
 	
 	size_t n = llr.size();
 	if (n != _n)
@@ -125,7 +125,7 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 			_result[i] = (_bits_values[i] <= 0) ? 1 : 0;
 		}
 
-		*isFailed = false;
+		bool isFailed = false;
 		for (size_t j = 0; j < _m; j++)
 		{
 			int sum = 0;
@@ -134,16 +134,15 @@ std::vector<int> ONMS_decoder::Decode(std::vector<double> llr, bool * isFailed) 
 				sum ^= _result[i];
 			}
 			if ((bool)sum) {
-				*isFailed = true;
+				isFailed = true;
 				break;
 			}
 		}
 
-		if (!*isFailed)
+		if (!isFailed)
 			break;
 
 		if (iteration >= _iterationsCount) {
-			*isFailed = true;
 			break;
 		}	
 
