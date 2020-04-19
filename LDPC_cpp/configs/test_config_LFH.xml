@@ -1,26 +1,28 @@
 <Config>
-  <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
-  <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.MS.mc.results</ResultsFilename>
-  <Simulation type="LFH">
-    <SimulationParam name="epsilon">0.1</SimulationParam>
-    <SimulationParam name="l">200</SimulationParam>
-    <SimulationParam name="kMin">100</SimulationParam>
-    <SimulationParam name="alpha">2</SimulationParam>
-    <SimulationParam name="beta">2</SimulationParam>
-    <SimulationParam name="unconWithoutAB">2000</SimulationParam>
-    <SimulationParam name="unconWithAB">4000</SimulationParam>
-    <SimulationParam name="conWithoutAB">4000</SimulationParam>
-    <SimulationParam name="conWithAB">5000</SimulationParam>
-    <SimulationParam name="numIterForFindingV">50000</SimulationParam>
+  <Simulation>
+    <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
+    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.ONMS.lfh.debug.results</ResultsFilename>
+    <Simulator type="LFH">
+      <SimulationParam name="epsilon">0.1</SimulationParam>
+      <SimulationParam name="l">200</SimulationParam>
+      <SimulationParam name="kMin">100</SimulationParam>
+      <SimulationParam name="alpha">2</SimulationParam>
+      <SimulationParam name="beta">2</SimulationParam>
+      <SimulationParam name="unconWithoutAB">2000</SimulationParam>
+      <SimulationParam name="unconWithAB">4000</SimulationParam>
+      <SimulationParam name="conWithoutAB">4000</SimulationParam>
+      <SimulationParam name="conWithAB">5000</SimulationParam>
+      <SimulationParam name="numIterForFindingV">50000</SimulationParam>
+    </Simulator>
+    <!--<SnrRange start="-6.0" stop="1.0" step="0.2"></SnrRange>-->
+    <!-- Also it could be used for different poitns of SNR -->
+    <SnrArray>
+      <Snr>1.5</Snr>
+    </SnrArray>
+    <Decoder type="ONMS">
+      <DecoderParam name="iterationsCount">20</DecoderParam>
+      <DecoderParam name="scale">0.72</DecoderParam>
+      <DecoderParam name="offset">0.0</DecoderParam>
+    </Decoder>
   </Simulation>
-  <!--<SnrRange start="-6.0" stop="1.0" step="0.2"></SnrRange>-->
-  <!-- Also it could be used for different poitns of SNR -->
-  <SnrArray>
-    <Snr>1.5</Snr>
-  </SnrArray>
-  <Decoder type="BF">
-    <DecoderParam name="iterationsCount">20</DecoderParam>
-    <DecoderParam name="scale">0.72</DecoderParam>
-    <DecoderParam name="offset">0.0</DecoderParam>
-  </Decoder>
 </Config>

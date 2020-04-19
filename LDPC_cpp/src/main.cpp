@@ -225,8 +225,9 @@
 //	std::cout << sum << std::endl;
 //}
 
+
 void NewRun() {
-	simulate("configs/test_config.xml");
+	simulate("configs/test_config_FFH.xml");
 }
 
 int main() {
