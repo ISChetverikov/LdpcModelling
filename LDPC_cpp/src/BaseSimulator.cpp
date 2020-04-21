@@ -1,9 +1,7 @@
 #include "../include/BaseSimulator.h"
 
-BaseSimulator::BaseSimulator(int maxTests, int maxRejectionsCount, Base_decoder * decoderPtr) {
+BaseSimulator::BaseSimulator(Base_decoder * decoderPtr) {
 	_decoderPtr = decoderPtr;
-	_maxTestsCount = maxTests;
-	_maxRejectionsCount = maxRejectionsCount;
 	_n = decoderPtr->GetCodewordLegth();
 	_m = decoderPtr->GetChecksSymbolsCount();
 }

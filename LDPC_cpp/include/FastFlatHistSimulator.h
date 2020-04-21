@@ -6,11 +6,12 @@
 #include "BaseSimulator.h"
 
 #define FFH_DEBUG_FILE
+#define FFH_DEBUG
 
 class FastFlatHistSimulator : public BaseSimulator {
 protected:
 	int _skip_iterations = 0;
-	int _minIterationsCount = 0;
+	int _iterationsCount = 0;
 	double _epsilon = 0;
 	double _percent = 0;
 
@@ -20,7 +21,7 @@ protected:
 	std::tuple<double, double, std::vector<double>> findStartCondition(int L, const std::vector<int>& codeword, double sigma, double f);
 
 public:
-	FastFlatHistSimulator(int maxTests, int minTests, int rejectionsCount, Base_decoder * decoder, int skipInterations, double eps, double percent);
+	FastFlatHistSimulator(Base_decoder * decoder, int iterationsCount, int skipInterations, double eps, double percent);
 	~FastFlatHistSimulator() {};
 	SimulationIterationResults Run(double snr) override;
 };

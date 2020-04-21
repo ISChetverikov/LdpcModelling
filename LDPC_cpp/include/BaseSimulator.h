@@ -8,8 +8,6 @@
 
 class BaseSimulator {
 protected:
-	int _maxTestsCount = 0;
-	int _maxRejectionsCount = 0;
 	Base_decoder * _decoderPtr;
 	size_t _n;
 	size_t _m;
@@ -17,7 +15,7 @@ protected:
 	double GetSigma(double snr);
 	double GetEbN0(double snr, size_t m, size_t n);
 public:
-	BaseSimulator(int maxTests, int rejectionsCount, Base_decoder * decoder);
+	BaseSimulator(Base_decoder * decoder);
 	virtual ~BaseSimulator() {};
 	virtual SimulationIterationResults Run(double snr) = 0;
 	/*virtual void Run(std::vector<double> snrArray,

@@ -8,14 +8,13 @@
 #include <fstream>
 #include "../include/FastFlatHistSimulator.h"
 
-FastFlatHistSimulator::FastFlatHistSimulator(
-	int maxIterationsCount, int minIterationsCount, int maxRejectionsCount, Base_decoder * decoderPtr, int skipInterations, double epsilon, double percent)
-	: BaseSimulator(maxIterationsCount, maxRejectionsCount, decoderPtr) {
+FastFlatHistSimulator::FastFlatHistSimulator(Base_decoder * decoderPtr, int iterationsCount, int skipInterations, double epsilon, double percent)
+	: BaseSimulator( decoderPtr) {
 
 	_skip_iterations = skipInterations;
 	_epsilon = epsilon;
 	_percent = percent;
-	_minIterationsCount = minIterationsCount;
+	_iterationsCount = iterationsCount;
 }
 
 SimulationIterationResults FastFlatHistSimulator::Run(double snr)
@@ -38,13 +37,13 @@ SimulationIterationResults FastFlatHistSimulator::Run(double snr)
 	// Hard code
 	int L = 100; //(int)std::round(pow(10, 1 / sigma) * _n / 50);
 	const int MaxFlatnessCheck = 50;
-	int iterationsForFlatnessCheck = 50 * L;
+	int iterationsForFlatnessCheck = 100 * L;
 	double f = std::exp(1);
 
 	std::vector<std::vector<int>> H, G;
 	for (size_t itn = 0; itn < L; itn++) {
-		H.push_back(std::vector<int>(_maxTestsCount, 0));
-		G.push_back(std::vector<int>(_maxTestsCount, 0));
+		H.push_back(std::vector<int>(_iterationsCount, 0));
+		G.push_back(std::vector<int>(_iterationsCount, 0));
 	}
 
 	double Vmin, Vmax;
@@ -54,23 +53,30 @@ SimulationIterationResults FastFlatHistSimulator::Run(double snr)
 	std::vector<double> prob(L, log(1.0 / L));
 
 #ifdef FFH_DEBUG_FILE
-	int ar_total = 0;
-	int ar_ac = 0;
+	std::cout << "== FFH debug file is turned on ==\n";
 	std::vector<double> start_z = z;
-	std::vector<bool> isFlatArr(_minIterationsCount, false);
+	std::vector<bool> isFlatArr(_iterationsCount, false);
+	std::vector<std::vector<double>> probArr;
+	for (size_t binNum = 0; binNum < L; binNum++) {
+		probArr.push_back(std::vector<double>(_iterationsCount, 0));
+	}
 #endif // FFH_DEBUG_FILE
 	
+	int ar_total = 0;
+	int testCounts = 0;
 	int currentBin = 0;
 	int errorsCount = 0;
-	bool isReached = false;
 	int testsCount = 0;
-	bool isAccepted = true;
 	size_t currentIteration = 0;
-	
-	for (currentIteration = 0; currentIteration < _maxTestsCount; ++currentIteration) {
+
+#ifdef FFH_DEBUG
+	std::cout << "== FFH debug info is turned on ==\n";
+#endif
+
+	for (currentIteration = 0; currentIteration < _iterationsCount; ++currentIteration) {
 		
 #ifdef FFH_DEBUG
-		std::cout << "--New ffh iteration---" << current_iteration << "--------------------------\n";
+		std::cout << "--New ffh iteration---" << currentIteration << "--------------------------\n";
 #endif
 
 		bool isFlat = false;
@@ -97,42 +103,34 @@ SimulationIterationResults FastFlatHistSimulator::Run(double snr)
 			
 			double prob_stat_acceptance = std::min(std::exp(prob[currentBin] - prob[new_bin]), 1.0);
 
-#ifdef FFH_DEBUG_FILE
 			ar_total++;
-#endif
 
 			if (un_distr(gen) <= prob_stat_acceptance) {
 				z = new_z;
 				currentBin = new_bin;
-				isAccepted = true;
 
-#ifdef FFH_DEBUG_FILE
-				ar_ac++;
-#endif
-
-			}
-			prob[currentBin] += log(f);
-			if (isAccepted) { // economize on not accepted z - it does not change
 				for (size_t i = 0; i < _n; i++) {
 					llrs[i] = -2 * (2 * codeword[i] - 1 + z[i]) / (sigma * sigma);
 				}
 				decoded = _decoderPtr->Decode(llrs);
-				isAccepted = false;
+
+				testCounts++;
 			}
-				
+			prob[currentBin] += log(f);
 			H[currentBin][currentIteration] += 1;
 				
 			if (decoded != codeword) {
 				G[currentBin][currentIteration] += 1;
 				errorsCount++;
 			}
-			if (!isReached && _minIterationsCount <= currentIteration) 
-				isReached = true;
 			
 			testsCount += 1;
 			if (testsCount == iterationsForFlatnessCheck) {
 				flatnessCheck++;
 				isFlat = isHistFlat(H, currentIteration);
+#ifdef FFH_DEBUG_FILE
+				isFlatArr[currentIteration] = isFlat;
+#endif
 #ifdef FFH_DEBUG
 				std::cout << "--------Is flat: " << isFlat << "----------\n";
 #endif
@@ -141,18 +139,29 @@ SimulationIterationResults FastFlatHistSimulator::Run(double snr)
 		}
 
 		f = sqrt(f);
-		if (isReached)
-			break;
+#ifdef FFH_DEBUG_FILE
+		for (size_t binNum = 0; binNum < L; binNum++) {
+			probArr[binNum][currentIteration] = prob[binNum];
+		}
+#endif
 	}
 
-	if (currentIteration == _maxTestsCount)
+	if (currentIteration == _iterationsCount)
 		currentIteration--;
 	size_t iterationCounts = currentIteration + 1;
 
 #ifdef FFH_DEBUG_FILE // Save info into a debug file
 	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
 	std::time_t time = std::chrono::system_clock::to_time_t(now);
-	std::string resultsFilename = "ffh.prob.H.G." + std::string(std::ctime(&time)) + ".debug";
+	auto date = std::localtime(&time);
+	
+	std::string resultsFilename = "ffh.prob.H.G." 
+		+ std::to_string(date->tm_mon+1) + "-"
+		+ std::to_string(date->tm_mday) + "_"
+		+ std::to_string(date->tm_hour) + "-"
+		+ std::to_string(date->tm_min) + '-'
+		+ std::to_string(date->tm_sec)
+		+ ".debug";
 
 	std::ofstream resultsFile;
 	resultsFile.open(resultsFilename, std::fstream::out);
@@ -160,16 +169,8 @@ SimulationIterationResults FastFlatHistSimulator::Run(double snr)
 	resultsFile << "# Vmin: " + std::to_string(Vmin) + ", Vmax: "
 		+ std::to_string(Vmax) + ", start V: " + std::to_string(lossFunc(start_z, codeword)) << std::endl;
 
-	resultsFile << "# Acceptance rate:" << std::endl;
-	resultsFile << (double)ar_ac / ar_total << std::endl;
+	resultsFile << "# Acceptance rate:" << (double)testCounts / ar_total << std::endl;
 
-	resultsFile << "# Probability density:" << std::endl;
-	for (size_t i = 0; i < prob.size(); i++)
-	{
-		resultsFile << prob[i] << ",";
-	}
-	resultsFile << std::endl;
-	
 	resultsFile << "# Is flatness achieved:" << std::endl;
 	for (size_t i = 0; i < iterationCounts; i++)
 	{
@@ -180,15 +181,22 @@ SimulationIterationResults FastFlatHistSimulator::Run(double snr)
 	resultsFile << "# Histograms:" << std::endl;
 	for (size_t it = 0; it < iterationCounts; it++)
 	{
-		resultsFile << "# \tH:" << std::endl;
-		for (size_t i = 0; i < prob.size(); i++)
+		resultsFile << "# Probability density:" << std::endl;
+		for (size_t i = 0; i < L; i++)
+		{
+			resultsFile << probArr[i][it] << ",";
+		}
+		resultsFile << std::endl;
+
+		resultsFile << "# \tH" << it+1 << ":" << std::endl;
+		for (size_t i = 0; i < L; i++)
 		{
 			resultsFile << H[i][it] << ",";
 		}
 		resultsFile << std::endl;
 
-		resultsFile << "# \tG:" << std::endl;
-		for (size_t i = 0; i < prob.size(); i++)
+		resultsFile << "# \tG" << it + 1 << ":" << std::endl;
+		for (size_t i = 0; i < L; i++)
 		{
 			resultsFile << G[i][it] << ",";
 		}
@@ -207,7 +215,6 @@ SimulationIterationResults FastFlatHistSimulator::Run(double snr)
 		prob_sum += std::exp(p - prob_mean);
 	}
 		
-	int iterationsCountsTotal = 0;
 	for (size_t bin_num = 0; bin_num < L; ++bin_num) {
 		int el_num = 0, er_num = 0;
 		for (size_t iter = 0; iter < iterationCounts; ++iter) {
@@ -215,7 +222,6 @@ SimulationIterationResults FastFlatHistSimulator::Run(double snr)
 			er_num += G[bin_num][iter];
 		}
 		if (el_num != 0) {
-			iterationsCountsTotal += el_num;
 			prob_error += std::exp(prob[bin_num] - prob_mean) / prob_sum * er_num / el_num;
 		}
 	}
@@ -228,7 +234,7 @@ SimulationIterationResults FastFlatHistSimulator::Run(double snr)
 	result.fer = prob_error;
 
 	result.elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
-	result.testsCount = iterationsCountsTotal;
+	result.testsCount = testCounts;
 	result.rejectionsCount = errorsCount;	
 
 	return result;

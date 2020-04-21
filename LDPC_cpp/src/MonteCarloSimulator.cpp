@@ -3,9 +3,10 @@
 #include "../include/SimulationParameters.h"
 #include "../include/MonteCarloSimulator.h"
 
-MonteCarloSimulator::MonteCarloSimulator(int maxTests, int maxRejectionsCount, Base_decoder * decoderPtr)
-	: BaseSimulator(maxTests, maxRejectionsCount, decoderPtr) {
-
+MonteCarloSimulator::MonteCarloSimulator(int maxTestsCount, int maxRejectionsCount, Base_decoder * decoderPtr)
+	: BaseSimulator(decoderPtr) {
+	_maxTestsCount = maxTestsCount;
+	_maxRejectionsCount = maxRejectionsCount;
 }
 
 SimulationIterationResults MonteCarloSimulator::Run(double snr)

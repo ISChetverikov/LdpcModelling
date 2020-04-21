@@ -104,14 +104,12 @@ BaseSimulator * BuildSimulator(
         }
             break;
         case simulationType::FFH: {
-            int maxIterationssCount = ExtractInt(simulationTypeParams, "maxIterationsCount", "FFH simulator");
-			int minIterationsCount = ExtractInt(simulationTypeParams, "minIterationsCount", "FFH simulator");
-            int maxRejectionsCount = ExtractInt(simulationTypeParams, "maxRejectionsCount", "FFH simulator");
+            int iterationsCount = ExtractInt(simulationTypeParams, "iterationsCount", "FFH simulator");
             int skipIterations = ExtractInt(simulationTypeParams, "skipIterations", "FFH simulator");
             double epsilon = ExtractDouble(simulationTypeParams, "epsilon", "FFH simulator");
             double percent = ExtractDouble(simulationTypeParams, "percent", "FFH simulator");
             
-            simulator = new FastFlatHistSimulator(maxIterationssCount, minIterationsCount, maxRejectionsCount, decoderPtr, skipIterations, epsilon, percent);
+            simulator = new FastFlatHistSimulator(decoderPtr, iterationsCount, skipIterations, epsilon, percent);
         }
             break;
         case simulationType::LFH: {
@@ -141,6 +139,10 @@ void LogIntoFile(std::string filename, std::string message, std::string stringPr
 	std::ofstream resultsFileStream;
 	resultsFileStream.open(filename, std::fstream::out | std::fstream::app);
 
+	if (!resultsFileStream.is_open()) {
+		throw FileIsNotOpennedException("Cannot open file \"" + filename + "\".");
+	}
+
 	std::string sentense;
 	std::istringstream splitStream(message);
 	while (std::getline(splitStream, sentense, '\n'))
@@ -152,6 +154,26 @@ void LogIntoFile(std::string filename, std::string message, std::string stringPr
 	}
 	
 	resultsFileStream.close();
+}
+
+bool TryLogIntoFile(std::string filename, std::string message, std::string stringPrefix = "") {
+	try {
+		LogIntoFile(filename, message, stringPrefix = "");
+		return true;
+	}
+	catch (const std::exception& err) {
+		return false;
+	}
+}
+
+bool IsFileExists(std::string filename) {
+	if (FILE *file = fopen(filename.c_str(), "r")) {
+		fclose(file);
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 void LogIntoConsole(std::string message) {
@@ -179,7 +201,7 @@ void simulate(std::string configFilename) {
 	
 	for (auto simulationParams : simulationParamsArray) {
 		try {
-		
+			
 			auto H_matrix = readAsRowSparseMatrix(simulationParams.H_MatrixFilename);
 			LogIntoConsole("\tMatrix file has been read succesfully.\n");
 
@@ -189,11 +211,12 @@ void simulate(std::string configFilename) {
 			simulatorPtr = BuildSimulator(simulationParams.type, simulationParams.simulationTypeParams, decoderPtr);
 			LogIntoConsole("\tSimulator has been built succesfully.\n");
 
+			if(!IsFileExists(simulationParams.resultsFilename))
+				LogIntoFile(simulationParams.resultsFilename, SimulationIterationResults::GetHeader() + "\n");
+
 			LogIntoConsole("Simulation has been started.\n\n");
 			LogIntoFile(simulationParams.resultsFilename, simulationParams.ToString(), "# ");
 			LogIntoConsole(simulationParams.ToString());
-
-			LogIntoFile(simulationParams.resultsFilename, SimulationIterationResults::GetHeader() + "\n");
 
 
 			for (size_t i = 0; i < simulationParams.snrArray.size(); i++)
@@ -210,7 +233,8 @@ void simulate(std::string configFilename) {
 		catch (const std::exception& err) {
 			std::string message = "Error was ocurred:\n" + std::string(err.what()) + "\n";
 			LogIntoConsole(message);
-			LogIntoFile(simulationParams.resultsFilename, message);
+			if (!TryLogIntoFile(simulationParams.resultsFilename, message))
+				LogIntoConsole("Cannot write message of error into file \"" + simulationParams.resultsFilename + "\".\n");
 		}
     }
 

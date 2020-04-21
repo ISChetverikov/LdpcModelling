@@ -1,25 +1,20 @@
 <Config>
   <Simulation>
     <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
-    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.ONMS.ffh.debug.results</ResultsFilename>
+    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\Debug\h_3_4_128.sprs.BF.ffh.20.debug.results</ResultsFilename>
     <Simulator type="FFH">
-      <SimulationParam name="maxIterationsCount">10</SimulationParam>
-      <SimulationParam name="minIterationsCount">5</SimulationParam>
-      <SimulationParam name="maxRejectionsCount">500</SimulationParam>
+      <SimulationParam name="iterationsCount">20</SimulationParam>
       <SimulationParam name="skipIterations">2000</SimulationParam>
       <SimulationParam name="epsilon">0.1</SimulationParam>
-      <SimulationParam name="percent">0.95</SimulationParam>
+      <SimulationParam name="percent">0.90</SimulationParam>
     </Simulator>
     <!--<SnrRange start="-6.0" stop="1.0" step="0.2"></SnrRange>-->
     <!-- Also it could be used for different poitns of SNR -->
     <SnrArray>
       <Snr>-2</Snr>
       <Snr>-2</Snr>
-      <Snr>-2</Snr>
-      <Snr>-2</Snr>
-
     </SnrArray>
-    <Decoder type="ONMS">
+    <Decoder type="BF">
       <DecoderParam name="iterationsCount">20</DecoderParam>
       <DecoderParam name="scale">0.72</DecoderParam>
       <DecoderParam name="offset">0.0</DecoderParam>

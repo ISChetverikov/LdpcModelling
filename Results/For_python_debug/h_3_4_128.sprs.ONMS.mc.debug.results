@@ -1,0 +1,57 @@
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: MC
+# Simulation parameters:
+# 	maxTestsCount: 10000000
+# 	maxRejectionsCount: 50
+# 
+# SNR: -2, 
+# Decoder type: ONMS
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+SNR, EbN0, sigma, FER, rejectionsCount, testsCount, time(ms)
+-2, 4.0206, 0.890195, 7.42e-05, 50, 673854, 220508
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: MC
+# Simulation parameters:
+# 	maxTestsCount: 10000000
+# 	maxRejectionsCount: 50
+# 
+# SNR: -2, 
+# Decoder type: ONMS
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+SNR, EbN0, sigma, FER, rejectionsCount, testsCount, time(ms)
+-2, 4.0206, 0.890195, 6.41902e-05, 50, 778935, 236241
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: MC
+# Simulation parameters:
+# 	maxTestsCount: 10000000
+# 	maxRejectionsCount: 50
+# 
+# SNR: -2, 
+# Decoder type: ONMS
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+SNR, EbN0, sigma, FER, rejectionsCount, testsCount, time(ms)
+-2, 4.0206, 0.890195, 7.23615e-05, 50, 690975, 210523

@@ -111,10 +111,10 @@ std::vector<std::vector<int>> readSprsAsRowSparseMatrix(std::string filename, si
 
 		ss >> val;
 		if (val != 1)
-			throw new NotBinaryMatrixException("Sprarse matrix elements not from GF(2)");
+			throw NotBinaryMatrixException("Sprarse matrix elements not from GF(2)");
 
 		if (previousRowIndex + 1 < rowIndex)
-			throw new MatrixRowSkippedException("Sparse matrix has skipped row");
+			throw MatrixRowSkippedException("Sparse matrix has skipped row");
 
 		previousRowIndex = rowIndex;
 	}

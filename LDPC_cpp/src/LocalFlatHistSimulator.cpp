@@ -6,7 +6,7 @@
 LocalFlatHistSimulator::LocalFlatHistSimulator(
     Base_decoder * decoderPtr, double epsilon, int l, int kMin, int alpha, int beta,
     int unconWithoutAB, int unconWithAB, int conWithoutAB, int conWithAB, int numIterForFindingV)
-    : BaseSimulator(0, 0, decoderPtr) {
+    : BaseSimulator(decoderPtr) {
     _epsilon = epsilon;
     _l = l;
     _kMin = kMin;
@@ -453,7 +453,7 @@ std::vector<double> LocalFlatHistSimulator::findStartPoint(const std::vector<int
     std::vector<double> startPoint(_n, 0), llrs(_n);
     std::vector<int> decoded;
     int l = minN - 1, r = _n + 1;
-    bool isError, isFailed;
+    bool isError;
     int mPrev = -1, m;
     while (r - l > 1) {
         m = (l + r) / 2;
@@ -535,7 +535,6 @@ std::vector<double> LocalFlatHistSimulator::findEvristicStartPoint(const std::ve
     std::vector<double> z(_n, 0), newZ, llrs(_n);
     std::vector<int> decoded(_n);
     double newLoss, newBit, probBitAcceptance, dz;
-    bool isFailed;
     newLoss = lossFunc(z, codeword);
     while (true) {
         newZ = z;

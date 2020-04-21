@@ -1,0 +1,44 @@
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: FFH
+# Simulation parameters:
+# 	iterationsCount: 2
+# 	skipIterations: 2000
+# 	epsilon: 0.1
+# 	percent: 0.95
+# 
+# SNR: -2, -2, -2, -2, -2, 
+# Decoder type: ONMS
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+SNR, EbN0, sigma, FER, rejectionsCount, testsCount, time(ms)
+-2, 4.0206, 0.890195, 2.04494e-11, 184223, 459861, 200371
+-2, 4.0206, 0.890195, 3.99421e-06, 71267, 285004, 125413
+-2, 4.0206, 0.890195, 1.52592e-05, 135300, 379679, 188572
+-2, 4.0206, 0.890195, 3.8472e-07, 127646, 396364, 195844
+-2, 4.0206, 0.890195, 6.58049e-18, 132296, 360694, 185172
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: FFH
+# Simulation parameters:
+# 	iterationsCount: 2
+# 	skipIterations: 2000
+# 	epsilon: 0.1
+# 	percent: 0.95
+# 
+# SNR: -2, -2, -2, -2, -2, 
+# Decoder type: ONMS
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
