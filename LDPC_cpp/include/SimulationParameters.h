@@ -5,6 +5,7 @@
 #include <chrono>
 #include <sstream>
 #include <iostream>
+#include <vector>
 #include "DecoderType.h"
 #include "SimulationType.h"
 

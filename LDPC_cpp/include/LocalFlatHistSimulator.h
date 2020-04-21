@@ -22,14 +22,16 @@ protected:
     double normalPDF(double x, double m, double s);
     double lossFunc(const std::vector<double>& z, const std::vector<int>& codeword);
     std::vector<double> findStartPoint(const std::vector<int>& codeword, int minN);
-    std::pair<double, double> findRangeV(const std::vector<double>& startPoint,
+    std::pair<double, double> findRangeV(const std::vector<double>& startPoint, 
                                          const std::vector<int>& codeword, double sigma);
     std::vector<double> findEvristicStartPoint(const std::vector<int>& codeword, double sigma,
                                                double minV, double maxV, int& iterationsCount);
+    std::vector<std::string> MCHist(const std::vector<int>& codeword, double sigma, double minV, double maxV, int iterationsCount);
+
 
 public:
     LocalFlatHistSimulator(Base_decoder * decoderPtr, double epsilon, int l, int kMin, int alpha, int beta,
     int unconWithoutAB, int unconWithAB, int conWithoutAB, int conWithAB, int numIterForFindingV);
     ~LocalFlatHistSimulator() {};
-	SimulationIterationResults Run(double snr) override;
+    SimulationIterationResults Run(double snr) override;
 };
