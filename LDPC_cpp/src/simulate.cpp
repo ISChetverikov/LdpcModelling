@@ -171,7 +171,9 @@ bool TryLogIntoFile(std::string filename, std::string message, std::string strin
 }
 
 bool IsFileExists(std::string filename) {
-	if (FILE *file = fopen(filename.c_str(), "r")) {
+	FILE *file;
+	fopen_s(&file, filename.c_str(), "r");
+	if (file) {
 		fclose(file);
 		return true;
 	}

@@ -5,9 +5,6 @@
 #include "Base_decoder.h"
 #include "BaseSimulator.h"
 
-#define FFH_DEBUG_FILE
-#define FFH_DEBUG
-
 class FastFlatHistSimulator : public BaseSimulator {
 protected:
 	int _skip_iterations = 0;

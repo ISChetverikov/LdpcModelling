@@ -1,12 +1,12 @@
 <Config>
   <Simulation>
     <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
-    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\Debug\h_3_4_128.sprs.ONMS.ffh.20.095.debug.results</ResultsFilename>
+    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\DebugResults\h_3_4_128.sprs.ONMS.ffh.debug.results</ResultsFilename>
     <Simulator type="FFH">
       <SimulationParam name="iterationsCount">10</SimulationParam>
       <SimulationParam name="binCount">100</SimulationParam>
-      <SimulationParam name="maxFlatnessChecks">50</SimulationParam>
-      <SimulationParam name="testsForFlatnessCheck">10000</SimulationParam>
+      <SimulationParam name="maxFlatnessChecks">5</SimulationParam>
+      <SimulationParam name="testsForFlatnessCheck">100</SimulationParam>
       <SimulationParam name="skipIterations">2000</SimulationParam>
       <SimulationParam name="epsilon">0.1</SimulationParam>
       <SimulationParam name="percent">0.95</SimulationParam>

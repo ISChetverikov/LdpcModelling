@@ -1,0 +1,24 @@
+SNR, EbN0, sigma, FER, rejectionsCount, testsCount, time(ms)
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: FFH
+# Simulation parameters:
+# 	maxFlatnessChecks: 5
+# 	iterationsCount: 10
+# 	epsilon: 0.1
+# 	binCount: 100
+# 	testsForFlatnessCheck: 100
+# 	skipIterations: 2000
+# 	percent: 0.95
+# 
+# SNR: -2, 
+# Decoder type: ONMS
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+-2, 4.0206, 0.890195, 1.06023e-15, 521, 4128, 15007
