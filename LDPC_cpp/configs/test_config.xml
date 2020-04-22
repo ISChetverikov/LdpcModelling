@@ -1,7 +1,7 @@
 <Config>
   <Simulation>
     <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
-    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.ONMS.mc.debug.results</ResultsFilename>
+    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.BF.mc.debug.results</ResultsFilename>
     <Simulator type="MC">
       <SimulationParam name="maxTestsCount">10000000</SimulationParam>
       <SimulationParam name="maxRejectionsCount">50</SimulationParam>
@@ -9,9 +9,9 @@
     <!--<SnrRange start="-6.0" stop="5.0" step="0.2"></SnrRange>-->
     <!-- Also it could be used for different poitns of SNR -->
     <SnrArray>
-      <Snr>-2</Snr>
+      <Snr>7</Snr>
     </SnrArray>
-    <Decoder type="ONMS">
+    <Decoder type="BF">
       <DecoderParam name="iterationsCount">20</DecoderParam>
       <DecoderParam name="scale">0.72</DecoderParam>
       <DecoderParam name="offset">0.0</DecoderParam>
