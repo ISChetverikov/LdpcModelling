@@ -565,6 +565,7 @@ SimulationIterationResults LocalFlatHistSimulator::Run(double snr) {
     result.rejectionsCount = 0; // idk where
 
     std::cout << PErr << " " << iterationsCount << "\n";
+	return result;
 }
 
 

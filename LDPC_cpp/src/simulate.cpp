@@ -104,12 +104,16 @@ BaseSimulator * BuildSimulator(
         }
             break;
         case simulationType::FFH: {
-            int iterationsCount = ExtractInt(simulationTypeParams, "iterationsCount", "FFH simulator");
+            int iterationsCount = ExtractInt(simulationTypeParams, "iterationsCount", "FFH simulator"); 
+			int binCount = ExtractInt(simulationTypeParams, "binCount", "FFH simulator");
+			int maxFlatnessChecks = ExtractInt(simulationTypeParams, "maxFlatnessChecks", "FFH simulator");
+			int testsForFlatnessCheck = ExtractInt(simulationTypeParams, "testsForFlatnessCheck", "FFH simulator");
             int skipIterations = ExtractInt(simulationTypeParams, "skipIterations", "FFH simulator");
             double epsilon = ExtractDouble(simulationTypeParams, "epsilon", "FFH simulator");
             double percent = ExtractDouble(simulationTypeParams, "percent", "FFH simulator");
             
-            simulator = new FastFlatHistSimulator(decoderPtr, iterationsCount, skipIterations, epsilon, percent);
+            simulator = new FastFlatHistSimulator(decoderPtr, iterationsCount, binCount, maxFlatnessChecks,
+				testsForFlatnessCheck, skipIterations, epsilon, percent);
         }
             break;
         case simulationType::LFH: {
@@ -161,7 +165,7 @@ bool TryLogIntoFile(std::string filename, std::string message, std::string strin
 		LogIntoFile(filename, message, stringPrefix = "");
 		return true;
 	}
-	catch (const std::exception& err) {
+	catch (const std::exception&) {
 		return false;
 	}
 }
