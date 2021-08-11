@@ -1,39 +1,88 @@
 <Config>
   <Simulation>
     <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
-    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.Multi.mc.results</ResultsFilename>
+    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\ReleaseResults\h_3_4_128.sprs.SP.mc.results</ResultsFilename>
     <Simulator type="MC">
-      <SimulationParam name="maxTestsCount">1000</SimulationParam>
+      <SimulationParam name="maxTestsCount">100000</SimulationParam>
       <SimulationParam name="maxRejectionsCount">20</SimulationParam>
     </Simulator>
-    <SnrRange start="-6.0" stop="1.0" step="0.2"></SnrRange>
-    <!-- Also it could be used for different poitns of SNR -->
-    <!--<SnrArray>
-      <Snr>1.5</Snr>
-    </SnrArray>-->
-    <Decoder type="BF">
+    <SnrRange start="-6.0" stop="0.0" step="0.2"></SnrRange>
+    <Decoder type="SP">
+      <DecoderParam name="iterationsCount">20</DecoderParam>
+    </Decoder>
+  </Simulation>
+
+  <Simulation>
+    <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
+    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\ReleaseResults\h_3_4_128.sprs.SP.ffh.results</ResultsFilename>
+    <Simulator type="FFH">
+      <SimulationParam name="iterationsCount">20</SimulationParam>
+      <SimulationParam name="binCount">50</SimulationParam>
+      <SimulationParam name="maxFlatnessChecks">50</SimulationParam>
+      <SimulationParam name="testsForFlatnessCheck">5000</SimulationParam>
+      <SimulationParam name="skipIterations">2000</SimulationParam>
+      <SimulationParam name="epsilon">0.1</SimulationParam>
+      <SimulationParam name="percent">0.95</SimulationParam>
+    </Simulator>
+    <SnrRange start="-6.0" stop="1.0" step="0.2"></SnrRange>-
+    <Decoder type="SP">
+      <DecoderParam name="iterationsCount">20</DecoderParam>
+    </Decoder>
+  </Simulation>
+
+  <Simulation>
+    <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
+    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\ReleaseResults\h_3_4_128.sprs.ONMS.ffh.results</ResultsFilename>
+    <Simulator type="FFH">
+      <SimulationParam name="iterationsCount">20</SimulationParam>
+      <SimulationParam name="binCount">50</SimulationParam>
+      <SimulationParam name="maxFlatnessChecks">50</SimulationParam>
+      <SimulationParam name="testsForFlatnessCheck">5000</SimulationParam>
+      <SimulationParam name="skipIterations">2000</SimulationParam>
+      <SimulationParam name="epsilon">0.1</SimulationParam>
+      <SimulationParam name="percent">0.95</SimulationParam>
+    </Simulator>
+    <SnrRange start="-6.0" stop="1.0" step="0.2"></SnrRange>-
+    <Decoder type="ONMS">
       <DecoderParam name="iterationsCount">20</DecoderParam>
       <DecoderParam name="scale">0.72</DecoderParam>
       <DecoderParam name="offset">0.0</DecoderParam>
     </Decoder>
   </Simulation>
-  
+
   <Simulation>
     <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
-    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\FromMatlabScript\h_3_4_128.sprs.Multi.mc.results</ResultsFilename>
-    <Simulator type="MC">
-      <SimulationParam name="maxTestsCount">1000</SimulationParam>
-      <SimulationParam name="maxRejectionsCount">20</SimulationParam>
+    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\ReleaseResults\h_3_4_128.sprs.MS.ffh.results</ResultsFilename>
+    <Simulator type="FFH">
+      <SimulationParam name="iterationsCount">20</SimulationParam>
+      <SimulationParam name="binCount">50</SimulationParam>
+      <SimulationParam name="maxFlatnessChecks">50</SimulationParam>
+      <SimulationParam name="testsForFlatnessCheck">5000</SimulationParam>
+      <SimulationParam name="skipIterations">2000</SimulationParam>
+      <SimulationParam name="epsilon">0.1</SimulationParam>
+      <SimulationParam name="percent">0.95</SimulationParam>
     </Simulator>
-    <SnrRange start="-6.0" stop="1.0" step="0.2"></SnrRange>
-    <!-- Also it could be used for different poitns of SNR -->
-    <SnrArray>
-      <Snr>1.5</Snr>
-    </SnrArray>
-    <Decoder type="ONMS">
+    <SnrRange start="-6.0" stop="1.0" step="0.2"></SnrRange>-
+    <Decoder type="MS">
       <DecoderParam name="iterationsCount">20</DecoderParam>
-      <DecoderParam name="scale">0.72</DecoderParam>
-      <DecoderParam name="offset">0.0</DecoderParam>
+    </Decoder>
+  </Simulation>
+
+  <Simulation>
+    <MatrixFilename>C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs</MatrixFilename>
+    <ResultsFilename>C:\Users\ische\source\repos\LdpcModelling\Results\ReleaseResults\h_3_4_128.sprs.BF.ffh.results</ResultsFilename>
+    <Simulator type="FFH">
+      <SimulationParam name="iterationsCount">20</SimulationParam>
+      <SimulationParam name="binCount">50</SimulationParam>
+      <SimulationParam name="maxFlatnessChecks">50</SimulationParam>
+      <SimulationParam name="testsForFlatnessCheck">5000</SimulationParam>
+      <SimulationParam name="skipIterations">2000</SimulationParam>
+      <SimulationParam name="epsilon">0.1</SimulationParam>
+      <SimulationParam name="percent">0.95</SimulationParam>
+    </Simulator>
+    <SnrRange start="-6.0" stop="1.0" step="0.2"></SnrRange>-
+    <Decoder type="BF">
+      <DecoderParam name="iterationsCount">20</DecoderParam>
     </Decoder>
   </Simulation>
 </Config>

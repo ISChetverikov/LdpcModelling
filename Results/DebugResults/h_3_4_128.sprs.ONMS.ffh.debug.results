@@ -22,3 +22,114 @@ SNR, EbN0, sigma, FER, rejectionsCount, testsCount, time(ms)
 # C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
 # ############################################################
 -2, 4.0206, 0.890195, 1.06023e-15, 521, 4128, 15007
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: FFH
+# Simulation parameters:
+# 	maxFlatnessChecks: 50
+# 	iterationsCount: 20
+# 	epsilon: 0.1
+# 	binCount: 100
+# 	testsForFlatnessCheck: 50000
+# 	skipIterations: 2000
+# 	percent: 0.95
+# 
+# SNR: -2, 
+# Decoder type: ONMS
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: FFH
+# Simulation parameters:
+# 	maxFlatnessChecks: 50
+# 	iterationsCount: 20
+# 	epsilon: 0.1
+# 	binCount: 100
+# 	testsForFlatnessCheck: 50000
+# 	skipIterations: 2000
+# 	percent: 0.95
+# 
+# SNR: -2, 
+# Decoder type: ONMS
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: FFH
+# Simulation parameters:
+# 	maxFlatnessChecks: 50
+# 	iterationsCount: 20
+# 	epsilon: 0.1
+# 	binCount: 100
+# 	testsForFlatnessCheck: 10000
+# 	skipIterations: 2000
+# 	percent: 0.95
+# 
+# SNR: -2, 
+# Decoder type: ONMS
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: FFH
+# Simulation parameters:
+# 	maxFlatnessChecks: 50
+# 	iterationsCount: 20
+# 	epsilon: 0.1
+# 	binCount: 100
+# 	testsForFlatnessCheck: 10000
+# 	skipIterations: 2000
+# 	percent: 0.95
+# 
+# SNR: -2, 
+# Decoder type: ONMS
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+# ############################################################
+# Prameters of simulation run
+# 
+# Simulation type: FFH
+# Simulation parameters:
+# 	maxFlatnessChecks: 50
+# 	iterationsCount: 20
+# 	epsilon: 0.1
+# 	binCount: 100
+# 	testsForFlatnessCheck: 10000
+# 	skipIterations: 2000
+# 	percent: 0.95
+# 
+# SNR: -2, 
+# Decoder type: ONMS
+# Decoder params:
+# 	iterationsCount: 20
+# 	scale: 0.72
+# 	offset: 0.0
+# Matrix filename:
+# C:\Users\ische\source\repos\LdpcModelling\Matrices\FromMatlabScript\h_3_4_128.sprs
+# ############################################################
+-2, 4.0206, 0.890195, 3.32542e-05, 1295416, 4842704, 2678011
